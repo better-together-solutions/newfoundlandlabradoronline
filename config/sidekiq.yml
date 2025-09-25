@@ -25,9 +25,9 @@ test:
 production:
   <<: *default
   queues:
-    - [better_together_production_default, 1]   # Default queue with priority 1
-    - [better_together_production_mailers, 2]   # Mailers queue with priority 2
-    - [better_together_production_es_indexing, 3]   # Elasticsearch indexing queue with priority 3 (lower priority)
-    - [better_together_production_geocoding, 3]   # Geocoding queue with priority 3 (lower priority)
-    - [better_together_production_metrics, 3]   # Metrics queue with priority 3 (lower priority)
-    - [better_together_production_notifications, 3]   # Notifications queue with priority 3 (lower priority)
+    - [newfoundland_labrador_online_production_default, 1]   # Default queue with priority 1
+    - [newfoundland_labrador_online_production_mailers, 2]   # Mailers queue with priority 2
+    - [newfoundland_labrador_online_production_es_indexing, 3]   # Elasticsearch indexing queue with priority 3 (lower priority)
+    - [newfoundland_labrador_online_production_geocoding, 3]   # Geocoding queue with priority 3 (lower priority)
+    - [newfoundland_labrador_online_production_metrics, 3]   # Metrics queue with priority 3 (lower priority)
+    - [newfoundland_labrador_online_production_notifications, 3]   # Notifications queue with priority 3 (lower priority)
