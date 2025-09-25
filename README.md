@@ -1,4 +1,4 @@
-# Better Together
+# Better Together | Newfoundland Labrador Online
 
 [Join Us!](mailto:community@bettertogethersolutions.com?subject=Invitation) | [LinkedIn](https://www.linkedin.com/company/better-together-coop/)
 
