@@ -11,6 +11,7 @@ development:
     - [geocoding, 3]   # Geocoding queue with priority 3 (lower priority)
     - [metrics, 3]   # Metrics queue with priority 3 (lower priority)
     - [notifications, 3]   # Notifications queue with priority 3 (lower priority)
+    - [platform_sync, 3]   # Federation platform sync queue
 
 test:
   <<: *default
@@ -21,6 +22,7 @@ test:
     - [geocoding, 3]   # Geocoding queue with priority 3 (lower priority)
     - [metrics, 3]   # Metrics queue with priority 3 (lower priority)
     - [notifications, 3]   # Notifications queue with priority 3 (lower priority)
+    - [platform_sync, 3]   # Federation platform sync queue
 
 production:
   <<: *default
@@ -31,3 +33,4 @@ production:
     - [newfoundland_labrador_online_production_geocoding, 3]   # Geocoding queue with priority 3 (lower priority)
     - [newfoundland_labrador_online_production_metrics, 3]   # Metrics queue with priority 3 (lower priority)
     - [newfoundland_labrador_online_production_notifications, 3]   # Notifications queue with priority 3 (lower priority)
+    - [newfoundland_labrador_online_production_platform_sync, 3]   # Federation platform sync queue
