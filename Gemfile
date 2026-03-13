@@ -8,10 +8,14 @@ ruby '3.4.4'
 gem 'asset_sync'
 gem 'aws-sdk-s3', require: false
 
+# Pin connection_pool to 2.x — connection_pool 3.x breaks activesupport
+# RedisCacheStore due to positional-vs-keyword argument incompatibility in Ruby 3.x
+gem 'connection_pool', '~> 2.5'
+
 # Use the published version of better_together for production
 gem 'better_together', '~> 0.8',
     github: 'better-together-org/community-engine-rails',
-    branch: 'main'
+    ref: 'f554900a7f5181efef4caf259edf8aaac0a088b2'
 
 # Use the local development version of better_together
 # gem 'better_together', path: '/community-engine'
