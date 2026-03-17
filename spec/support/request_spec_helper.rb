@@ -25,7 +25,7 @@ module RequestSpecHelper
     wizard.mark_completed
     create(:user, :confirmed, :platform_manager,
            email: 'manager@example.test',
-           password: 'password12345')
+           password: 'SecureTest123!@#')
     host_platform
   end
 end
