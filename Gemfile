@@ -40,14 +40,13 @@ gem 'rack-mini-profiler'
 
 gem 'rails', '~> 8.0.4'
 
-# Pin connection_pool to avoid breaking changes in 3.x
-gem 'connection_pool', '~> 2.5.5'
-
 # Redis for ActionCable and background jobs
 gem 'redis', '~> 5.4'
-# Sidekiq for background processing
 
-gem 'sidekiq', '~> 8.0.7'
+# Sidekiq for background processing
+gem 'sidekiq', '~> 8.1.1'
+
+gem 'connection_pool', '~> 3.0.2'
 
 # Error and performance monitoring with Sentry
 gem 'sentry-rails'
@@ -90,7 +89,7 @@ group :development do
   gem 'easy_translate'
   gem 'i18n_generators'
   # Listen for file system changes
-  gem 'listen', '>= 3.0.5', '< 3.10'
+  gem 'listen', '>= 3.0.5', '< 3.11'
   # Readline implementation for Ruby
   gem 'rb-readline'
   # Spring for fast Rails actions via pre-loading
