@@ -6,6 +6,7 @@ AllCops:
     - 'node_modules/**/*'
     - 'db/schema.rb'
     - 'vendor/**/*'
+    - 'db/migrate/*.better_together.rb'
   NewCops: enable
 Style/StringLiterals:
   Exclude:

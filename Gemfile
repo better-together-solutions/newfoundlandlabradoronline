@@ -9,7 +9,7 @@ gem 'asset_sync'
 gem 'aws-sdk-s3', require: false
 
 # Use the published version of better_together for production
-gem 'better_together', '~> 0.8',
+gem 'better_together', '~> 0.10',
     github: 'better-together-org/community-engine-rails',
     branch: 'main'
 
@@ -38,7 +38,10 @@ gem 'rack-protection'
 # Rack mini profiler for performance profiling
 gem 'rack-mini-profiler'
 
-gem 'rails', '~> 8.0.3'
+gem 'rails', '~> 8.0.4'
+
+# Pin connection_pool to avoid breaking changes in 3.x
+gem 'connection_pool', '~> 2.5.5'
 
 # Redis for ActionCable and background jobs
 gem 'redis', '~> 5.4'
