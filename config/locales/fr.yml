@@ -1,5 +1,10 @@
 ---
 fr:
+  globals:
+    attached_file: Fichier joint
+    download: Télécharger
+    no_author: Pas d'auteur
+    no_publish_date: Pas de date de publication
   helpers:
     select:
       prompt: Veuillez sélectionner
@@ -7,6 +12,30 @@ fr:
       create: Créer un(e) %{model}
       submit: Enregistrer ce(tte) %{model}
       update: Modifier ce(tte) %{model}
+  hints:
+    resource:
+      author: Nom de l'auteur de la ressource.
+      description: Fournissez une description détaillée de la ressource.
+      file: Joignez un document lié à la ressource.
+      file_size: Le fichier doit faire moins de %{size} Mo.
+      locale: Sélectionnez la langue de la ressource.
+      name: Entrez le nom de la ressource.
+      privacy: Spécifiez le niveau de confidentialité de la ressource.
+      published_at: Définissez la date et l'heure de publication. Les ressources ne
+        seront visibles que si leur date de publication est dans le passé. Vous pouvez
+        utiliser cela pour contrôler quand les ressources deviennent disponibles en
+        choisissant une date future.
+      slug: Entrez un identifiant convivial pour les URL.
+      type: Sélectionnez le type de ressource.
+      url: Fournissez l'URL externe de la ressource.
+  journey_items:
+    none_yet: Vous n'avez pas encore ajouté d'éléments à votre Parcours. Cliquez sur
+      le bouton '+' sur le contenu pour l'ajouter à votre Parcours.
+    tooltips:
+      add: Ajouter au Parcours
+      remove: Retirer du Parcours
+  journeys:
+    title: Mon Parcours
   time:
     am: am
     formats:

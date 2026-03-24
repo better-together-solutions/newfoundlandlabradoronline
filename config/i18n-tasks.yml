@@ -1,0 +1,61 @@
+# i18n-tasks configuration for the newfoundlandlabradoronline host app.
+#
+# NLO is a thin host app — most translations are provided by the
+# better_together (community-engine-rails) engine gem. CE's locale files
+# are loaded at runtime so NLO does not duplicate them. This config:
+#   - reads only NLO's own locale files (avoids check-normalized false
+#     positives on read-only gem locale paths)
+#   - ignores all unused keys (CE uses them in its views/controllers)
+#   - ignores missing CE-provided key namespaces (better_together.*, devise.*,
+#     doorkeeper.*, etc.) — CE's own CI validates those keys
+#   - validates en, es, fr, uk locales
+base_locale: en
+
+locales:
+  - en
+  - es
+  - fr
+  - uk
+
+data:
+  read:
+    - 'config/locales/%{locale}.yml'
+    - 'config/locales/**/%{locale}.yml'
+  write:
+    - 'config/locales/%{locale}.yml'
+
+search:
+  paths:
+    - app/views
+  exclude:
+    - 'test/**'
+    - 'spec/**'
+    - 'tmp/**'
+    - 'log/**'
+
+translation:
+  backend: openai
+  openai_model: gpt-4o-mini-2024-07-18
+
+ignore_missing:
+  - '{translation_en,translation_es,translation_fr,translation_uk}.*'
+  # CE engine gem provides all better_together.* keys; NLO code may reference
+  # them via relative lookups. CE's own CI validates completeness.
+  - 'better_together.*'
+  # Devise, Doorkeeper, and other Rails/gem keys CE configures
+  - 'devise.*'
+  - 'doorkeeper.*'
+  - 'activerecord.*'
+  - 'errors.*'
+  - 'helpers.*'
+  - 'date.*'
+  - 'datetime.*'
+  - 'number.*'
+  - 'support.*'
+  - 'time.*'
+
+# All keys provided by the CE engine gem appear unused from NLO's code
+# perspective (CE views/controllers use them, not NLO's). Suppress the
+# unused check entirely for this host app.
+ignore_unused:
+  - '*'
