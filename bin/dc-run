@@ -1,3 +1,11 @@
 #!/usr/bin/env bash
 
-./bin/dc run --rm app $@
+set -euo pipefail
+
+./bin/dc-ensure-services
+
+if [[ "${1:-}" != "bundle" ]]; then
+  ./bin/dc-prepare-worktree-dbs
+fi
+
+./bin/dc run --rm --no-deps app "$@"

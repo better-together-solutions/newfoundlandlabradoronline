@@ -22,6 +22,8 @@ x-env-info: &env-info
 x-app-shared: &app-shared
   <<: *env-info
   image: better-together-solutions/newfoundland-labrador-online:dev
+  environment:
+    NLO_WORKTREE_DB_SUFFIX: ${NLO_WORKTREE_DB_SUFFIX:-}
   volumes:
     - .:/bt
     # - ../pundit-resources:/pundit-resources
