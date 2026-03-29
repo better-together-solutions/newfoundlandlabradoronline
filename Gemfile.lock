@@ -343,7 +343,7 @@ GEM
     et-orbi (1.4.0)
       tzinfo
     event_stream_parser (1.0.0)
-    excon (1.4.0)
+    excon (1.4.2)
       logger
     execjs (2.10.0)
     factory_bot (6.5.5)
@@ -370,7 +370,7 @@ GEM
       rack (>= 2.0, < 4.0)
     ffi (1.17.3-aarch64-linux-gnu)
     ffi (1.17.3-x86_64-linux-gnu)
-    fog-aws (3.33.0)
+    fog-aws (3.33.1)
       base64 (>= 0.2, < 0.4)
       fog-core (~> 2.6)
       fog-json (~> 1.1)
