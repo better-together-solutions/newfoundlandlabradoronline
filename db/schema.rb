@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_17_030174) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_07_031984) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -1217,6 +1217,41 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_17_030174) do
     t.index ["space_id"], name: "index_better_together_places_on_space_id"
   end
 
+  create_table "better_together_platform_connections", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "source_platform_id"
+    t.uuid "target_platform_id"
+    t.string "status", default: "pending", null: false
+    t.string "connection_kind", default: "peer", null: false
+    t.boolean "content_sharing_enabled", default: false, null: false
+    t.boolean "federation_auth_enabled", default: false, null: false
+    t.jsonb "settings", default: {}, null: false
+    t.string "oauth_client_id"
+    t.text "oauth_client_secret_ciphertext"
+    t.string "oauth_client_secret_digest"
+    t.text "oauth_client_secret"
+    t.index ["connection_kind"], name: "index_better_together_platform_connections_on_connection_kind"
+    t.index ["oauth_client_id"], name: "index_bt_platform_connections_on_oauth_client_id", unique: true
+    t.index ["source_platform_id", "target_platform_id"], name: "index_bt_platform_connections_on_source_and_target", unique: true
+    t.index ["source_platform_id"], name: "idx_on_source_platform_id_bed3ccb00c"
+    t.index ["status"], name: "index_better_together_platform_connections_on_status"
+    t.index ["target_platform_id"], name: "idx_on_target_platform_id_24cfb3a8bf"
+  end
+
+  create_table "better_together_platform_domains", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "platform_id", null: false
+    t.string "hostname", null: false
+    t.boolean "primary", default: false, null: false
+    t.boolean "active", default: true, null: false
+    t.index "lower((hostname)::text)", name: "index_better_together_platform_domains_on_lower_hostname", unique: true
+    t.index ["platform_id", "primary"], name: "index_better_together_platform_domains_on_primary", unique: true, where: "(\"primary\" IS TRUE)"
+    t.index ["platform_id"], name: "index_better_together_platform_domains_on_platform_id"
+  end
   create_table "better_together_platform_invitations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "lock_version", default: 0, null: false
     t.datetime "created_at", null: false

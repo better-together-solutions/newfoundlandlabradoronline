@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/better-together-org/community-engine-rails.git
-  revision: 39061274b1779074a12f12f70534f1e86654995c
-  branch: main
+  revision: 1ec48327a808deb80a944a6882f87cc278c7289e
+  ref: 1ec48327a808deb80a944a6882f87cc278c7289e
   specs:
     better_together (0.10.0)
       active_storage_svg_sanitizer
@@ -166,7 +166,7 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
-    addressable (2.8.9)
+    addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
     asset_sync (2.19.3)
       activemodel (>= 4.1.0)
@@ -413,8 +413,8 @@ GEM
     google-protobuf (4.34.0-x86_64-linux-gnu)
       bigdecimal
       rake (~> 13.3)
-    groupdate (6.7.0)
-      activesupport (>= 7.1)
+    groupdate (6.8.0)
+      activesupport (>= 7.2)
     hashie (5.1.0)
       logger
     highline (3.1.2)
@@ -795,9 +795,9 @@ GEM
     rubyzip (3.2.2)
     rufus-scheduler (3.9.2)
       fugit (~> 1.1, >= 1.11.1)
-    sass-embedded (1.98.0-aarch64-linux-gnu)
+    sass-embedded (1.99.0-aarch64-linux-gnu)
       google-protobuf (~> 4.31)
-    sass-embedded (1.98.0-x86_64-linux-gnu)
+    sass-embedded (1.99.0-x86_64-linux-gnu)
       google-protobuf (~> 4.31)
     sassc (2.4.0)
       ffi (~> 1.9)
