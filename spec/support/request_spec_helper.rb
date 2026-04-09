@@ -20,7 +20,9 @@ module RequestSpecHelper
   end
 
   def configure_host_platform
-    host_platform = create(:better_together_platform, :host, privacy: 'public')
+    host_platform = BetterTogether::Platform.find_by(host: true) ||
+                    create(:better_together_platform, :host, privacy: 'public')
+    host_platform.update!(privacy: 'public') unless host_platform.privacy == 'public'
     wizard = BetterTogether::Wizard.find_or_create_by(identifier: 'host_setup')
     wizard.mark_completed
     create(:user, :confirmed, :platform_manager,
