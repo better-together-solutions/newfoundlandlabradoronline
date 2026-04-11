@@ -11,7 +11,7 @@ gem 'aws-sdk-s3', require: false
 # Use the published version of better_together for production
 gem 'better_together', '~> 0.10',
     github: 'better-together-org/community-engine-rails',
-    ref: '7d2ea596f0e756508291b1a1832a4f1af552117c'
+    branch: 'release/0.11.0-notes'
 
 # Use the local development version of better_together
 # gem 'better_together', path: '/community-engine'
@@ -28,7 +28,7 @@ gem 'ostruct'
 # Database adapter for PostgreSQL
 gem 'pg', '>= 0.18', '< 2.0'
 # Puma as the app server
-gem 'puma', '~> 7.2'
+gem 'puma', '~> 7.0'
 
 # Pundit for authorization, custom fork for Better Together
 gem 'pundit-resources', '~> 1.1.6', github: 'better-together-org/pundit-resources'
@@ -38,13 +38,13 @@ gem 'rack-protection'
 # Rack mini profiler for performance profiling
 gem 'rack-mini-profiler'
 
-gem 'rails', '~> 8.0.5'
+gem 'rails', '~> 8.0.4'
 
 # Redis for ActionCable and background jobs
 gem 'redis', '~> 5.4'
 
 # Sidekiq for background processing
-gem 'sidekiq', '~> 8.1.2'
+gem 'sidekiq', '~> 8.1.1'
 
 gem 'connection_pool', '~> 3.0.2'
 
@@ -73,7 +73,7 @@ group :development, :test do
   # Fuubar for fancy test progress bar
   gem 'fuubar'
   # Help with managing translation database
-  gem 'i18n-tasks', '~> 1.1.2'
+  gem 'i18n-tasks', '~> 1.0.15'
   # Pry for a powerful shell alternative to IRB
   gem 'pry'
   # RuboCop for static code analysis

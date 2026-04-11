@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/better-together-org/community-engine-rails.git
-  revision: 7d2ea596f0e756508291b1a1832a4f1af552117c
-  ref: 7d2ea596f0e756508291b1a1832a4f1af552117c
+  revision: 7a2c40a56fbbe1fa7872dff3cd1fe95cb476dd6a
+  branch: release/0.11.0-notes
   specs:
     better_together (0.10.1)
       active_storage_svg_sanitizer
@@ -427,14 +427,13 @@ GEM
       i18n
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
-    i18n-tasks (1.1.2)
+    i18n-tasks (1.0.15)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
       erubi
-      highline (>= 3.0.0)
+      highline (>= 2.0.0)
       i18n
       parser (>= 3.2.2.1)
-      prism
       rails-i18n
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.8, >= 1.8.1)
@@ -958,17 +957,17 @@ DEPENDENCIES
   faker
   fog-aws
   fuubar
-  i18n-tasks (~> 1.1.2)
+  i18n-tasks (~> 1.0.15)
   i18n_generators
   listen (>= 3.0.5, < 3.11)
   ostruct
   pg (>= 0.18, < 2.0)
   pry
-  puma (~> 7.2)
+  puma (~> 7.0)
   pundit-resources (~> 1.1.6)!
   rack-mini-profiler
   rack-protection
-  rails (~> 8.0.5)
+  rails (~> 8.0.4)
   rb-readline
   rbtrace
   redis (~> 5.4)
@@ -986,7 +985,7 @@ DEPENDENCIES
   sentry-ruby
   shoulda-callback-matchers
   shoulda-matchers
-  sidekiq (~> 8.1.2)
+  sidekiq (~> 8.1.1)
   simplecov
   spring
   spring-watcher-listen (~> 2.1.0)

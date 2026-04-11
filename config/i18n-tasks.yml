@@ -1,8 +1,9 @@
-# config/i18n-tasks.yml
 base_locale: en
 
 locales:
   - en
+  - es
+  - fr
 
 data:
   read:
@@ -33,10 +34,14 @@ search:
 
 ignore_unused:
   - "actions.*"
+  - "globals.**"
   - "date.**"
   - "datetime.**"
   - "errors.**"
   - "helpers.**"
+  - "hints.resource.**"
+  - "journey_items.**"
+  - "journeys.**"
   - "number.**"
   - "support.**"
   - "time.**"
