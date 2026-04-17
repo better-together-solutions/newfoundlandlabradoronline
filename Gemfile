@@ -44,7 +44,7 @@ gem 'rails', '~> 8.0.5'
 gem 'redis', '~> 5.4'
 
 # Sidekiq for background processing
-gem 'sidekiq', '~> 8.1.2'
+gem 'sidekiq', '~> 8.1.3'
 
 gem 'connection_pool', '~> 3.0.2'
 
