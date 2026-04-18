@@ -41,3 +41,7 @@ en:
     formats:
       date_picker: "%m/%d/%Y"
       datetime_picker: "%m/%d/%Y %I:%M %p"
+      default: "%Y-%m-%d %H:%M:%S"
+      long: "%B %d, %Y %I:%M %p"
+      short: "%b %d %I:%M %p"
+    pm: pm

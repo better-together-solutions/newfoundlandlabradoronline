@@ -1,5 +1,10 @@
 ---
 fr:
+  globals:
+    attached_file: Fichier joint
+    download: Telecharger
+    no_author: Aucun auteur
+    no_publish_date: Aucune date de publication
   helpers:
     select:
       prompt: Veuillez sélectionner
@@ -7,9 +12,35 @@ fr:
       create: Créer un(e) %{model}
       submit: Enregistrer ce(tte) %{model}
       update: Modifier ce(tte) %{model}
+  hints:
+    resource:
+      author: Nom de l'auteur de la ressource.
+      description: Fournissez une description detaillee de la ressource.
+      file: Joignez un document lie a la ressource.
+      file_size: Le fichier doit etre inferieur a %{size} Mo.
+      locale: Selectionnez la langue de la ressource.
+      name: Saisissez le nom de la ressource.
+      privacy: Precisez le niveau de confidentialite de la ressource.
+      published_at: Definissez la date et l'heure de publication de la ressource.
+        Les ressources ne seront visibles que si leur date de publication est dans
+        le passe. Vous pouvez ainsi controler leur disponibilite en selectionnant
+        une date future.
+      slug: Saisissez un identifiant compatible avec une URL.
+      type: Selectionnez le type de ressource.
+      url: Indiquez l'URL externe de la ressource.
+  journey_items:
+    none_yet: Vous n'avez pas encore ajoute d'elements a votre parcours. Cliquez sur
+      le bouton '+' d'un contenu pour l'ajouter a votre parcours.
+    tooltips:
+      add: Ajouter au parcours
+      remove: Retirer du parcours
+  journeys:
+    title: Mon parcours
   time:
     am: am
     formats:
+      date_picker: "%d/%m/%Y"
+      datetime_picker: "%d/%m/%Y %H:%M"
       default: "%d %B %Y %Hh %Mmin %Ss"
       long: "%A %d %B %Y %Hh%M"
       short: "%d %b %Hh%M"
