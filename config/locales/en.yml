@@ -1,5 +1,34 @@
 ---
 en:
+  activerecord:
+    attributes:
+      partner:
+        creator: :activerecord.models.creator
+        host: Host
+        identifier: Identifier
+        lock_version: Lock version
+        person_community_memberships: Person community memberships
+        person_members: Person members
+        person_roles: Person roles
+        privacy: Privacy
+        protected: Protected
+        slug: Slug
+        slugs: Slugs
+        string_translations: String translations
+        text_translations: Text translations
+      resource:
+        author: Author
+        external_url: External URL
+        language: Language
+        privacy: Privacy
+        published_at: Published At
+        type: Type
+    models:
+      journey_map: Journey Map
+      partner: Partner
+      resource: Resource
+      resource/document: Document
+      resource/link: Link
   globals:
     attached_file: Attached file
     download: Download
@@ -41,7 +70,7 @@ en:
     formats:
       date_picker: "%m/%d/%Y"
       datetime_picker: "%m/%d/%Y %I:%M %p"
-      default: "%Y-%m-%d %H:%M:%S"
-      long: "%B %d, %Y %I:%M %p"
-      short: "%b %d %I:%M %p"
+      default: "%Y-%m-%d %H:%M:%S %z"
+      long: "%B %d, %Y %H:%M"
+      short: "%b %d %H:%M"
     pm: pm

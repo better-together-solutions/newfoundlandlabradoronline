@@ -1,8 +1,37 @@
 ---
 fr:
+  activerecord:
+    attributes:
+      partner:
+        creator: :activerecord.models.creator
+        host: Hôte
+        identifier: Identifiant
+        lock_version: Version verrouillable
+        person_community_memberships: Adhésions de personnes à des communautés
+        person_members: Membres de la personne
+        person_roles: Rôles des personnes
+        privacy: Confidentialité
+        protected: Protégé
+        slug: Limace
+        slugs: Limaces
+        string_translations: Traductions de chaînes
+        text_translations: Traductions de textes
+      resource:
+        author: Auteur
+        external_url: URL externe
+        language: Langue
+        privacy: Confidentialité
+        published_at: Publié le
+        type: Type
+    models:
+      journey_map: Parcours
+      partner: Partenaire
+      resource: Ressource
+      resource/document: Document
+      resource/link: Lien
   globals:
     attached_file: Fichier joint
-    download: Telecharger
+    download: Télécharger
     no_author: Aucun auteur
     no_publish_date: Aucune date de publication
   helpers:
@@ -15,22 +44,22 @@ fr:
   hints:
     resource:
       author: Nom de l'auteur de la ressource.
-      description: Fournissez une description detaillee de la ressource.
-      file: Joignez un document lie a la ressource.
-      file_size: Le fichier doit etre inferieur a %{size} Mo.
-      locale: Selectionnez la langue de la ressource.
-      name: Saisissez le nom de la ressource.
-      privacy: Precisez le niveau de confidentialite de la ressource.
-      published_at: Definissez la date et l'heure de publication de la ressource.
+      description: Fournissez une description détaillée de la ressource.
+      file: Joignez un document lié à la ressource.
+      file_size: Le fichier doit être inférieur à %{size} Mo.
+      locale: Sélectionnez la langue de la ressource.
+      name: Entrez le nom de la ressource.
+      privacy: Spécifiez le niveau de confidentialité de la ressource.
+      published_at: Définissez la date et l'heure de publication de la ressource.
         Les ressources ne seront visibles que si leur date de publication est dans
-        le passe. Vous pouvez ainsi controler leur disponibilite en selectionnant
-        une date future.
-      slug: Saisissez un identifiant compatible avec une URL.
-      type: Selectionnez le type de ressource.
-      url: Indiquez l'URL externe de la ressource.
+        le passé. Vous pouvez utiliser cela pour contrôler quand les ressources deviennent
+        disponibles en choisissant une date future.
+      slug: Entrez un identifiant compatible avec les URL.
+      type: Sélectionnez le type de ressource.
+      url: Fournissez l'URL externe de la ressource.
   journey_items:
-    none_yet: Vous n'avez pas encore ajoute d'elements a votre parcours. Cliquez sur
-      le bouton '+' d'un contenu pour l'ajouter a votre parcours.
+    none_yet: Vous n'avez encore ajouté aucun élément à votre parcours. Cliquez sur
+      le bouton '+' sur un contenu pour l'ajouter à votre parcours.
     tooltips:
       add: Ajouter au parcours
       remove: Retirer du parcours

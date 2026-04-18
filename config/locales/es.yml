@@ -1,5 +1,34 @@
 ---
 es:
+  activerecord:
+    attributes:
+      partner:
+        creator: :activerecord.models.creator
+        host: Anfitrión
+        identifier: Identificador
+        lock_version: Versión de bloqueo
+        person_community_memberships: Membresías de la comunidad de personas
+        person_members: Miembros personales
+        person_roles: Roles personales
+        privacy: Privacidad
+        protected: Protegido
+        slug: Babosa
+        slugs: babosas
+        string_translations: Traducciones de cadenas
+        text_translations: Traducciones de texto
+      resource:
+        author: Autor
+        external_url: URL Externa
+        language: Idioma
+        privacy: Privacidad
+        published_at: Publicado en
+        type: Tipo
+    models:
+      journey_map: Mapa del viaje
+      partner: Colaborador
+      resource: Recurso
+      resource/document: Documento
+      resource/link: Enlace
   globals:
     attached_file: Archivo adjunto
     download: Descargar
@@ -41,7 +70,7 @@ es:
     formats:
       date_picker: "%d/%m/%Y"
       datetime_picker: "%d/%m/%Y %H:%M"
-      default: "%Y-%m-%d %H:%M:%S"
-      long: "%d de %B de %Y %H:%M"
-      short: "%d %b %H:%M"
+      default: "%Y-%m-%d %H:%M:%S %z"
+      long: "%B %d, %Y %H:%M"
+      short: "%b %d %H:%M"
     pm: pm

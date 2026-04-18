@@ -2,6 +2,10 @@ fr:
   activerecord:
     models:
       partner: Partenaire  #g
+      resource: Ressource
+      resource/document: Document
+      resource/link: Lien
+      journey_map: Parcours
 
     attributes:
       partner:
@@ -18,3 +22,51 @@ fr:
         slugs: Limaces  #g
         string_translations: Traductions de chaînes  #g
         text_translations: Traductions de textes  #g
+      resource:
+        type: Type
+        external_url: URL externe
+        published_at: Publié le
+        author: Auteur
+        privacy: Confidentialité
+        language: Langue
+  globals:
+    attached_file: Fichier joint
+    download: Télécharger
+    no_author: Aucun auteur
+    no_publish_date: Aucune date de publication
+  helpers:
+    select:
+      prompt: Veuillez sélectionner
+    submit:
+      create: Créer un(e) %{model}
+      submit: Enregistrer ce(tte) %{model}
+      update: Modifier ce(tte) %{model}
+  hints:
+    resource:
+      author: Nom de l'auteur de la ressource.
+      description: Fournissez une description détaillée de la ressource.
+      file: Joignez un document lié à la ressource.
+      file_size: Le fichier doit être inférieur à %{size} Mo.
+      locale: Sélectionnez la langue de la ressource.
+      name: Entrez le nom de la ressource.
+      privacy: Spécifiez le niveau de confidentialité de la ressource.
+      published_at: Définissez la date et l'heure de publication de la ressource. Les ressources ne seront visibles que si leur date de publication est dans le passé. Vous pouvez utiliser cela pour contrôler quand les ressources deviennent disponibles en choisissant une date future.
+      slug: Entrez un identifiant compatible avec les URL.
+      type: Sélectionnez le type de ressource.
+      url: Fournissez l'URL externe de la ressource.
+  journey_items:
+    none_yet: Vous n'avez encore ajouté aucun élément à votre parcours. Cliquez sur le bouton '+' sur un contenu pour l'ajouter à votre parcours.
+    tooltips:
+      add: Ajouter au parcours
+      remove: Retirer du parcours
+  journeys:
+    title: Mon parcours
+  time:
+    am: am
+    formats:
+      date_picker: "%d/%m/%Y"
+      datetime_picker: "%d/%m/%Y %H:%M"
+      default: "%d %B %Y %Hh %Mmin %Ss"
+      long: "%A %d %B %Y %Hh%M"
+      short: "%d %b %Hh%M"
+    pm: pm
