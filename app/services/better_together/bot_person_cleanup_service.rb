@@ -68,7 +68,9 @@ module BetterTogether
 
       raise CleanupError, "Preflight failed for #{person.id}: #{preflight_errors.join('; ')}" if preflight_errors.any?
 
+      prepare_person_for_destroy(person)
       prepare_community_for_destroy(person.community)
+      person.reload
       person.destroy!
       result[:deleted] = true
       result[:verification] = verification_for(person_id: person.id, community_id: snapshot[:community_id])
@@ -149,10 +151,26 @@ module BetterTogether
     def prepare_community_for_destroy(community)
       return if community.blank?
 
+      unlock_calendars(BetterTogether::Calendar.where(community_id: community.id))
+
       updates = {}
       updates[:creator_id] = nil if community.creator_id.present?
       updates[:protected] = false if community.protected?
       community.update!(updates) if updates.any?
+    end
+
+    def prepare_person_for_destroy(person)
+      destroy_memberships(person.person_platform_memberships)
+      destroy_memberships(person.person_community_memberships)
+      unlock_calendars(BetterTogether::Calendar.where(creator_id: person.id))
+    end
+
+    def destroy_memberships(memberships)
+      memberships.find_each(&:destroy!)
+    end
+
+    def unlock_calendars(calendars)
+      calendars.where(protected: true).update_all(protected: false)
     end
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
