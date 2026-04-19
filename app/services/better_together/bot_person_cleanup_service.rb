@@ -68,10 +68,12 @@ module BetterTogether
 
       raise CleanupError, "Preflight failed for #{person.id}: #{preflight_errors.join('; ')}" if preflight_errors.any?
 
-      prepare_person_for_destroy(person)
-      prepare_community_for_destroy(person.community)
-      person.reload
-      person.destroy!
+      BetterTogether::Person.transaction do
+        prepare_person_for_destroy(person)
+        prepare_community_for_destroy(person.community)
+        person.reload
+        person.destroy!
+      end
       result[:deleted] = true
       result[:verification] = verification_for(person_id: person.id, community_id: snapshot[:community_id])
       log_verification(result)
@@ -116,7 +118,9 @@ module BetterTogether
       errors << 'linked user present' if person.user.present?
       errors << 'primary community missing' if community_id.blank?
       errors << 'community not found' if community_id.present? && person.community.blank?
-      errors << 'community creator mismatch' if person.community.present? && person.community.creator_id != person.id
+      errors << 'community creator mismatch' if person.community.present? &&
+                                                person.community.creator_id.present? &&
+                                                person.community.creator_id != person.id
 
       errors << BOT_EMAIL_ERROR if snapshot[:email_address_count].positive?
 
@@ -166,11 +170,23 @@ module BetterTogether
     end
 
     def destroy_memberships(memberships)
-      memberships.find_each(&:destroy!)
+      membership_ids = memberships.pluck(:id)
+      return if membership_ids.empty?
+
+      cleanup_membership_notifications(memberships.klass.name, membership_ids)
+      memberships.klass.where(id: membership_ids).delete_all
     end
 
     def unlock_calendars(calendars)
       calendars.where(protected: true).update_all(protected: false)
+    end
+
+    def cleanup_membership_notifications(record_type, record_ids)
+      event_ids = Noticed::Event.where(record_type:, record_id: record_ids).pluck(:id)
+      return if event_ids.empty?
+
+      Noticed::Notification.where(event_id: event_ids).delete_all
+      Noticed::Event.where(id: event_ids).delete_all
     end
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
