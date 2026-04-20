@@ -11,7 +11,7 @@ gem 'aws-sdk-s3', require: false
 # Use the published version of better_together for production
 gem 'better_together', '~> 0.10',
     github: 'better-together-org/community-engine-rails',
-    ref: 'c633a2a28127897c406d7a4beeb4e97446170f8e'
+    ref: '8f2f34d8cd1a3ca05399594115fdc80da5b2e51c'
 
 # Use the local development version of better_together
 # gem 'better_together', path: '/community-engine'

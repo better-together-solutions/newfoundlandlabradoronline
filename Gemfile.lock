@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/better-together-org/community-engine-rails.git
-  revision: c633a2a28127897c406d7a4beeb4e97446170f8e
-  ref: c633a2a28127897c406d7a4beeb4e97446170f8e
+  revision: 8f2f34d8cd1a3ca05399594115fdc80da5b2e51c
+  ref: 8f2f34d8cd1a3ca05399594115fdc80da5b2e51c
   specs:
     better_together (0.10.1)
       active_storage_svg_sanitizer
