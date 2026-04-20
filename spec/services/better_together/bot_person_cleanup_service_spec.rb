@@ -63,6 +63,26 @@ RSpec.describe BetterTogether::BotPersonCleanupService do
     it 'destroys the target person and primary community when write is enabled' do
       person = BetterTogether::Person.create!(name: 'Disposable Bot', identifier: 'disposable-bot')
       person.community.update!(creator_id: person.id)
+      person.primary_calendar
+
+      platform_role = BetterTogether::Role.where(resource_type: 'BetterTogether::Platform').first!
+      community_role = BetterTogether::Role.where(resource_type: 'BetterTogether::Community').first!
+      platform = create(:better_together_platform, :public)
+
+      BetterTogether::PersonPlatformMembership.create!(
+        member: person,
+        joinable: platform,
+        role: platform_role,
+        status: :active
+      )
+
+      BetterTogether::PersonCommunityMembership.create!(
+        member: person,
+        joinable: person.community,
+        role: community_role,
+        status: :active
+      )
+
       community_id = person.community_id
       result = described_class.new(person_ids: [person.id], write_enable: true, logger:).call
 
@@ -71,6 +91,9 @@ RSpec.describe BetterTogether::BotPersonCleanupService do
       expect(verification[:person_exists]).to be(false)
       expect(verification[:community_exists]).to be(false)
       expect(verification[:remaining_community_calendars]).to eq(0)
+      expect(verification[:remaining_person_calendars]).to eq(0)
+      expect(verification[:remaining_person_community_memberships]).to eq(0)
+      expect(verification[:remaining_person_platform_memberships]).to eq(0)
       expect(BetterTogether::Person.exists?(id: person.id)).to be(false)
       expect(BetterTogether::Community.exists?(id: community_id)).to be(false)
     end
