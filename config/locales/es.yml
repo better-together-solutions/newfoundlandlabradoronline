@@ -42,3 +42,6 @@ es:
       date_picker: "%d/%m/%Y"
       datetime_picker: "%d/%m/%Y %H:%M"
     pm: pm
+  better_together_nlo:
+    footer:
+      built_on_html: "Construido sobre <a href='%{ce_url}' target='_blank' rel='noopener noreferrer' class='text-muted'>Community Engine</a> — plataforma comunitaria de código abierto por <a href='%{bts_url}' target='_blank' rel='noopener noreferrer' class='text-muted'>Better Together Solutions</a>, un colectivo tecnológico comunitario"
