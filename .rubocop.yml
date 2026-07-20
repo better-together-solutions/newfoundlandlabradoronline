@@ -7,6 +7,7 @@ AllCops:
     - 'db/schema.rb'
     - 'vendor/**/*'
     - 'db/migrate/*.better_together.rb'
+    - 'agent-worktrees/**/*'
   NewCops: enable
 Style/StringLiterals:
   Exclude:
