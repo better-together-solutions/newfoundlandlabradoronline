@@ -27,10 +27,12 @@ class CorrectPlatformIdMismatchForDownloadsAndPageViews < ActiveRecord::Migratio
 
   private
 
-  def correct_mismatches(table, type_col, id_col)
+  def correct_mismatches(table, type_col, id_col) # rubocop:disable Metrics/MethodLength
     return unless column_exists?(table, :platform_id)
 
     CONTENT_TYPES.each do |type, owner_table|
+      next unless column_exists?(owner_table, :platform_id)
+
       execute <<~SQL.squish
         UPDATE #{quote_table_name(table)} m
         SET platform_id = owner.platform_id
