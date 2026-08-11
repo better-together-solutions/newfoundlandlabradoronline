@@ -39,6 +39,14 @@ class BackfillPlatformIdPhase5 < ActiveRecord::Migration[7.2] # rubocop:disable 
     host_platform_id = fetch_host_platform_id
     return unless host_platform_id
 
+    # Must run before backfill_from_creator's content_blocks fallback below:
+    # that fallback assigns host_platform_id to every remaining NULL row,
+    # including multiple blank-identifier rows, which collide against
+    # idx_bt_content_blocks_on_identifier_platform_id if it still carries its
+    # original (platform_id IS NOT NULL) predicate instead of also excluding
+    # blank identifier. See 20260719020100_repair_content_blocks_identifier_platform_index.
+    repair_content_blocks_identifier_platform_index
+
     backfill_host_only_tables(host_platform_id)
     CREATOR_OWNED_TABLES.each { |table, fk| backfill_from_creator(table, fk, host_platform_id) }
     backfill_calls_for_interest(host_platform_id)
@@ -56,7 +64,22 @@ class BackfillPlatformIdPhase5 < ActiveRecord::Migration[7.2] # rubocop:disable 
     end
   end
 
+  CONTENT_BLOCKS_INDEX_PREDICATE = "platform_id IS NOT NULL AND identifier != ''"
+
   private
+
+  def repair_content_blocks_identifier_platform_index
+    index_name = 'idx_bt_content_blocks_on_identifier_platform_id'
+    return unless table_exists?(:better_together_content_blocks)
+    return unless index_name_exists?(:better_together_content_blocks, index_name) ||
+                  column_exists?(:better_together_content_blocks, :platform_id)
+
+    remove_index :better_together_content_blocks, name: index_name, if_exists: true
+    add_index :better_together_content_blocks, %i[identifier platform_id], unique: true,
+                                                                           name: index_name,
+                                                                           where: CONTENT_BLOCKS_INDEX_PREDICATE,
+                                                                           if_not_exists: true
+  end
 
   def fetch_host_platform_id
     execute(
@@ -76,7 +99,7 @@ class BackfillPlatformIdPhase5 < ActiveRecord::Migration[7.2] # rubocop:disable 
     end
   end
 
-  def backfill_from_creator(table, owner_column, host_platform_id)
+  def backfill_from_creator(table, owner_column, host_platform_id) # rubocop:disable Metrics/MethodLength
     return unless table_exists?(table) && column_exists?(table, :platform_id)
 
     execute <<~SQL
@@ -97,7 +120,7 @@ class BackfillPlatformIdPhase5 < ActiveRecord::Migration[7.2] # rubocop:disable 
     SQL
   end
 
-  def backfill_calls_for_interest(host_platform_id)
+  def backfill_calls_for_interest(host_platform_id) # rubocop:disable Metrics/MethodLength
     table = 'better_together_calls_for_interest'
     return unless table_exists?(table) && column_exists?(table, :platform_id)
 
