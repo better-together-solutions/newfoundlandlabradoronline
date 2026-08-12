@@ -51,6 +51,29 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with(:truncation, except: %w[spatial_ref_sys])
 
     load BetterTogether::Engine.root.join('db', 'seeds.rb')
+
+    # seeds.rb intentionally defaults the host platform to privacy: 'private'
+    # (the safe default for a freshly bootstrapped production instance) --
+    # but PrivacyCeilingValidatable caps every wrapped platform/community's
+    # privacy at its own wrapping platform's privacy, so a private seeded
+    # host platform blocks any spec creating a public platform/community
+    # elsewhere in the suite. This runs once, outside any per-example
+    # transaction, so it persists for the whole run (unlike
+    # RequestSpecHelper#configure_host_platform's per-example fixup).
+    host_platform = BetterTogether::Platform.find_by(host: true)
+    if host_platform
+      # A host platform's ceiling is derived from its own primary community
+      # and vice versa -- genuinely circular for the one platform/community
+      # pair that wrap each other, and `belongs_to :community, autosave:
+      # true` cascades community's own save into platform.save! mid-
+      # transaction, so neither can be validated-and-saved in isolation
+      # first. update_columns bypasses validation for this one controlled
+      # test-suite bootstrap step (same escape hatch the CE gem's own
+      # backfill migrations use for equivalent chicken-and-egg cases).
+      host_platform.update_columns(privacy: 'public') unless host_platform.privacy == 'public'
+      community = host_platform.primary_community
+      community&.update_columns(privacy: 'public') if community && community.privacy != 'public'
+    end
   end
 
   # Default to transactions for fast non-JS specs
