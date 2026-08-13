@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/better-together-org/community-engine-rails.git
-  revision: 4ad9980eff63431d54d074eef5eab6bffae12678
-  ref: 4ad9980eff63431d54d074eef5eab6bffae12678
+  revision: c97fff6bc1c3399bc8419354cd5c54a0c20beae9
+  ref: c97fff6bc1c3399bc8419354cd5c54a0c20beae9
   specs:
     better_together (0.10.1)
       active_storage_svg_sanitizer
@@ -609,7 +609,7 @@ GEM
       activesupport (>= 3.0.0)
     raabro (1.5.0)
     racc (1.8.1)
-    rack (3.2.6)
+    rack (3.2.7)
     rack-attack (6.8.0)
       rack (>= 1.0, < 4)
     rack-cors (3.0.0)
