@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/better-together-org/community-engine-rails.git
-  revision: c97fff6bc1c3399bc8419354cd5c54a0c20beae9
-  ref: c97fff6bc1c3399bc8419354cd5c54a0c20beae9
+  revision: e8d7cc9f990cf49b6206356853d0e7d595e130ee
+  ref: e8d7cc9f990cf49b6206356853d0e7d595e130ee
   specs:
     better_together (0.10.1)
       active_storage_svg_sanitizer
@@ -144,7 +144,7 @@ GEM
       activemodel (= 8.0.5.1)
       activesupport (= 8.0.5.1)
       timeout (>= 0.4.0)
-    activerecord-import (2.2.0)
+    activerecord-import (2.3.0)
       activerecord (>= 4.2)
     activerecord-postgis-adapter (11.0.0)
       activerecord (~> 8.0.0)
