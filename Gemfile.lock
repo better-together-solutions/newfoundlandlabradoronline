@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/better-together-org/community-engine-rails.git
-  revision: e8d7cc9f990cf49b6206356853d0e7d595e130ee
-  ref: e8d7cc9f990cf49b6206356853d0e7d595e130ee
+  revision: 89bc3615043471dcb5a7a94ebda91b4b73e9154c
+  ref: 89bc3615043471dcb5a7a94ebda91b4b73e9154c
   specs:
     better_together (0.10.1)
       active_storage_svg_sanitizer
@@ -828,7 +828,7 @@ GEM
       activesupport (>= 3)
     shoulda-matchers (7.0.1)
       activesupport (>= 7.1)
-    sidekiq (8.1.6)
+    sidekiq (8.1.7)
       connection_pool (>= 3.0.0)
       json (>= 2.16.0)
       logger (>= 1.7.0)
