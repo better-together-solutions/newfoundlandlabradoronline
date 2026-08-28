@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/better-together-org/community-engine-rails.git
-  revision: 3cc89f0e82c33e6b9a3552f0296d8eed4a49c7f8
-  ref: 3cc89f0e82c33e6b9a3552f0296d8eed4a49c7f8
+  revision: 320cfcfe3080f1f0a6d7bf0e7e0a54bbfe5b1d71
+  ref: 320cfcfe3080f1f0a6d7bf0e7e0a54bbfe5b1d71
   specs:
     better_together (0.10.1)
       active_storage_svg_sanitizer
@@ -215,7 +215,7 @@ GEM
     bindex (0.8.1)
     binding_of_caller (2.0.0)
       debug_inspector (>= 1.2.0)
-    bootsnap (1.23.0)
+    bootsnap (1.24.6)
       msgpack (~> 1.2)
     bootstrap (5.3.8)
       popper_js (>= 2.11.8, < 3)
@@ -987,7 +987,7 @@ DEPENDENCIES
   web-console (>= 3.3.0)
 
 RUBY VERSION
-   ruby 3.4.4p34
+   ruby 3.4.10p104
 
 BUNDLED WITH
    2.6.7

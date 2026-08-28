@@ -7,7 +7,7 @@
 #   - nodejs/yarn in builder only (needed for ActionText/Trix assets), not runtime
 
 # Stage 1: Build libxml2
-FROM ruby:3.4.4-slim AS libxml2-bin
+FROM ruby:3.4.10-slim AS libxml2-bin
 
 RUN apt-get update -qq \
   && apt-get install -y --no-install-recommends \
@@ -26,7 +26,7 @@ RUN ./configure --prefix=/opt/libxml2 PYTHON=/usr/bin/python3 \
   && rm -rf /tmp/libxml2 /tmp/libxml2.tar.xz
 
 # Stage 2: Build environment
-FROM ruby:3.4.4-slim AS builder
+FROM ruby:3.4.10-slim AS builder
 
 RUN apt-get update -qq \
   && apt-get install -y --no-install-recommends \
@@ -62,7 +62,7 @@ RUN bundle exec rake assets:precompile
 # GIT_COMMIT is injected at build time: docker build --build-arg GIT_COMMIT=$(git rev-parse HEAD)
 ARG GIT_COMMIT=unknown
 
-FROM ruby:3.4.4 AS app-host
+FROM ruby:3.4.10 AS app-host
 
 RUN apt-get update -qq \
   && apt-get install -y --no-install-recommends \
