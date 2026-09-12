@@ -421,13 +421,14 @@ GEM
       i18n
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
-    i18n-tasks (1.0.15)
+    i18n-tasks (1.1.2)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
       erubi
-      highline (>= 2.0.0)
+      highline (>= 3.0.0)
       i18n
       parser (>= 3.2.2.1)
+      prism
       rails-i18n
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.8, >= 1.8.1)
@@ -510,8 +511,6 @@ GEM
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
     mime-types-data (3.2026.0701)
-    mini_magick (5.3.1)
-      logger
     mini_mime (1.1.5)
     minitest (6.0.6)
       drb (~> 2.0)
@@ -962,17 +961,17 @@ DEPENDENCIES
   faker
   fog-aws
   fuubar
-  i18n-tasks (~> 1.0.15)
+  i18n-tasks (~> 1.1.2)
   i18n_generators
   listen (>= 3.0.5, < 3.11)
   ostruct
   pg (>= 0.18, < 2.0)
   pry
-  puma (~> 7.0)
+  puma (~> 8.0)
   pundit-resources (~> 1.1.6)!
   rack-mini-profiler
   rack-protection
-  rails (~> 8.0.4)
+  rails (~> 8.0.5)
   rb-readline
   rbtrace
   redis (~> 5.4)
