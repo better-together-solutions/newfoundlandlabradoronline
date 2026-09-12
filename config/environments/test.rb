@@ -7,6 +7,7 @@ require 'active_support/core_ext/integer/time'
 # your test database is "scratch space" for the test suite and is wiped
 # and recreated between test runs. Don't rely on the data there!
 
+# rubocop:disable Metrics/BlockLength
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -61,6 +62,12 @@ Rails.application.configure do
   # config.action_view.annotate_rendered_view_with_filenames = true
 
   # Allows unencrypted values to be store in encrypted columns for transitioning
+  config.active_record.encryption.primary_key =
+    ENV.fetch('ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY', '12345678901234567890123456789012')
+  config.active_record.encryption.deterministic_key =
+    ENV.fetch('ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY', '12345678901234567890123456789012')
+  config.active_record.encryption.key_derivation_salt =
+    ENV.fetch('ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT', '12345678901234567890123456789012')
   config.active_record.encryption.support_unencrypted_data = true
   config.active_record.encryption.extend_queries = true
 
@@ -70,3 +77,4 @@ Rails.application.configure do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength
