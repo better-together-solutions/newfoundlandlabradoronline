@@ -19,7 +19,7 @@ module BetterTogether
       @logger = logger
     end
 
-    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable-next Metrics/AbcSize
     def call
       raise CleanupError, 'No target person IDs were provided.' if person_ids.empty?
 
@@ -34,7 +34,6 @@ module BetterTogether
         results: person_ids.map { |person_id| inspect_or_cleanup(people.fetch(person_id)) }
       }
     end
-    # rubocop:enable Metrics/AbcSize
 
     private
 
@@ -48,7 +47,7 @@ module BetterTogether
       BetterTogether::Person.includes(:user, :community).where(id: person_ids).index_by(&:id)
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength
     def inspect_or_cleanup(person)
       snapshot = snapshot_for(person)
       preflight_errors = preflight_errors_for(person, snapshot)
@@ -79,9 +78,8 @@ module BetterTogether
       log_verification(result)
       result
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength
     def snapshot_for(person)
       community_id = person.community_id
 
@@ -105,9 +103,8 @@ module BetterTogether
         webhook_endpoint_count: BetterTogether::WebhookEndpoint.where(community_id: community_id).count
       }
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+    # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
     def preflight_errors_for(person, snapshot)
       errors = []
       community_id = snapshot[:community_id]
@@ -132,7 +129,6 @@ module BetterTogether
 
       errors
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
     def non_target_members?(community_id, allowed_ids)
       BetterTogether::PersonCommunityMembership.where(joinable_id: community_id)
@@ -189,7 +185,7 @@ module BetterTogether
       Noticed::Event.where(id: event_ids).delete_all
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength
     def verification_for(person_id:, community_id:)
       {
         person_exists: BetterTogether::Person.exists?(id: person_id),
@@ -213,7 +209,6 @@ module BetterTogether
         remaining_webhook_endpoints_for_community: BetterTogether::WebhookEndpoint.where(community_id:).count
       }
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def remaining_contact_details(person_id)
       BetterTogether::ContactDetail.where(

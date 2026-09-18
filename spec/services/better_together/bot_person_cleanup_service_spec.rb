@@ -16,7 +16,7 @@ RSpec.describe BetterTogether::BotPersonCleanupService do
   let(:write_enable) { false }
 
   describe '#call' do
-    # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+    # rubocop:disable-next RSpec/ExampleLength, RSpec/MultipleExpectations
     it 'reports a dry run without deleting the target person' do
       person = BetterTogether::Person.create!(name: 'Bot Cleanup Target', identifier: 'bot-cleanup-target')
       person.community.update!(creator_id: person.id)
@@ -27,7 +27,6 @@ RSpec.describe BetterTogether::BotPersonCleanupService do
       expect(BetterTogether::Person.exists?(id: person.id)).to be(true)
       expect(BetterTogether::Community.exists?(id: person.community_id)).to be(true)
     end
-    # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
 
     it 'fails preflight when the target person has contact email addresses' do
       person = BetterTogether::Person.create!(name: 'Bot With Email', identifier: 'bot-with-email')
@@ -39,7 +38,7 @@ RSpec.describe BetterTogether::BotPersonCleanupService do
       expect(result[:results].first[:preflight_errors]).to include(described_class::BOT_EMAIL_ERROR)
     end
 
-    # rubocop:disable RSpec/ExampleLength
+    # rubocop:disable-next RSpec/ExampleLength
     it 'fails preflight when the target community has non-target members' do
       community_role = BetterTogether::Role.where(resource_type: 'BetterTogether::Community').first!
       target_person = BetterTogether::Person.create!(name: 'Bot Community Owner', identifier: 'bot-community-owner')
@@ -57,9 +56,8 @@ RSpec.describe BetterTogether::BotPersonCleanupService do
 
       expect(result[:results].first[:preflight_errors]).to include('community has non-target members')
     end
-    # rubocop:enable RSpec/ExampleLength
 
-    # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+    # rubocop:disable-next RSpec/ExampleLength, RSpec/MultipleExpectations
     it 'destroys the target person and primary community when write is enabled' do
       person = BetterTogether::Person.create!(name: 'Disposable Bot', identifier: 'disposable-bot')
       person.community.update!(creator_id: person.id)
@@ -97,6 +95,5 @@ RSpec.describe BetterTogether::BotPersonCleanupService do
       expect(BetterTogether::Person.exists?(id: person.id)).to be(false)
       expect(BetterTogether::Community.exists?(id: community_id)).to be(false)
     end
-    # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
   end
 end
