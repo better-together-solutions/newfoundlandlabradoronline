@@ -1,0 +1,9 @@
+{
+  "ignored_warnings": [
+    {
+      "fingerprint": "98b26f60d776fd41ee6f088c833725145be9aac2d7c5b33780241c273622db42",
+      "note": "EOLRails: Rails 8.0.5.1 EOL is 2026-10-07. Not an actionable code defect; this is Brakeman's own time-triggered warning window, not something introduced by any app code change. brakeman exits nonzero on any warning by default (confirmed: exit code 3 with just -q -w2, no -z needed), so this blocks CI for every PR until Rails is upgraded past 8.0.x or this is silenced. Re-evaluate once that upgrade happens. Same fingerprint independently confirmed in better-together-org/community-engine-rails's own brakeman.ignore for the identical warning."
+    }
+  ],
+  "brakeman_version": "8.0.4"
+}

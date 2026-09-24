@@ -18,21 +18,19 @@ jobs:
           POSTGRES_DB: rails_test
           POSTGRES_USER: rails
           POSTGRES_PASSWORD: password
-      elasticsearch:
-        image: elasticsearch:7.17.23
+      redis:
+        image: redis:7.2-alpine
         ports:
-          - "9200:9200"
-        env:
-          "node.name": elasticsearch
-          "cluster.name": better-together-es
-          "discovery.seed_hosts": elasticsearch
-          "discovery.type": single-node
-          "bootstrap.memory_lock": true
-          "ES_JAVA_OPTS": "-Xms512m -Xmx512m"
+          - "6379:6379"
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     env:
       RAILS_ENV: test
       DATABASE_URL: "postgis://rails:password@localhost:5432/rails_test"
-      ES_HOST: "http://localhost"
+      REDIS_URL: "redis://localhost:6379"
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -61,6 +59,18 @@ jobs:
           bundler-cache: true
       - name: Lint Ruby files with Rubocop
         run: bundle exec rubocop --parallel
+
+  i18n-health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Run i18n health checks
+        run: bundle exec i18n-tasks health
 
   security:
     runs-on: ubuntu-latest
