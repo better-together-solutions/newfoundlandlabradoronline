@@ -46,7 +46,7 @@ gem 'rails', '~> 8.1.0'
 # fine at bundle-install time but raises Gem::LoadError the first time
 # ActionCable actually requires that file, e.g. on every channel unsubscribe.
 # Nothing here needs redis 6.x (sidekiq only requires redis-client >= 0.29.0).
-gem 'redis', '~> 5.4'
+gem 'redis', '~> 6.0'
 
 # Sidekiq for background processing
 gem 'sidekiq', '~> 8.1.7'
