@@ -42,8 +42,8 @@ gem 'rails', '~> 8.1.0'
 
 # Redis for ActionCable and background jobs.
 # The allowed redis range comes from Rails' actioncable (subscription_adapter/redis.rb):
-# Rails <= 8.0 requires redis < 6; Rails >= 8.1 allows < 7. Re-check it when Rails changes
-# (bundle exec gem contents actioncable | grep adapter/redis.rb).
+# Rails <= 8.0 and 8.1.0-8.1.3 require redis < 6; Rails >= 8.1.4 allows < 7. Re-check it
+# when Rails changes (bundle exec gem contents actioncable | grep adapter/redis.rb).
 gem 'redis', '~> 6.0'
 
 # Sidekiq for background processing
