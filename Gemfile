@@ -11,7 +11,7 @@ gem 'aws-sdk-s3', require: false
 # Use the published version of better_together for production
 gem 'better_together', '~> 0.10',
     github: 'better-together-org/community-engine-rails',
-    ref: '8956a28ff86352d3890e99baf653c7e143cb021f'
+    ref: 'dfad67df6da492ecb56b06a064c4386368f25c44'
 
 # Use the local development version of better_together
 # gem 'better_together', path: '/community-engine'
@@ -40,12 +40,10 @@ gem 'rack-mini-profiler'
 
 gem 'rails', '~> 8.1.0'
 
-# Redis for ActionCable and background jobs
-# Rails' actioncable hardcodes `gem "redis", ">= 4", "< 6"` in its own redis
-# pubsub adapter (action_cable/subscription_adapter/redis.rb) -- 6.0 activates
-# fine at bundle-install time but raises Gem::LoadError the first time
-# ActionCable actually requires that file, e.g. on every channel unsubscribe.
-# Nothing here needs redis 6.x (sidekiq only requires redis-client >= 0.29.0).
+# Redis for ActionCable and background jobs.
+# The allowed redis range comes from Rails' actioncable (subscription_adapter/redis.rb):
+# Rails <= 8.0 requires redis < 6; Rails >= 8.1 allows < 7. Re-check it when Rails changes
+# (bundle exec gem contents actioncable | grep adapter/redis.rb).
 gem 'redis', '~> 6.0'
 
 # Sidekiq for background processing
