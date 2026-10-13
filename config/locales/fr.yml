@@ -65,6 +65,9 @@ fr:
       remove: Retirer du parcours
   journeys:
     title: Mon parcours
+  newfoundland_labrador_online:
+    posts:
+      short_badge: Court
   time:
     am: am
     formats:

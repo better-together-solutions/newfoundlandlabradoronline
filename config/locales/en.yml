@@ -65,6 +65,9 @@ en:
       remove: Remove from Journey
   journeys:
     title: My Journey
+  newfoundland_labrador_online:
+    posts:
+      short_badge: Short
   time:
     am: am
     formats:

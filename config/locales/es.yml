@@ -65,6 +65,9 @@ es:
       remove: Eliminar del Viaje
   journeys:
     title: Mi Viaje
+  newfoundland_labrador_online:
+    posts:
+      short_badge: Corto
   time:
     am: am
     formats:
