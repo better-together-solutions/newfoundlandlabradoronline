@@ -5,11 +5,15 @@ module NewfoundlandLabradorOnline
   # Corner Brook Online publisher needs that CE does not yet expose. Remove the parts
   # CE ships natively (see docs/ce-api-mcp-discrepancies-*.md in management-tool).
   module PostResourceExtension
-    EXTRA_FIELDS = %i[community_id published_at video_block_id category_identifiers contributor_specs].freeze
+    EXTRA_FIELDS = %i[
+      community_id published_at video_block_id category_identifiers contributor_specs
+      cover_image_data cover_image_filename
+    ].freeze
     CREATE_ONLY_FIELDS = %i[contributor_specs video_block_id].freeze
 
     def self.prepended(base)
-      base.attributes :community_id, :video_block_id, :category_identifiers, :contributor_specs
+      base.attributes :community_id, :video_block_id, :category_identifiers, :contributor_specs,
+                      :cover_image_data, :cover_image_filename
       base.singleton_class.prepend(ClassMethods)
     end
 
@@ -24,9 +28,10 @@ module NewfoundlandLabradorOnline
       end
     end
 
-    # video_block_id only attaches the block when the post is created, so it is never returned.
+    # Write-only inputs: video_block_id attaches the block at creation and the cover image fields
+    # attach the image, so none of them is returned (cover_image_url shows the result).
     def fetchable_fields
-      super - %i[video_block_id]
+      super - %i[video_block_id cover_image_data cover_image_filename]
     end
   end
 end

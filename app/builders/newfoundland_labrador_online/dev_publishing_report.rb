@@ -13,6 +13,7 @@ module NewfoundlandLabradorOnline
     def entry(post)
       post.slice(:identifier, :title, :privacy).symbolize_keys.merge(
         published: post.published_at.present?, community: post.community&.identifier,
+        cover: (post.cover_image.content_type if post.cover_image.attached?),
         categories: post.categories.map(&:identifier).sort, contributors: contributors(post), blocks: blocks(post)
       )
     end

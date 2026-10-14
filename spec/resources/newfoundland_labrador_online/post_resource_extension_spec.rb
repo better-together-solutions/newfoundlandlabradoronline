@@ -11,6 +11,12 @@ RSpec.describe NewfoundlandLabradorOnline::PostResourceExtension do
     )
   end
 
+  it 'accepts the cover image fields on create and update but never returns them', :aggregate_failures do
+    expect(resource.creatable_fields({})).to include(:cover_image_data, :cover_image_filename)
+    expect(resource.updatable_fields({})).to include(:cover_image_data, :cover_image_filename)
+    expect(resource.new(BetterTogether::Post.new, {}).fetchable_fields).not_to include(:cover_image_data)
+  end
+
   it 'keeps slug read-only' do
     expect(resource.creatable_fields({})).not_to include(:slug)
   end

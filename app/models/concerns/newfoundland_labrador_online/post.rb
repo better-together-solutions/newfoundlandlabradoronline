@@ -7,6 +7,7 @@ module NewfoundlandLabradorOnline
     extend ActiveSupport::Concern
 
     include NewfoundlandLabradorOnline::PostVideo
+    include NewfoundlandLabradorOnline::PostCoverImage
 
     included do
       validate :category_identifiers_must_exist
