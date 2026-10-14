@@ -10,7 +10,14 @@ module NewfoundlandLabradorOnline
     SOURCES = {
       'corner-brook' => ENV.fetch('LIVE_IMAGE_CORNER_BROOK_URL', 'https://ai.btsdev.ca/webhook/timelapse-current')
     }.freeze
-    COMMUNITIES = { 'corner-brook-online' => 'corner-brook' }.freeze
+    # Records that show a camera, by model and identifier.
+    RECORDS = {
+      'BetterTogether::Community' => { 'corner-brook-online' => 'corner-brook' },
+      'BetterTogether::Geography::Settlement' => { 'corner-brook' => 'corner-brook' }
+    }.freeze
+    WIDTH = 1920
+    HEIGHT = 1080
+    TOP_OFFSET = 0.03 # share of the frame height skipped at the top, as for the post covers
     FRESH_FOR = 60.seconds
     MAX_BYTES = 8.megabytes
     OPEN_TIMEOUT = 3
@@ -18,8 +25,8 @@ module NewfoundlandLabradorOnline
     Frame = Struct.new(:bytes, :fetched_at, :etag)
 
     class << self
-      def slug_for(community)
-        COMMUNITIES[community&.identifier]
+      def slug_for(record)
+        RECORDS.dig(record.class.name, record.try(:identifier))
       end
 
       def known?(slug)
@@ -64,7 +71,8 @@ module NewfoundlandLabradorOnline
         response.body
       end
 
-      # Only a real JPEG or PNG is kept; the frame is cropped to 16:9 (top anchored, keeps the sky) and downsized.
+      # Only a real JPEG or PNG is kept; the frame gets the same 16:9 crop as the post covers (full width,
+      # a little off the top, roof edge excluded), is resized to 1920x1080 and compressed.
       def process(bytes)
         type = Marcel::MimeType.for(StringIO.new(bytes))
         raise "unexpected content type #{type}" unless %w[image/jpeg image/png].include?(type)
@@ -72,9 +80,24 @@ module NewfoundlandLabradorOnline
         Tempfile.create(['live', '.img'], binmode: true) do |source|
           source.write(bytes)
           source.flush
-          pipeline = ImageProcessing::Vips.source(source.path).resize_to_fill(1280, 720, crop: :low)
-          File.binread(pipeline.convert('jpg').saver(quality: 82, strip: true).call.path)
+          render(source.path)
         end
+      end
+
+      def render(path)
+        pipeline = ImageProcessing::Vips.source(path).crop(*crop_box(path)).resize_to_fill(WIDTH, HEIGHT).convert('jpg')
+        File.binread(pipeline.saver(quality: 80, strip: true, interlace: true).call.path)
+      end
+
+      # [left, top, width, height] of the 16:9 crop, matching the timelapse project's cover crop.
+      def crop_box(path)
+        image = Vips::Image.new_from_file(path)
+        width = image.width
+        height = image.height
+        return [0, 0, (height * 16.0 / 9).round, height] if height * 16 < width * 9
+
+        crop_height = (width * 9.0 / 16).round
+        [0, [(height * TOP_OFFSET).floor, height - crop_height].min, width, crop_height]
       end
     end
   end

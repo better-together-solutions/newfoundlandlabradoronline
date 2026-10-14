@@ -33,25 +33,49 @@ RSpec.describe NewfoundlandLabradorOnline::LiveImage do
     end
   end
 
-  it 'knows the Corner Brook Online community and no other', :aggregate_failures do
-    community = ->(identifier) { instance_double(BetterTogether::Community, identifier:) }
+  it 'knows the Corner Brook Online community and the Corner Brook settlement, and no others', :aggregate_failures do
+    community = ->(identifier) { BetterTogether::Community.new(identifier:) }
+    settlement = ->(identifier) { BetterTogether::Geography::Settlement.new(identifier:) }
 
     expect(described_class.slug_for(community.call('corner-brook-online'))).to eq('corner-brook')
-    expect(described_class.slug_for(community.call('other'))).to be_nil
-    expect(described_class.slug_for(nil)).to be_nil
+    expect(described_class.slug_for(settlement.call('corner-brook'))).to eq('corner-brook')
+    expect([described_class.slug_for(community.call('corner-brook')), described_class.slug_for(nil)]).to eq([nil, nil])
   end
 
   it 'returns nothing for an unknown slug' do
     expect(described_class.frame('nowhere')).to be_nil
   end
 
-  it 'fetches a frame and crops it to a 1280x720 JPEG', :aggregate_failures do
+  it 'fetches a frame and makes it a 1920x1080 JPEG', :aggregate_failures do
     stub_source(ok)
     frame = described_class.frame('corner-brook')
     image = Vips::Image.new_from_buffer(frame.bytes, '')
 
     expect(Marcel::MimeType.for(StringIO.new(frame.bytes))).to eq('image/jpeg')
-    expect([image.width, image.height, frame.etag.present?]).to eq([1280, 720, true])
+    expect([image.width, image.height, frame.etag.present?]).to eq([1920, 1080, true])
+  end
+
+  it 'compresses the frame well under the cover size limit' do
+    stub_source(ok)
+
+    expect(described_class.frame('corner-brook').bytes.bytesize).to be < 700_000
+  end
+
+  describe 'the 16:9 crop' do
+    def crop_of(width, height)
+      Tempfile.create(['frame', '.png']) do |file|
+        Vips::Image.black(width, height).write_to_file(file.path)
+        described_class.send(:crop_box, file.path)
+      end
+    end
+
+    it 'takes full width, 3 percent off the top, like the post covers' do
+      expect(crop_of(3280, 2464)).to eq([0, 73, 3280, 1845])
+    end
+
+    it 'keeps the full height of a frame wider than 16:9' do
+      expect(crop_of(2000, 500)).to eq([0, 0, 889, 500])
+    end
   end
 
   it 'serves the cached frame within a minute without another request', :aggregate_failures do

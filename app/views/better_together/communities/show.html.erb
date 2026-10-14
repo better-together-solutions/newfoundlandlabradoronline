@@ -1,4 +1,4 @@
-<%# Copied from community-engine-rails dfad67df6da4 (app/views/better_together/communities/show.html.erb). The only change is the live image card below; re-diff when the CE pin moves. -%>
+<%# Copied from community-engine-rails dfad67df6da4 (app/views/better_together/communities/show.html.erb). The only change is the live image card in the About section; re-diff when the CE pin moves. -%>
 <% content_for :page_title do %>
   <%= @resource.name %> | <%= resource_class.model_name.human.pluralize %>
 <% end %>
@@ -60,9 +60,6 @@
                  open_membership_request_count: @open_membership_request_count %>
     <% end %>
 
-    <% live_slug = NewfoundlandLabradorOnline::LiveImage.slug_for(@resource) %>
-    <%= render 'newfoundland_labrador_online/live_images/card', slug: live_slug, title: @resource.name if live_slug %>
-
     <!-- Community tabbed section with members -->
     <section class="card tabbed-section">
       <div class="card-header">
@@ -94,6 +91,9 @@
             <p class="card-text text-muted">
               <%= @resource.description.presence || t('better_together.communities.show.about.no_description') %>
             </p>
+
+            <% live_slug = NewfoundlandLabradorOnline::LiveImage.slug_for(@resource) %>
+            <%= render 'newfoundland_labrador_online/live_images/card', slug: live_slug, title: @resource.name if live_slug %>
 
             <%= render partial: 'better_together/contact_details/about_section', locals: { contactable: @resource } %>
 
