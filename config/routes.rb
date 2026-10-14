@@ -2,6 +2,8 @@
 
 Rails.application.routes.draw do
   get 'healthcheck', to: 'healthcheck#index'
+  get 'live/:slug.jpg', to: 'newfoundland_labrador_online/live_images#show',
+                        constraints: { slug: /[a-z-]+/ }, format: false
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   scope ':locale',

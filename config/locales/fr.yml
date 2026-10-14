@@ -68,6 +68,10 @@ fr:
   newfoundland_labrador_online:
     image_blocks:
       preview: 'Image : %{caption}'
+    live_images:
+      alt: Dernière image de la caméra sur %{name}
+      title: "%{name} en direct"
+      updated: Mise à jour
     robots:
       avatar_label: Auteur robot
     video_blocks:
