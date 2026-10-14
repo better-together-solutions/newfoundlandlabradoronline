@@ -51,7 +51,7 @@ RSpec.describe NewfoundlandLabradorOnline::Post do
   end
 
   describe '#category_identifiers=' do
-    before { NewfoundlandLabradorOnline::VideoCategories.seed!(platform:) }
+    before { NewfoundlandLabradorOnline::VideoCategoryBuilder.seed_data(platform:) }
 
     it 'assigns categories by identifier', :aggregate_failures do
       post.category_identifiers = %w[timelapse daily-timelapse]
