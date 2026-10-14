@@ -1,0 +1,10 @@
+<%# locals: (image:, in_gallery: false) -%>
+<%# Action Text passes the attachment, whose own #caption is not the block's caption. -%>
+<% block = image.try(:attachable) || image %>
+<figure class="post-image mb-4">
+  <%= image_tag rails_storage_proxy_path(block.media), class: 'img-fluid w-100',
+                alt: block.alt_text.presence || block.caption, loading: 'lazy' %>
+  <% if block.caption.present? %>
+    <figcaption class="post-image__caption text-muted small mt-1"><%= block.caption %></figcaption>
+  <% end %>
+</figure>

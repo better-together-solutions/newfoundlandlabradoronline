@@ -30,6 +30,9 @@ How a host app adds a new kind of embedded content to CE's Trix editor and to re
 | Scoped iframe scrubber | `app/models/concerns/newfoundland_labrador_online/video_block_scrubber.rb` |
 | Post attaches an existing block by `video_block_id` | `app/models/concerns/newfoundland_labrador_online/post_video.rb` |
 | Partials | `app/views/newfoundland_labrador_online/video_blocks/` |
+| Attachable image block, base64 `media_data`, required caption | `app/models/concerns/newfoundland_labrador_online/image_block.rb`, partials in `app/views/newfoundland_labrador_online/image_blocks/` |
+| Block API input (`media_data`, `media_filename`) | `app/resources/newfoundland_labrador_online/block_resource_extension.rb` |
+| Posts attach blocks at creation (`video_block_id`, `attachment_block_ids`) | `app/models/concerns/newfoundland_labrador_online/post_video.rb` |
 | Wiring | `config/initializers/better_together_models.rb` |
 
 ## Gotchas found
@@ -41,6 +44,9 @@ How a host app adds a new kind of embedded content to CE's Trix editor and to re
 - Setting `ActionText::ContentHelper.scrubber` is global to all rich text rendering.
 - Blocks cannot be more open than the platform. Specs for public blocks set `seed_privacy_ceiling_exempt`.
 - A block renders only when public and visible. Blocks are independent records (created through the blocks API), so publish the block as public for a public post.
+
+- Action Text hands the partial an `ActionText::Attachment`, not the block, and the attachment has its own `#caption` that is nil. Read the block with `image.try(:attachable)` before using `caption`, `alt_text` and other block attributes.
+- The blocks API cannot upload files. Image blocks are created with base64 `media_data` (JPEG, PNG or WebP, 5 MB) and need a caption. Send `block_type` before `media_data`.
 
 ## Upstream
 

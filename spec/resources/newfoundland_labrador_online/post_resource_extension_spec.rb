@@ -17,6 +17,12 @@ RSpec.describe NewfoundlandLabradorOnline::PostResourceExtension do
     expect(resource.new(BetterTogether::Post.new, {}).fetchable_fields).not_to include(:cover_image_data)
   end
 
+  it 'accepts the attachment block ids on create only and never returns them', :aggregate_failures do
+    expect(resource.creatable_fields({})).to include(:attachment_block_ids)
+    expect(resource.updatable_fields({})).not_to include(:attachment_block_ids)
+    expect(resource.new(BetterTogether::Post.new, {}).fetchable_fields).not_to include(:attachment_block_ids)
+  end
+
   it 'keeps slug read-only' do
     expect(resource.creatable_fields({})).not_to include(:slug)
   end

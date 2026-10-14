@@ -10,13 +10,14 @@ module NewfoundlandLabradorOnline
       'daily-timelapse' => { en: 'Daily Timelapse', fr: 'Timelapse quotidien' },
       'monthly-timelapse' => { en: 'Monthly Timelapse', fr: 'Timelapse mensuel' },
       'annual-timelapse' => { en: 'Annual Timelapse', fr: 'Timelapse annuel' },
-      'shorts' => { en: 'Shorts', fr: 'Shorts' }
+      'shorts' => { en: 'Shorts', fr: 'Shorts' },
+      'sky' => { en: 'Sky', fr: 'Ciel' }
     }.freeze
 
     class << self
       # Category identifiers for a video post (kind: daily/monthly/annual, orientation: landscape/portrait).
       def identifiers_for(kind:, orientation:)
-        ids = ['timelapse', "#{kind}-timelapse"]
+        ids = ['timelapse', "#{kind}-timelapse", 'sky']
         ids << 'shorts' if orientation.to_s == 'portrait'
         ids
       end
