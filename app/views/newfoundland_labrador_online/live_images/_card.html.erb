@@ -1,4 +1,5 @@
 <%# locals: (slug:, title:) -%>
+<% captured_at = NewfoundlandLabradorOnline::LiveImage.peek(slug)&.captured_at %>
 <section class="card mb-3 live-image" id="live-image-<%= slug %>" aria-labelledby="live-image-title-<%= slug %>">
   <div class="card-body p-2">
     <h2 class="h6 mb-2" id="live-image-title-<%= slug %>"><%= t('newfoundland_labrador_online.live_images.title', name: title) %></h2>
@@ -6,7 +7,7 @@
       <img src="/live/<%= slug %>.jpg?t=<%= Time.current.to_i / 60 %>" class="img-fluid w-100 rounded" width="1280" height="720"
            alt="<%= t('newfoundland_labrador_online.live_images.alt', name: title) %>" data-live-image-target="image">
       <figcaption class="small text-muted mt-1">
-        <%= t('newfoundland_labrador_online.live_images.updated') %> <time data-live-image-target="time"></time>
+        <%= t('newfoundland_labrador_online.live_images.updated') %> <time data-live-image-target="time"<% if captured_at %> datetime="<%= captured_at.iso8601 %>"<% end %>><%= captured_at&.strftime('%-l:%M %p %Z') %></time>
       </figcaption>
     </figure>
   </div>

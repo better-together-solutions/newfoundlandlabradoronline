@@ -16,6 +16,16 @@ RSpec.describe NewfoundlandLabradorOnline::LiveImagesController, type: :request 
     expect(response.headers['Last-Modified']).to be_present
   end
 
+  it 'reports when the camera took the frame, not when it was fetched', :aggregate_failures do
+    taken = Time.find_zone('America/St_Johns').local(2026, 10, 14, 18, 44, 45)
+    allow(live_image).to receive(:frame).and_return(live_image::Frame.new('jpegbytes', Time.zone.now, 'abc123', taken))
+
+    get '/live/corner-brook.jpg'
+
+    expect(response.headers['X-Frame-Captured-At']).to eq(taken.iso8601)
+    expect(response.headers['Last-Modified']).to eq(taken.httpdate)
+  end
+
   it 'marks the frame as briefly cacheable by browsers and CDNs' do
     allow(live_image).to receive(:frame).and_return(frame)
 

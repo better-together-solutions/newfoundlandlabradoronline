@@ -55,6 +55,33 @@ RSpec.describe NewfoundlandLabradorOnline::LiveImage do
     expect([image.width, image.height, frame.etag.present?]).to eq([1920, 1080, true])
   end
 
+  describe 'capture time' do
+    let(:with_exif) { File.binread(Rails.root.join('spec/fixtures/files/frame_with_exif.jpg')) }
+
+    it 'is read from the EXIF DateTimeOriginal in camera local time' do
+      stub_source(success(with_exif))
+
+      expected = Time.find_zone('America/St_Johns').local(2026, 10, 14, 18, 44, 45)
+
+      expect(described_class.frame('corner-brook').captured_at).to eq(expected)
+    end
+
+    it 'is nil when the frame has no EXIF' do
+      stub_source(ok)
+
+      expect(described_class.frame('corner-brook').captured_at).to be_nil
+    end
+  end
+
+  it 'peeks at the cache without fetching', :aggregate_failures do
+    expect(described_class.peek('corner-brook')).to be_nil
+    stub_source(ok)
+    described_class.frame('corner-brook')
+
+    expect(described_class.peek('corner-brook')).to be_present
+    expect(Net::HTTP).to have_received(:start).once
+  end
+
   it 'compresses the frame well under the cover size limit' do
     stub_source(ok)
 

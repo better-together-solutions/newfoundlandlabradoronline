@@ -71,7 +71,7 @@ fr:
     live_images:
       alt: Dernière image de la caméra sur %{name}
       title: "%{name} en direct"
-      updated: Mise à jour
+      updated: Photo prise à
     robots:
       avatar_label: Auteur robot
     video_blocks:

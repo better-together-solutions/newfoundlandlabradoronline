@@ -22,7 +22,8 @@ module NewfoundlandLabradorOnline
     MAX_BYTES = 8.megabytes
     OPEN_TIMEOUT = 3
     READ_TIMEOUT = 8
-    Frame = Struct.new(:bytes, :fetched_at, :etag)
+    CAMERA_ZONE = 'America/St_Johns' # the camera clock is local time
+    Frame = Struct.new(:bytes, :fetched_at, :etag, :captured_at)
 
     class << self
       def slug_for(record)
@@ -31,6 +32,11 @@ module NewfoundlandLabradorOnline
 
       def known?(slug)
         SOURCES.key?(slug)
+      end
+
+      # The cached frame without fetching anything (for page rendering); nil when nothing is cached.
+      def peek(slug)
+        Rails.cache.read(key(slug)) if known?(slug)
       end
 
       # The cached frame, refreshed when older than FRESH_FOR; nil when nothing has ever been fetched.
@@ -50,12 +56,21 @@ module NewfoundlandLabradorOnline
       end
 
       def refresh(slug)
-        bytes = process(download(SOURCES.fetch(slug)))
-        frame = Frame.new(bytes, Time.current, Digest::SHA1.hexdigest(bytes))
+        original = download(SOURCES.fetch(slug))
+        bytes = process(original)
+        frame = Frame.new(bytes, Time.current, Digest::SHA1.hexdigest(bytes), captured_at(original))
         Rails.cache.write(key(slug), frame, expires_in: 1.day)
         frame
       rescue StandardError => e
         Rails.logger.warn("live image #{slug} not refreshed: #{e.class}: #{e.message}")
+        nil
+      end
+
+      # When the camera took the frame, from the EXIF DateTimeOriginal of the original; nil if it has none.
+      def captured_at(original)
+        stamp = Vips::Image.new_from_buffer(original, '').get('exif-ifd2-DateTimeOriginal').to_s.strip.split(' (').first
+        Time.find_zone!(CAMERA_ZONE).strptime(stamp, '%Y:%m:%d %H:%M:%S')
+      rescue StandardError
         nil
       end
 

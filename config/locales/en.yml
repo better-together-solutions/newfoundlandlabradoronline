@@ -71,7 +71,7 @@ en:
     live_images:
       alt: Latest camera image over %{name}
       title: "%{name} right now"
-      updated: Updated
+      updated: Photo taken
     robots:
       avatar_label: Robot author
     video_blocks:
