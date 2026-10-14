@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module NewfoundlandLabradorOnline
-  # Seeds the categories used by timelapse video posts (Shorts, the portrait videos, form their
-  # own group). Idempotent; run with `NewfoundlandLabradorOnline::VideoCategoryBuilder.build`
+  # Seeds the categories used by timelapse video and sky posts (Shorts, the portrait videos, form their
+  # own group). Idempotent and additive: existing categories are never changed; run with `NewfoundlandLabradorOnline::VideoCategoryBuilder.build`
   # or `rake nlo:categories:seed_video`.
   class VideoCategoryBuilder < ::BetterTogether::Builder
     DEFINITIONS = {
@@ -33,11 +33,14 @@ module NewfoundlandLabradorOnline
 
       private
 
+      # Existing categories are returned untouched (names and settings may have been edited since),
+      # so a re-run only adds the categories that are missing.
       def seed_category(identifier, names, platform)
-        category = ::BetterTogether::Category.find_or_initialize_by(identifier:, platform:)
-        category.type ||= '::BetterTogether::Category'
-        category.protected = true
-        category.privacy = 'public'
+        existing = ::BetterTogether::Category.find_by(identifier:, platform:)
+        return existing if existing
+
+        category = ::BetterTogether::Category.new(identifier:, platform:, type: '::BetterTogether::Category',
+                                                  protected: true, privacy: 'public')
         names.each { |locale, name| Mobility.with_locale(locale) { category.name = name } }
         category.save!
         category
