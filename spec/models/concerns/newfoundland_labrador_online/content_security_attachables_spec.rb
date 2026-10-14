@@ -84,6 +84,21 @@ RSpec.describe NewfoundlandLabradorOnline::ContentSecurityAttachables do
       expect(html).not_to include('held-review')
     end
 
+    it 'serves the image from this host even when an asset host is configured', :aggregate_failures do
+      allow(ActionController::Base).to receive(:asset_host).and_return('https://cdn.example.test')
+      html = render_content(ActionText::Content.new(ActionText::Attachment.from_attachable(image).to_html))
+
+      expect(html).to include('src="/rails/active_storage/blobs/proxy/')
+      expect(html).not_to include('cdn.example.test')
+    end
+
+    it 'renders without the route helpers of a web controller (the API renders post content)' do
+      content = ActionText::Content.new(ActionText::Attachment.from_attachable(image).to_html)
+      html = ApplicationController.render(inline: '<%= render_action_text_content(c) %>', locals: { c: content })
+
+      expect(html).to include('<img', 'Noon, 12:00')
+    end
+
     it 'holds images that are not public' do
       image.update!(privacy: 'private')
       html = render_content(ActionText::Content.new(ActionText::Attachment.from_attachable(image).to_html))

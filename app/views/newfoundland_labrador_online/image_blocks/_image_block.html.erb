@@ -1,9 +1,11 @@
 <%# locals: (image:, in_gallery: false) -%>
 <%# Action Text passes the attachment, whose own #caption is not the block's caption. -%>
 <% block = image.try(:attachable) || image %>
+<%# A plain same-origin path: image_tag would prefix the asset host, which does not serve blobs, and the
+    view-context route helper is missing when the API renders post content. -%>
+<% source = Rails.application.routes.url_helpers.rails_storage_proxy_path(block.media, only_path: true) %>
 <figure class="post-image mb-4">
-  <%= image_tag rails_storage_proxy_path(block.media), class: 'img-fluid w-100',
-                alt: block.alt_text.presence || block.caption, loading: 'lazy' %>
+  <%= tag.img src: source, class: 'img-fluid w-100', alt: block.alt_text.presence || block.caption, loading: 'lazy' %>
   <% if block.caption.present? %>
     <figcaption class="post-image__caption text-muted small mt-1"><%= block.caption %></figcaption>
   <% end %>
