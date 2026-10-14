@@ -29,7 +29,9 @@ module NewfoundlandLabradorOnline
 
     # Builds authorships at create time so CE's add_creator_as_author (which only
     # runs when no contributions exist) does not add the API actor as an extra author.
+    # Accepts a list of hashes or, from the JSON:API (which rejects nested objects), a JSON string.
     def contributor_specs=(specs)
+      specs = JSON.parse(specs) if specs.is_a?(String)
       Array(specs).each { |spec| build_contribution(spec.to_h.with_indifferent_access) }
     end
 

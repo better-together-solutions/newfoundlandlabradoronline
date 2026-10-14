@@ -97,6 +97,14 @@ Rails.application.configure do # rubocop:todo Metrics/BlockLength
 
   BetterErrors::Middleware.allow_ip! '0.0.0.0/0' if defined?(BetterErrors)
 
+  # Local-only keys so encrypted columns work in development; never used for real data.
+  config.active_record.encryption.primary_key =
+    ENV.fetch('ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY', '12345678901234567890123456789012')
+  config.active_record.encryption.deterministic_key =
+    ENV.fetch('ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY', '12345678901234567890123456789012')
+  config.active_record.encryption.key_derivation_salt =
+    ENV.fetch('ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT', '12345678901234567890123456789012')
+
   # Allows unencrypted values to be store in encrypted columns for transitioning
   config.active_record.encryption.support_unencrypted_data = true
   config.active_record.encryption.extend_queries = true

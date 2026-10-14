@@ -136,6 +136,15 @@ RSpec.describe NewfoundlandLabradorOnline::Post do
       expect(roles).to contain_exactly(['BetterTogether::Robot', 'author'], ['BetterTogether::Person', 'editor'])
     end
 
+    it 'accepts the contributors as a JSON string, as the JSON:API sends them', :aggregate_failures do
+      plain_post.contributor_specs = [
+        { author_type: 'BetterTogether::Robot', author_id: robot.id, role: 'author', position: 0 }
+      ].to_json
+      plain_post.save!
+
+      expect(plain_post.reload.contributions.pluck(:author_type, :role)).to eq([['BetterTogether::Robot', 'author']])
+    end
+
     it 'rejects unsupported contributor types' do
       plain_post.contributor_specs = [{ author_type: 'BetterTogether::Community', author_id: 'x' }]
 
