@@ -28,7 +28,8 @@ module NewfoundlandLabradorOnline
         youtube_id = block.embed_url.to_s[%r{/embed/([\w-]{11})\z}, 1]
         return unless block.provider == :youtube && youtube_id
 
-        new(youtube_id:, orientation: orientation.presence || 'landscape')
+        new(youtube_id:,
+            orientation: orientation.presence || (url.to_s.include?('/shorts/') ? 'portrait' : 'landscape'))
       end
 
       def valid?(youtube_id, orientation)
@@ -48,6 +49,12 @@ module NewfoundlandLabradorOnline
 
     def embed_url
       "#{EMBED_HOST}#{youtube_id}"
+    end
+
+    def watch_url
+      return "https://www.youtube.com/shorts/#{youtube_id}" if orientation == 'portrait'
+
+      "https://www.youtube.com/watch?v=#{youtube_id}"
     end
 
     def aspect_ratio

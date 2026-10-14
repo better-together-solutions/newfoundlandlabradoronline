@@ -10,22 +10,35 @@ module NewfoundlandLabradorOnline
 
     included do
       store_attributes :display_settings do
-        video_url String
-        video_orientation String
         legacy_video_embed ::Virtus::Attribute::Boolean, default: false
       end
 
       validates :video_orientation, inclusion: { in: VIDEO_ORIENTATIONS }, allow_blank: true
       validate :video_url_must_be_supported
       before_validation :sync_video_attachment
+      after_save :clear_pending_video_input
       validate :category_identifiers_must_exist
       validate :contributor_specs_must_be_supported
     end
 
-    def video_block
-      return if video_url.blank?
+    # video_url and video_orientation are write-only inputs that become the video
+    # attachment on save. Reads come from the attachment, never from a stored copy.
+    attr_writer :video_url, :video_orientation
 
-      @video_block ||= ::BetterTogether::Content::VideoBlock.new(video_url:)
+    def video_embed
+      content.body&.attachables.to_a.grep(NewfoundlandLabradorOnline::VideoEmbed).first
+    end
+
+    def video_url
+      return @video_url if defined?(@video_url)
+
+      video_embed&.watch_url
+    end
+
+    def video_orientation
+      return @video_orientation if defined?(@video_orientation)
+
+      video_embed&.orientation
     end
 
     def category_identifiers
@@ -50,14 +63,34 @@ module NewfoundlandLabradorOnline
 
     private
 
-    # Keeps exactly one video attachment, matching video_url, at the top of the body.
+    # Keeps exactly one video attachment at the top of the body when video input was given.
     def sync_video_attachment
-      return if video_url.blank?
+      return unless defined?(@video_url) || defined?(@video_orientation)
 
-      embed = NewfoundlandLabradorOnline::VideoEmbed.from_url(video_url, orientation: video_orientation)
+      embed = pending_video_embed
       return if embed.nil? || video_attachables.eql?([embed])
 
       self.content = embed.attachment_html + body_without_video_attachments
+    end
+
+    def pending_video_embed
+      orientation = defined?(@video_orientation) ? @video_orientation : video_embed&.orientation
+      return video_embed_with(orientation) unless defined?(@video_url)
+      return if @video_url.blank?
+
+      NewfoundlandLabradorOnline::VideoEmbed.from_url(@video_url, orientation:)
+    end
+
+    def video_embed_with(orientation)
+      current = video_embed
+      return unless current && orientation.present?
+
+      NewfoundlandLabradorOnline::VideoEmbed.new(youtube_id: current.youtube_id, orientation:)
+    end
+
+    def clear_pending_video_input
+      remove_instance_variable(:@video_url) if defined?(@video_url)
+      remove_instance_variable(:@video_orientation) if defined?(@video_orientation)
     end
 
     def video_attachables
@@ -87,8 +120,8 @@ module NewfoundlandLabradorOnline
     end
 
     def video_url_must_be_supported
-      return if video_url.blank?
-      return if %i[youtube vimeo].include?(video_block.provider)
+      return unless defined?(@video_url) && @video_url.present?
+      return if NewfoundlandLabradorOnline::VideoEmbed.from_url(@video_url)
 
       errors.add(:video_url, :invalid)
     end

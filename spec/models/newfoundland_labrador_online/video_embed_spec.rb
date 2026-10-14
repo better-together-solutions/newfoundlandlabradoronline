@@ -17,6 +17,10 @@ RSpec.describe NewfoundlandLabradorOnline::VideoEmbed do
         .to have_attributes(youtube_id: 'dQw4w9WgXcQ', orientation: 'portrait')
     end
 
+    it 'infers portrait from a Shorts url without an orientation' do
+      expect(described_class.from_url('https://www.youtube.com/shorts/dQw4w9WgXcQ').orientation).to eq('portrait')
+    end
+
     it 'returns nil for other providers and hosts', :aggregate_failures do
       expect(described_class.from_url('https://vimeo.com/123456789')).to be_nil
       expect(described_class.from_url('https://example.com/a.mp4')).to be_nil
@@ -42,6 +46,11 @@ RSpec.describe NewfoundlandLabradorOnline::VideoEmbed do
     expect(embed.embed_url).to eq('https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ')
     expect(embed.aspect_ratio).to eq('9x16')
     expect(described_class.new(youtube_id: 'dQw4w9WgXcQ').aspect_ratio).to eq('16x9')
+  end
+
+  it 'builds watch urls by orientation', :aggregate_failures do
+    expect(embed.watch_url).to eq('https://www.youtube.com/shorts/dQw4w9WgXcQ')
+    expect(described_class.new(youtube_id: 'dQw4w9WgXcQ').watch_url).to eq('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
   end
 
   it 'round trips through a signed global id' do

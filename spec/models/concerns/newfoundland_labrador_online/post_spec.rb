@@ -88,6 +88,38 @@ RSpec.describe NewfoundlandLabradorOnline::Post do
       expect(html).to include('youtube-nocookie.com/embed/dQw4w9WgXcQ', 'ratio-16x9')
     end
 
+    it 'reads video_url and video_orientation back from the attachment', :aggregate_failures do
+      post.assign_attributes(video_url: 'https://www.youtube.com/shorts/dQw4w9WgXcQ', video_orientation: 'portrait')
+      post.save!
+      reloaded = BetterTogether::Post.find(post.id)
+
+      expect(reloaded).to have_attributes(video_url: 'https://www.youtube.com/shorts/dQw4w9WgXcQ',
+                                          video_orientation: 'portrait')
+    end
+
+    it 'does not store video_url in display_settings' do
+      post.save!
+
+      expect(post.reload.display_settings.keys).not_to include('video_url', 'video_orientation')
+    end
+
+    it 'does not re-add a video an editor removed from the body', :aggregate_failures do
+      post.save!
+      post = BetterTogether::Post.find(self.post.id)
+      post.update!(content: '<div>Text only</div>')
+
+      expect(attached_embeds(post)).to be_empty
+      expect(post.video_url).to be_nil
+    end
+
+    it 'changes only the orientation when given no new url', :aggregate_failures do
+      post.save!
+      reloaded = BetterTogether::Post.find(post.id)
+      reloaded.update!(video_orientation: 'portrait')
+
+      expect(attached_embeds(reloaded).map(&:id)).to eq(['dQw4w9WgXcQ:portrait'])
+    end
+
     it 'adds no attachment without a video url' do
       post.video_url = nil
       post.save!
