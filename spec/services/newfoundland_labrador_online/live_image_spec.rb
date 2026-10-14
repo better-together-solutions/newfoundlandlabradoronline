@@ -73,6 +73,21 @@ RSpec.describe NewfoundlandLabradorOnline::LiveImage do
     end
   end
 
+  it 'treats an unreadable cache entry, such as one left by an older release, as missing', :aggregate_failures do
+    allow(cache).to receive(:read).and_raise(TypeError, 'struct not compatible')
+
+    expect(described_class.peek('corner-brook')).to be_nil
+    stub_source(ok)
+    expect(described_class.frame('corner-brook')).to be_present
+  end
+
+  it 'stores plain data, not a Struct, in the cache' do
+    stub_source(ok)
+    described_class.frame('corner-brook')
+
+    expect(cache.read('newfoundland_labrador_online/live_image/v2/corner-brook')).to be_a(Hash)
+  end
+
   it 'peeks at the cache without fetching', :aggregate_failures do
     expect(described_class.peek('corner-brook')).to be_nil
     stub_source(ok)

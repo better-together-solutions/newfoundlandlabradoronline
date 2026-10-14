@@ -36,14 +36,14 @@ module NewfoundlandLabradorOnline
 
       # The cached frame without fetching anything (for page rendering); nil when nothing is cached.
       def peek(slug)
-        Rails.cache.read(key(slug)) if known?(slug)
+        read(slug) if known?(slug)
       end
 
       # The cached frame, refreshed when older than FRESH_FOR; nil when nothing has ever been fetched.
       def frame(slug)
         return unless known?(slug)
 
-        current = Rails.cache.read(key(slug))
+        current = read(slug)
         return current if current && Time.current - current.fetched_at < FRESH_FOR
 
         refresh(slug) || current
@@ -52,14 +52,24 @@ module NewfoundlandLabradorOnline
       private
 
       def key(slug)
-        "newfoundland_labrador_online/live_image/#{slug}"
+        "newfoundland_labrador_online/live_image/v2/#{slug}"
+      end
+
+      # Plain data in the cache (never a Struct instance, whose layout changes between releases); an
+      # entry that cannot be read counts as missing.
+      def read(slug)
+        data = Rails.cache.read(key(slug))
+        Frame.new(**data) if data.is_a?(Hash)
+      rescue StandardError => e
+        Rails.logger.warn("live image #{slug} cache entry unreadable: #{e.class}")
+        nil
       end
 
       def refresh(slug)
         original = download(SOURCES.fetch(slug))
         bytes = process(original)
         frame = Frame.new(bytes, Time.current, Digest::SHA1.hexdigest(bytes), captured_at(original))
-        Rails.cache.write(key(slug), frame, expires_in: 1.day)
+        Rails.cache.write(key(slug), frame.to_h, expires_in: 1.day)
         frame
       rescue StandardError => e
         Rails.logger.warn("live image #{slug} not refreshed: #{e.class}: #{e.message}")
