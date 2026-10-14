@@ -17,9 +17,8 @@ RSpec.describe NewfoundlandLabradorOnline::Post do
   end
 
   describe 'video fields' do
-    it 'accepts a YouTube url and uses the privacy-enhanced embed host', :aggregate_failures do
+    it 'accepts a YouTube url' do
       expect(post).to be_valid
-      expect(post.video_embed_url).to eq('https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ')
     end
 
     it 'accepts YouTube Shorts urls', :aggregate_failures do
@@ -27,7 +26,6 @@ RSpec.describe NewfoundlandLabradorOnline::Post do
       post.video_orientation = 'portrait'
 
       expect(post).to be_valid
-      expect(post.video_aspect_ratio).to eq('9x16')
     end
 
     it 'rejects unsupported video hosts', :aggregate_failures do
@@ -42,11 +40,59 @@ RSpec.describe NewfoundlandLabradorOnline::Post do
 
       expect(post).not_to be_valid
     end
+  end
 
-    it 'defaults to a 16x9 frame' do
-      post.video_orientation = nil
+  describe 'video attachment' do
+    let(:embed) { NewfoundlandLabradorOnline::VideoEmbed.new(youtube_id: 'dQw4w9WgXcQ', orientation: 'landscape') }
 
-      expect(post.video_aspect_ratio).to eq('16x9')
+    def attached_embeds(record)
+      record.reload.content.body.attachables.grep(NewfoundlandLabradorOnline::VideoEmbed)
+    end
+
+    it 'puts the video attachment ahead of the description', :aggregate_failures do
+      post.content = 'Daily timelapse description'
+      post.save!
+
+      expect(attached_embeds(post)).to eq([embed])
+      expect(post.content.body.to_html).to match(/\A<action-text-attachment.*Daily timelapse description/m)
+    end
+
+    it 'uses the post orientation for the attachment' do
+      post.video_url = 'https://www.youtube.com/shorts/dQw4w9WgXcQ'
+      post.video_orientation = 'portrait'
+      post.save!
+
+      expect(attached_embeds(post).first.orientation).to eq('portrait')
+    end
+
+    it 'does not duplicate the attachment when saved again' do
+      post.save!
+      post.update!(title: 'Renamed')
+
+      expect(attached_embeds(post).size).to eq(1)
+    end
+
+    it 'replaces the attachment when the video changes', :aggregate_failures do
+      post.save!
+      post.update!(video_url: 'https://www.youtube.com/watch?v=abcdefghijk')
+
+      expect(attached_embeds(post).map(&:youtube_id)).to eq(%w[abcdefghijk])
+      expect(post.content.body.to_html).to include('<action-text-attachment').once
+    end
+
+    it 'renders the iframe from the saved body', :aggregate_failures do
+      post.save!
+      html = BetterTogether::PostsController.render(inline: '<%= render_action_text_content(c) %>',
+                                                    locals: { c: post.reload.content.body })
+
+      expect(html).to include('youtube-nocookie.com/embed/dQw4w9WgXcQ', 'ratio-16x9')
+    end
+
+    it 'adds no attachment without a video url' do
+      post.video_url = nil
+      post.save!
+
+      expect(attached_embeds(post)).to be_empty
     end
   end
 

@@ -66,8 +66,9 @@ fr:
   journeys:
     title: Mon parcours
   newfoundland_labrador_online:
-    posts:
-      short_badge: Court
+    video_embeds:
+      preview: 'Vidéo (%{orientation}) : %{id}'
+      title: Vidéo
   time:
     am: am
     formats:

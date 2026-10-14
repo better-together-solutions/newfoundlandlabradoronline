@@ -7,7 +7,6 @@ module NewfoundlandLabradorOnline
     extend ActiveSupport::Concern
 
     VIDEO_ORIENTATIONS = %w[landscape portrait].freeze
-    YOUTUBE_EMBED_HOST = 'https://www.youtube-nocookie.com/embed/'
 
     included do
       store_attributes :display_settings do
@@ -18,6 +17,7 @@ module NewfoundlandLabradorOnline
 
       validates :video_orientation, inclusion: { in: VIDEO_ORIENTATIONS }, allow_blank: true
       validate :video_url_must_be_supported
+      before_validation :sync_video_attachment
       validate :category_identifiers_must_exist
       validate :contributor_specs_must_be_supported
     end
@@ -26,19 +26,6 @@ module NewfoundlandLabradorOnline
       return if video_url.blank?
 
       @video_block ||= ::BetterTogether::Content::VideoBlock.new(video_url:)
-    end
-
-    def video_embed_url
-      return unless video_block
-
-      url = video_block.embed_url
-      return url unless video_block.provider == :youtube
-
-      url.sub(%r{\Ahttps://www\.youtube\.com/embed/}, YOUTUBE_EMBED_HOST)
-    end
-
-    def video_aspect_ratio
-      video_orientation == 'portrait' ? '9x16' : '16x9'
     end
 
     def category_identifiers
@@ -62,6 +49,28 @@ module NewfoundlandLabradorOnline
     end
 
     private
+
+    # Keeps exactly one video attachment, matching video_url, at the top of the body.
+    def sync_video_attachment
+      return if video_url.blank?
+
+      embed = NewfoundlandLabradorOnline::VideoEmbed.from_url(video_url, orientation: video_orientation)
+      return if embed.nil? || video_attachables.eql?([embed])
+
+      self.content = embed.attachment_html + body_without_video_attachments
+    end
+
+    def video_attachables
+      content.body&.attachables.to_a.grep(NewfoundlandLabradorOnline::VideoEmbed)
+    end
+
+    def body_without_video_attachments
+      fragment = Nokogiri::HTML::DocumentFragment.parse(content.body&.to_html.to_s)
+      fragment.css('action-text-attachment').each do |node|
+        node.remove if ActionText::Attachment.from_node(node).attachable.is_a?(NewfoundlandLabradorOnline::VideoEmbed)
+      end
+      fragment.to_html
+    end
 
     def build_contribution(spec)
       type = spec[:author_type].to_s

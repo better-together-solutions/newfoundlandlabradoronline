@@ -1,0 +1,13 @@
+<%# locals: (video_embed:, in_gallery: false) -%>
+<div class="post-video post-video--<%= video_embed.orientation %> mb-4">
+  <%= render partial: 'better_together/content/blocks/iframe_embed',
+             locals: {
+               block: video_embed,
+               iframe_url: video_embed.embed_url,
+               aspect_ratio: video_embed.aspect_ratio,
+               title: t('newfoundland_labrador_online.video_embeds.title'),
+               caption: nil,
+               iframe_allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
+               allow_fullscreen: true
+             } %>
+</div>

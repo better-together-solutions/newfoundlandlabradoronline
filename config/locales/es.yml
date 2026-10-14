@@ -66,8 +66,9 @@ es:
   journeys:
     title: Mi Viaje
   newfoundland_labrador_online:
-    posts:
-      short_badge: Corto
+    video_embeds:
+      preview: 'Video (%{orientation}): %{id}'
+      title: Video
   time:
     am: am
     formats:
