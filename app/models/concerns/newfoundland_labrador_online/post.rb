@@ -9,10 +9,6 @@ module NewfoundlandLabradorOnline
     include NewfoundlandLabradorOnline::PostVideo
 
     included do
-      store_attributes :display_settings do
-        legacy_video_embed ::Virtus::Attribute::Boolean, default: false
-      end
-
       validate :category_identifiers_must_exist
       validate :contributor_specs_must_be_supported
     end

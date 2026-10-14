@@ -7,8 +7,7 @@ RSpec.describe NewfoundlandLabradorOnline::PostResourceExtension do
 
   it 'adds the publisher fields to creatable fields' do
     expect(resource.creatable_fields({})).to include(
-      :community_id, :published_at, :video_url, :video_orientation, :legacy_video_embed,
-      :category_identifiers, :contributor_specs
+      :community_id, :published_at, :video_block_id, :category_identifiers, :contributor_specs
     )
   end
 
@@ -16,11 +15,13 @@ RSpec.describe NewfoundlandLabradorOnline::PostResourceExtension do
     expect(resource.creatable_fields({})).not_to include(:slug)
   end
 
-  it 'does not let contributor_specs be changed after creation' do
-    expect(resource.updatable_fields({})).not_to include(:contributor_specs)
+  it 'accepts contributors and the video input on create only' do
+    expect(resource.updatable_fields({})).not_to include(:contributor_specs, :video_block_id)
   end
 
-  it 'exposes the video attributes' do
-    expect(resource._attributes.keys).to include(:video_url, :video_orientation, :legacy_video_embed)
+  it 'never returns the write-only video block id' do
+    instance = resource.new(BetterTogether::Post.new, {})
+
+    expect(instance.fetchable_fields).not_to include(:video_block_id)
   end
 end

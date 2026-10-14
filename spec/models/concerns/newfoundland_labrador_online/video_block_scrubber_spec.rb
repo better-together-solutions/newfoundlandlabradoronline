@@ -34,4 +34,17 @@ RSpec.describe NewfoundlandLabradorOnline::VideoBlockScrubber do
     expect(html).to include('<p style="color:red;">ok</p>')
     expect(html).not_to include('script')
   end
+
+  it 'leaves ordinary rich text unchanged', :aggregate_failures do
+    html = '<h2>Title</h2><p>Text <a href="https://example.com/x">link</a> <strong>bold</strong></p>' \
+           '<blockquote>Quote</blockquote><ul><li>One</li></ul>'
+
+    expect(sanitize(html)).to eq(html)
+  end
+
+  it 'still removes dangerous links and handlers', :aggregate_failures do
+    html = sanitize('<a href="javascript:alert(1)" onclick="x()">go</a><img src="x" onerror="y()">')
+
+    expect(html).not_to include('javascript:', 'onclick', 'onerror')
+  end
 end

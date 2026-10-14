@@ -18,7 +18,7 @@ How a host app adds a new kind of embedded content to CE's Trix editor and to re
 3. Write both partials with `<%# locals: (<model_element>:, in_gallery: false) -%>`. Strict locals fail on the `in_gallery` local if it is missing. For a block, `model_name.element` is `video_block`.
 4. Allow the class in CE's security controls: add its class name to `NewfoundlandLabradorOnline::ContentSecurityAttachables::ALLOWED`. Decide the render rule in `renderable?` (video blocks render only when public and visible).
 5. If the partial emits tags the sanitizer strips (iframe, video), extend `VideoBlockScrubber` narrowly: allowed host, and only inside an `action-text-attachment`.
-6. Create the record server side and insert `ActionText::Attachment.from_attachable(record).to_html`. The sgid cannot be built in the browser, so editor UI needs an endpoint that creates or finds the record and returns the sgid and preview, plus a Trix toolbar button (not built yet).
+6. Create the record (blocks can be created through the blocks API) and insert `ActionText::Attachment.from_attachable(record).to_html` server side; `post.video_block_id` does this at create time. The sgid cannot be built in the browser, so an editor UI needs an endpoint that returns the sgid and preview, plus a Trix toolbar button (not built yet).
 7. Specs: sgid round trip, `to_trix_html` round trip, save accepted, a different attachable still rejected, rendering, non-public held, sanitizer behaviour.
 
 ## Where it is wired in this app
@@ -28,7 +28,7 @@ How a host app adds a new kind of embedded content to CE's Trix editor and to re
 | Attachable video block, 9x16 ratio | `app/models/concerns/newfoundland_labrador_online/video_block.rb` |
 | Allow-list and render rule | `app/models/concerns/newfoundland_labrador_online/content_security_attachables.rb` |
 | Scoped iframe scrubber | `app/models/concerns/newfoundland_labrador_online/video_block_scrubber.rb` |
-| Post creates and attaches the block | `app/models/concerns/newfoundland_labrador_online/post_video.rb` |
+| Post attaches an existing block by `video_block_id` | `app/models/concerns/newfoundland_labrador_online/post_video.rb` |
 | Partials | `app/views/newfoundland_labrador_online/video_blocks/` |
 | Wiring | `config/initializers/better_together_models.rb` |
 
@@ -40,7 +40,7 @@ How a host app adds a new kind of embedded content to CE's Trix editor and to re
 - Check ancestors, not the parent, in a scrubber: the iframe sits inside `figure > div`, not directly under the attachment. The parent check passed under the HTML4 sanitizer and failed under HTML5.
 - Setting `ActionText::ContentHelper.scrubber` is global to all rich text rendering.
 - Blocks cannot be more open than the platform. Specs for public blocks set `seed_privacy_ceiling_exempt`.
-- A private post's block is private, so its video shows the held placeholder until the render rule knows the host record.
+- A block renders only when public and visible. Blocks are independent records (created through the blocks API), so publish the block as public for a public post.
 
 ## Upstream
 

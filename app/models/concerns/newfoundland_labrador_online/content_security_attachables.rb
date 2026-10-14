@@ -23,6 +23,7 @@ module NewfoundlandLabradorOnline
 
       def validate_supported_embeds_for_content_security
         others = body&.attachables.to_a.grep_v(::ActiveStorage::Blob)
+        return super if others.empty?
         return if others.all? { |attachable| ContentSecurityAttachables.allowed?(attachable) }
 
         super
