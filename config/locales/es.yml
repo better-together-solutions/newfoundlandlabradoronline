@@ -72,6 +72,21 @@ es:
       alt: Última imagen de la cámara sobre %{name}
       title: "%{name} en directo"
       updated: Foto tomada a las
+    locations:
+      picker:
+        announcements:
+          cancelled: Nueva dirección cancelada. Volvió al campo de búsqueda de ubicación.
+          creating: Creando una nueva dirección. Complete los campos siguientes y
+            guarde.
+        cancel_new_address: Cancelar nueva dirección
+        create_new: Crear %{model}
+        hint: Busque una localidad, región, dirección o edificio. Escriba un nombre
+          para usarlo como ubicación personalizada.
+        label: Ubicación
+        new_address_legend: Nueva dirección
+        new_named_with_query: 'Crear %{model}: "%{q}"'
+        tab: Ubicación
+        use_typed_name: Usar "%{q}" como nombre de ubicación personalizado
     robots:
       avatar_label: Robot autor
     video_blocks:
