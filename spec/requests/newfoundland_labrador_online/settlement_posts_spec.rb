@@ -75,7 +75,24 @@ RSpec.describe 'Settlement posts' do
 
       expect(response.body).to include('id="posts-tab"')
       expect(response.body).to include('settlement=cb-town')
-      expect(response.body).to include(community.name)
+      expect(response.body).to include('id="communities-tab"')
+    end
+
+    it 'shows the located communities as cards in their own tab', :aggregate_failures do
+      get "/#{locale}/g/settlements/#{settlement.slug}"
+
+      pane = response.body[%r{<div id="communities".*?</div>\s*</div>}m]
+      expect(pane).to include(community.name)
+      expect(response.body).not_to include('settlement-communities-heading')
+    end
+
+    it 'renders the map when the settlement has coordinates' do
+      space = BetterTogether::Geography::Space.create!(latitude: 48.95, longitude: -57.95)
+      BetterTogether::Geography::GeospatialSpace.create!(geospatial: settlement, space:)
+
+      get "/#{locale}/g/settlements/#{settlement.slug}"
+
+      expect(response.body).to include('data-controller="settlement-map"')
     end
   end
 

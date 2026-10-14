@@ -1,0 +1,19 @@
+.settlement-map__canvas { height: 420px; border-radius: .5rem; }
+.settlement-map__swatch { display: inline-block; width: .9rem; height: .9rem; border-radius: 50%; }
+.settlement-map__pin span {
+  display: flex; align-items: center; justify-content: center; width: 30px; height: 30px;
+  border-radius: 50%; color: #fff; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, .45);
+}
+.settlement-map__cluster span {
+  display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+  border-radius: 50%; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, .45);
+  b { background: #fff; color: #212529; min-width: 22px; height: 22px; line-height: 22px; border-radius: 11px; text-align: center; font-size: .8rem; }
+}
+// leaflet.markercluster animation rules (the plugin ships them in MarkerCluster.css)
+.leaflet-cluster-anim .leaflet-marker-icon, .leaflet-cluster-anim .leaflet-marker-shadow {
+  transition: transform .3s ease-out, opacity .3s ease-in;
+}
+.leaflet-cluster-spider-leg { transition: stroke-dashoffset .3s ease-out, stroke-opacity .3s ease-in; }
+@media (prefers-reduced-motion: reduce) {
+  .leaflet-cluster-anim .leaflet-marker-icon, .leaflet-cluster-anim .leaflet-marker-shadow, .leaflet-cluster-spider-leg { transition: none; }
+}

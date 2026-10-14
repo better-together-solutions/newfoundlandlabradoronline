@@ -13,3 +13,7 @@ pin_all_from File.expand_path('../app/javascript/controllers', __dir__), under: 
 
 # Application entry point
 pin 'application', preload: true
+
+# Marker clustering for the settlement map (vendored, see app/javascript/vendor)
+pin 'leaflet.markercluster', to: 'vendor/leaflet.markercluster.js'
+pin 'leaflet-extensible', to: 'vendor/leaflet_extensible.js'

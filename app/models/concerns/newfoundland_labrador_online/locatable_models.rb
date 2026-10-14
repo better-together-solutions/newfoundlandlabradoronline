@@ -9,10 +9,12 @@ module NewfoundlandLabradorOnline
   module LocatableModels
     # concern: :locatable adds the has_one, nested attributes and the interface;
     # :interface adds only the interface, for models that already have CE's Locatable::One (events).
+    # map: the pin colour and Font Awesome icon the settlement map uses for the type.
     ONBOARDED = {
-      'BetterTogether::Post' => { concern: :locatable, inherit: :community },
-      'BetterTogether::Community' => { concern: :locatable },
-      'BetterTogether::Event' => { concern: :interface }
+      'BetterTogether::Post' => { concern: :locatable, inherit: :community,
+                                  map: { color: '#0d6efd', icon: 'fa-newspaper' } },
+      'BetterTogether::Community' => { concern: :locatable, map: { color: '#6f42c1', icon: 'fa-users' } },
+      'BetterTogether::Event' => { concern: :interface, map: { color: '#198754', icon: 'fa-calendar-day' } }
     }.freeze
 
     # Wanted but not onboarded yet (noted only, nothing wired).
@@ -30,6 +32,12 @@ module NewfoundlandLabradorOnline
         model.include(options[:concern] == :locatable ? Locatable : LocationInterface)
         model.inherit_location_from(options[:inherit]) if options[:inherit]
       end
+    end
+
+    DEFAULT_MAP_STYLE = { color: '#6c757d', icon: 'fa-location-dot' }.freeze
+
+    def map_style(model)
+      DEFAULT_MAP_STYLE.merge(ONBOARDED.dig(model.name, :map) || {})
     end
 
     def resource_for(model)

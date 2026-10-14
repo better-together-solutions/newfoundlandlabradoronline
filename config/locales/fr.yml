@@ -89,8 +89,11 @@ fr:
         use_typed_name: Utiliser « %{q} » comme nom de lieu personnalisé
     robots:
       avatar_label: Auteur robot
+    settlement_map:
+      count_label: lieux
+      label: Carte de %{name}
+      show_types: Afficher sur la carte
     settlement_posts:
-      communities_heading: Communautés à %{name}
       loading: Chargement des publications...
       located_in: Situé à
       title: Publications à %{name}

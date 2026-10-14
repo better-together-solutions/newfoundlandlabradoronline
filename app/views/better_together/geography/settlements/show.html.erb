@@ -1,4 +1,4 @@
-<%# Copied from community-engine-rails dfad67df6da4 (app/views/better_together/geography/settlements/show.html.erb). Changes: the live image card and the communities list in the About tab, and a live Posts tab (the CE pane was commented out); re-diff when the CE pin moves. -%>
+<%# Copied from community-engine-rails dfad67df6da4 (app/views/better_together/geography/settlements/show.html.erb). Changes: the live image card, and a live Posts tab (the CE pane was commented out), a Communities tab, and the settlement map; re-diff when the CE pin moves. -%>
 <div class="container">
 
   <div class="geography-settlement-header position-relative">
@@ -26,6 +26,10 @@
     <%= link_to t('.view-all-settlements'), geography_settlements_path(locale: I18n.locale), class: "btn btn-secondary me-2" %>
   </div>
 
+  <%= render 'newfoundland_labrador_online/settlements/map', settlement: @geography_settlement %>
+
+  <% located_communities = policy_scope(BetterTogether::Community).located_in(@geography_settlement).with_translations.order(:identifier) %>
+
   <!-- geography_settlement tabbed section with members -->
   <section class="card tabbed-section" data-controller="better_together--tabs">
     <div class="card-header">
@@ -34,6 +38,9 @@
       <%= content_tag :div, id: 'geography-settlement', class: 'nav nav-tabs card-header-tabs', role: 'tablist', aria_label: 'geography-settlement Sections' do %>
         <%= link_to t('globals.tabs.about'), '#about', class: 'nav-link active', id: 'about-tab', data: { bs_toggle: 'tab', bs_target: '#about', turbo: false, 'better_together--tabs-target': 'tab' }, role: 'tab', aria: { controls: 'about', selected: 'true' }, tabindex: '0' %>
         <%= link_to t('globals.tabs.posts'), '#posts', class: 'nav-link', id: 'posts-tab', data: { bs_toggle: 'tab', bs_target: '#posts', turbo: false, 'better_together--tabs-target': 'tab' }, role: 'tab', aria: { controls: 'posts', selected: 'false' }, tabindex: '0' %>
+        <% if located_communities.any? %>
+          <%= link_to BetterTogether::Community.model_name.human.pluralize, '#communities', class: 'nav-link', id: 'communities-tab', data: { bs_toggle: 'tab', bs_target: '#communities', turbo: false, 'better_together--tabs-target': 'tab' }, role: 'tab', aria: { controls: 'communities', selected: 'false' }, tabindex: '0' %>
+        <% end %>
 
         <%# COMMENTED OUT UNTIL NEEDED  --------------
         <%= link_to t('globals.tabs.events'), '#events', class: 'nav-link', id: 'events-tab', data: { bs_toggle: 'tab', bs_target: '#events', turbo: false, 'better_together--tabs-target': 'tab' }, role: 'tab', aria: { controls: 'events', selected: 'false' }, tabindex: '0' 
@@ -59,17 +66,6 @@
               </div>
               <% live_slug = NewfoundlandLabradorOnline::LiveImage.slug_for(@geography_settlement) %>
               <%= render 'newfoundland_labrador_online/live_images/card', slug: live_slug, title: @geography_settlement.name if live_slug %>
-              <% located_communities = policy_scope(BetterTogether::Community).located_in(@geography_settlement).with_translations.order(:identifier) %>
-              <% if located_communities.any? %>
-                <section class="mt-4" aria-labelledby="settlement-communities-heading">
-                  <h2 id="settlement-communities-heading" class="h5"><%= t('newfoundland_labrador_online.settlement_posts.communities_heading', name: @geography_settlement.name) %></h2>
-                  <ul class="list-unstyled">
-                    <% located_communities.each do |community| %>
-                      <li><%= link_to community.name, community_path(community) %></li>
-                    <% end %>
-                  </ul>
-                </section>
-              <% end %>
             </div>
           </div>
         </div>
@@ -81,6 +77,14 @@
             <p class="text-muted"><%= t('newfoundland_labrador_online.settlement_posts.loading') %></p>
           <% end %>
         </div>
+
+        <% if located_communities.any? %>
+          <div id="communities" class="nav-tab-pane tab-pane fade" role="tabpanel" aria-labelledby="communities-tab">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+              <%= render partial: 'better_together/communities/community', collection: located_communities, as: :community %>
+            </div>
+          </div>
+        <% end %>
 
         <%# COMMENTED OUT UNTIL NEEDED  --------------
         <div id="events" class="nav-tab-pane tab-pane fade" role="tabpanel" aria-labelledby="events-tab">
