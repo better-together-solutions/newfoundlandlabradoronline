@@ -89,6 +89,11 @@ es:
         use_typed_name: Usar "%{q}" como nombre de ubicación personalizado
     robots:
       avatar_label: Robot autor
+    settlement_posts:
+      communities_heading: Comunidades en %{name}
+      loading: Cargando publicaciones...
+      located_in: Ubicado en
+      title: Publicaciones en %{name}
     video_blocks:
       preview: 'Video: %{url}'
   time:
