@@ -66,6 +66,8 @@ en:
   journeys:
     title: My Journey
   newfoundland_labrador_online:
+    robots:
+      avatar_label: Robot author
     video_blocks:
       preview: 'Video: %{url}'
   time:

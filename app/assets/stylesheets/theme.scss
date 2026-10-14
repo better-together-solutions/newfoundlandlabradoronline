@@ -286,3 +286,9 @@ a.active {
   margin-right: auto;
   max-width: 360px;
 }
+
+// Robot contributor avatar: a stacked circle (like the share buttons) filled with the
+// theme's secondary background so the icon stays legible in light and dark modes.
+.robot-avatar .fa-circle {
+  color: var(--bs-secondary-bg);
+}
