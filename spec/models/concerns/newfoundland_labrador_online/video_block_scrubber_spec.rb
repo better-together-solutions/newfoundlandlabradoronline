@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe NewfoundlandLabradorOnline::VideoEmbedScrubber do
+RSpec.describe NewfoundlandLabradorOnline::VideoBlockScrubber do
   def sanitize(html)
     Rails::HTML5::SafeListSanitizer.new.sanitize(html, scrubber: described_class.new)
   end

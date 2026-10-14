@@ -5,10 +5,16 @@ module NewfoundlandLabradorOnline
   # CE rejects and holds every attachment that is not an ActiveStorage blob; each
   # extension only adds an exception for ALLOWED and defers to CE otherwise.
   module ContentSecurityAttachables
-    ALLOWED = %w[NewfoundlandLabradorOnline::VideoEmbed].freeze
+    ALLOWED = %w[BetterTogether::Content::VideoBlock].freeze
 
     def self.allowed?(attachable)
       ALLOWED.include?(attachable.class.name)
+    end
+
+    # Attached blocks are only rendered when public, so a signed id copied from a
+    # restricted block cannot expose it through another record's body.
+    def self.renderable?(attachable)
+      allowed?(attachable) && attachable.privacy_public? && attachable.visible?
     end
 
     # Prepended to BetterTogether::ContentSecurity::ActionTextRichTextControls.
@@ -28,7 +34,7 @@ module NewfoundlandLabradorOnline
       private
 
       def attachment_renderable?(attachment)
-        return true if ContentSecurityAttachables.allowed?(attachment.attachable)
+        return true if ContentSecurityAttachables.renderable?(attachment.attachable)
 
         super
       end

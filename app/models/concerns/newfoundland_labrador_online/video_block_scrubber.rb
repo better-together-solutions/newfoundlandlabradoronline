@@ -4,7 +4,7 @@ module NewfoundlandLabradorOnline
   # Rich-text scrubber that keeps CE's allowed tags and attributes and additionally lets
   # through the privacy-enhanced YouTube iframe rendered inside a video attachment.
   # Any other iframe is still removed.
-  class VideoEmbedScrubber < Rails::HTML::PermitScrubber
+  class VideoBlockScrubber < Rails::HTML::PermitScrubber
     EXTRA_ATTRIBUTES = %w[allow allowfullscreen frameborder referrerpolicy].freeze
 
     def initialize
@@ -28,7 +28,7 @@ module NewfoundlandLabradorOnline
 
     def video_embed_iframe?(node)
       node.ancestors.any? { |ancestor| ancestor.name == 'action-text-attachment' } &&
-        node['src'].to_s.start_with?(NewfoundlandLabradorOnline::VideoEmbed::EMBED_HOST)
+        node['src'].to_s.start_with?(NewfoundlandLabradorOnline::VideoBlock::EMBED_HOSTS[:youtube])
     end
   end
 end

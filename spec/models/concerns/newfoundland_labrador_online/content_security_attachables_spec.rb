@@ -5,7 +5,11 @@ require 'rails_helper'
 RSpec.describe NewfoundlandLabradorOnline::ContentSecurityAttachables do
   let(:platform) { BetterTogether::Platform.find_by(host: true) || create(:better_together_platform) }
   let(:person) { create(:better_together_person) }
-  let(:embed) { NewfoundlandLabradorOnline::VideoEmbed.new(youtube_id: 'dQw4w9WgXcQ') }
+  let(:embed) do
+    BetterTogether::Content::VideoBlock.create!(platform:, privacy: 'public', identifier: 'att-vb', creator: person,
+                                                seed_privacy_ceiling_exempt: true,
+                                                video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+  end
   let(:other_attachable) do
     Class.new do
       include GlobalID::Identification
@@ -28,7 +32,7 @@ RSpec.describe NewfoundlandLabradorOnline::ContentSecurityAttachables do
 
   describe 'rich text validation' do
     it 'accepts the video attachable', :aggregate_failures do
-      post = new_post("<div>Hi</div>#{embed.attachment_html}")
+      post = new_post("<div>Hi</div>#{ActionText::Attachment.from_attachable(embed).to_html}")
 
       expect(post).to be_valid
       expect(post.save).to be(true)
@@ -45,16 +49,25 @@ RSpec.describe NewfoundlandLabradorOnline::ContentSecurityAttachables do
 
   describe 'rendering' do
     it 'renders the video iframe for the attachable', :aggregate_failures do
-      html = render_content(ActionText::Content.new("<div>Hi</div>#{embed.attachment_html}"))
+      html = render_content(ActionText::Content.new("<div>Hi</div>#{ActionText::Attachment.from_attachable(embed).to_html}"))
 
       expect(html).to include('youtube-nocookie.com/embed/dQw4w9WgXcQ', 'ratio-16x9', 'post-video--landscape')
       expect(html).not_to include('held-review')
     end
 
     it 'renders portrait videos in a 9x16 frame' do
-      portrait = NewfoundlandLabradorOnline::VideoEmbed.new(youtube_id: 'dQw4w9WgXcQ', orientation: 'portrait')
+      embed.update!(aspect_ratio: '9x16')
+      html = render_content(ActionText::Content.new(ActionText::Attachment.from_attachable(embed).to_html))
 
-      expect(render_content(ActionText::Content.new(portrait.attachment_html))).to include('ratio-9x16')
+      expect(html).to include('ratio-9x16', 'post-video--portrait')
+    end
+
+    it 'holds blocks that are not public', :aggregate_failures do
+      embed.update!(privacy: 'private')
+      html = render_content(ActionText::Content.new(ActionText::Attachment.from_attachable(embed).to_html))
+
+      expect(html).not_to include('youtube-nocookie.com')
+      expect(html).to include('held-review')
     end
 
     it 'strips iframes that are not part of a video attachment', :aggregate_failures do

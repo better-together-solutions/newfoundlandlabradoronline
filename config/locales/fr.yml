@@ -66,9 +66,8 @@ fr:
   journeys:
     title: Mon parcours
   newfoundland_labrador_online:
-    video_embeds:
-      preview: 'Vidéo (%{orientation}) : %{id}'
-      title: Vidéo
+    video_blocks:
+      preview: 'Vidéo : %{url}'
   time:
     am: am
     formats:

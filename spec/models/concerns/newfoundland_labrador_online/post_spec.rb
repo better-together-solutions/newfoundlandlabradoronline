@@ -43,49 +43,56 @@ RSpec.describe NewfoundlandLabradorOnline::Post do
   end
 
   describe 'video attachment' do
-    let(:embed) { NewfoundlandLabradorOnline::VideoEmbed.new(youtube_id: 'dQw4w9WgXcQ', orientation: 'landscape') }
-
-    def attached_embeds(record)
-      record.reload.content.body.attachables.grep(NewfoundlandLabradorOnline::VideoEmbed)
+    def attached_blocks(record)
+      BetterTogether::Post.find(record.id).content.body.attachables
+                          .grep(BetterTogether::Content::VideoBlock)
     end
 
-    it 'puts the video attachment ahead of the description', :aggregate_failures do
+    it 'attaches the post video block ahead of the description', :aggregate_failures do
       post.content = 'Daily timelapse description'
       post.save!
 
-      expect(attached_embeds(post)).to eq([embed])
-      expect(post.content.body.to_html).to match(/\A<action-text-attachment.*Daily timelapse description/m)
+      expect(attached_blocks(post).map(&:video_url)).to eq(['https://www.youtube.com/watch?v=dQw4w9WgXcQ'])
+      expect(post.reload.content.body.to_html).to match(/\A<action-text-attachment.*Daily timelapse description/m)
     end
 
-    it 'uses the post orientation for the attachment' do
-      post.video_url = 'https://www.youtube.com/shorts/dQw4w9WgXcQ'
-      post.video_orientation = 'portrait'
+    it 'creates a landscape block that mirrors the post privacy and creator', :aggregate_failures do
+      post.save!
+      block = attached_blocks(post).first
+
+      expect(block).to have_attributes(aspect_ratio: '16x9', privacy: post.privacy, creator_id: post.creator_id,
+                                       identifier: "video-#{post.identifier}")
+    end
+
+    it 'uses a 9x16 block for portrait videos' do
+      post.assign_attributes(video_url: 'https://www.youtube.com/shorts/dQw4w9WgXcQ', video_orientation: 'portrait')
       post.save!
 
-      expect(attached_embeds(post).first.orientation).to eq('portrait')
+      expect(attached_blocks(post).first.aspect_ratio).to eq('9x16')
     end
 
-    it 'does not duplicate the attachment when saved again' do
+    it 'does not duplicate the attachment or block when saved again', :aggregate_failures do
       post.save!
       post.update!(title: 'Renamed')
 
-      expect(attached_embeds(post).size).to eq(1)
+      expect(attached_blocks(post).size).to eq(1)
+      expect(BetterTogether::Content::VideoBlock.where(identifier: "video-#{post.identifier}").count).to eq(1)
     end
 
-    it 'replaces the attachment when the video changes', :aggregate_failures do
+    it 'updates the same block when the video changes', :aggregate_failures do
       post.save!
+      block_id = attached_blocks(post).first.id
       post.update!(video_url: 'https://www.youtube.com/watch?v=abcdefghijk')
 
-      expect(attached_embeds(post).map(&:youtube_id)).to eq(%w[abcdefghijk])
-      expect(post.content.body.to_html).to include('<action-text-attachment').once
+      expect(attached_blocks(post).map(&:id)).to eq([block_id])
+      expect(attached_blocks(post).first.video_url).to include('abcdefghijk')
     end
 
-    it 'renders the iframe from the saved body', :aggregate_failures do
+    it 'changes only the orientation when given no new url', :aggregate_failures do
       post.save!
-      html = BetterTogether::PostsController.render(inline: '<%= render_action_text_content(c) %>',
-                                                    locals: { c: post.reload.content.body })
+      BetterTogether::Post.find(post.id).update!(video_orientation: 'portrait')
 
-      expect(html).to include('youtube-nocookie.com/embed/dQw4w9WgXcQ', 'ratio-16x9')
+      expect(attached_blocks(post).first).to be_portrait
     end
 
     it 'reads video_url and video_orientation back from the attachment', :aggregate_failures do
@@ -97,7 +104,7 @@ RSpec.describe NewfoundlandLabradorOnline::Post do
                                           video_orientation: 'portrait')
     end
 
-    it 'does not store video_url in display_settings' do
+    it 'does not store the video input in display_settings' do
       post.save!
 
       expect(post.reload.display_settings.keys).not_to include('video_url', 'video_orientation')
@@ -105,26 +112,46 @@ RSpec.describe NewfoundlandLabradorOnline::Post do
 
     it 'does not re-add a video an editor removed from the body', :aggregate_failures do
       post.save!
-      post = BetterTogether::Post.find(self.post.id)
-      post.update!(content: '<div>Text only</div>')
+      edited = BetterTogether::Post.find(post.id)
+      edited.update!(content: '<div>Text only</div>')
 
-      expect(attached_embeds(post)).to be_empty
-      expect(post.video_url).to be_nil
+      expect(attached_blocks(edited)).to be_empty
+      expect(edited.video_url).to be_nil
     end
 
-    it 'changes only the orientation when given no new url', :aggregate_failures do
-      post.save!
-      reloaded = BetterTogether::Post.find(post.id)
-      reloaded.update!(video_orientation: 'portrait')
+    def render_body(record)
+      BetterTogether::PostsController.render(inline: '<%= render_action_text_content(c) %>',
+                                             locals: { c: record.reload.content.body })
+    end
 
-      expect(attached_embeds(reloaded).map(&:id)).to eq(['dQw4w9WgXcQ:portrait'])
+    it 'renders the iframe once the block is public', :aggregate_failures do
+      post.save!
+      block = attached_blocks(post).first
+      block.seed_privacy_ceiling_exempt = true
+      block.update!(privacy: 'public')
+
+      expect(render_body(post)).to include('youtube-nocookie.com/embed/dQw4w9WgXcQ', 'ratio-16x9')
+    end
+
+    it 'holds the video while the block is not public' do
+      post.save!
+
+      expect(render_body(post)).to include('held-review')
+    end
+
+    it 'destroys the owned block with the post' do
+      post.save!
+      identifier = "video-#{post.identifier}"
+      post.destroy!
+
+      expect(BetterTogether::Content::VideoBlock.where(identifier:)).to be_empty
     end
 
     it 'adds no attachment without a video url' do
       post.video_url = nil
       post.save!
 
-      expect(attached_embeds(post)).to be_empty
+      expect(attached_blocks(post)).to be_empty
     end
   end
 
