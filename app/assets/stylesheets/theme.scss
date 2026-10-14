@@ -275,3 +275,20 @@ a.active {
     color: $dark-background-text-color;
   }
 }
+
+// Vertical (YouTube Shorts) post videos: Bootstrap has no 9x16 ratio helper.
+.ratio-9x16 {
+  --bs-aspect-ratio: 177.78%;
+}
+
+.post-video--portrait {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 360px;
+}
+
+// Robot contributor avatar: a stacked circle (like the share buttons) filled with the
+// theme's secondary background so the icon stays legible in light and dark modes.
+.robot-avatar .fa-circle {
+  color: var(--bs-secondary-bg);
+}

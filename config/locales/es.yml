@@ -65,6 +65,11 @@ es:
       remove: Eliminar del Viaje
   journeys:
     title: Mi Viaje
+  newfoundland_labrador_online:
+    robots:
+      avatar_label: Robot autor
+    video_blocks:
+      preview: 'Video: %{url}'
   time:
     am: am
     formats:

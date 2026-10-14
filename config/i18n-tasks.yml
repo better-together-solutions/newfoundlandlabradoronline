@@ -32,6 +32,11 @@ search:
     - "vendor/**"
     - "coverage/**"
 
+# Keys provided by the Better Together engine locales (used by copied CE views).
+ignore_missing:
+  - 'globals.*'
+  - 'better_together.*'
+
 ignore_unused:
   - "actions.*"
   - "globals.**"

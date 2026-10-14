@@ -65,6 +65,11 @@ fr:
       remove: Retirer du parcours
   journeys:
     title: Mon parcours
+  newfoundland_labrador_online:
+    robots:
+      avatar_label: Auteur robot
+    video_blocks:
+      preview: 'Vidéo : %{url}'
   time:
     am: am
     formats:
