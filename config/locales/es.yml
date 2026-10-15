@@ -89,6 +89,9 @@ es:
         use_typed_name: Usar "%{q}" como nombre de ubicación personalizado
     robots:
       avatar_label: Robot autor
+    settlement_events:
+      empty: Aún no hay eventos próximos en %{name}.
+      title: Eventos en %{name}
     settlement_posts:
       communities_heading: Comunidades en %{name}
       loading: Cargando publicaciones...

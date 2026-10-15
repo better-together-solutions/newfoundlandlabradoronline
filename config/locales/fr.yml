@@ -89,6 +89,9 @@ fr:
         use_typed_name: Utiliser « %{q} » comme nom de lieu personnalisé
     robots:
       avatar_label: Auteur robot
+    settlement_events:
+      empty: Aucun événement à venir à %{name} pour le moment.
+      title: Événements à %{name}
     settlement_posts:
       communities_heading: Communautés à %{name}
       loading: Chargement des publications...

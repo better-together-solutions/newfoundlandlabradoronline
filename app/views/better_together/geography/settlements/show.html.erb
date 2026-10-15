@@ -34,9 +34,9 @@
       <%= content_tag :div, id: 'geography-settlement', class: 'nav nav-tabs card-header-tabs', role: 'tablist', aria_label: 'geography-settlement Sections' do %>
         <%= link_to t('globals.tabs.about'), '#about', class: 'nav-link active', id: 'about-tab', data: { bs_toggle: 'tab', bs_target: '#about', turbo: false, 'better_together--tabs-target': 'tab' }, role: 'tab', aria: { controls: 'about', selected: 'true' }, tabindex: '0' %>
         <%= link_to t('globals.tabs.posts'), '#posts', class: 'nav-link', id: 'posts-tab', data: { bs_toggle: 'tab', bs_target: '#posts', turbo: false, 'better_together--tabs-target': 'tab' }, role: 'tab', aria: { controls: 'posts', selected: 'false' }, tabindex: '0' %>
+        <%= link_to t('globals.tabs.events'), '#events', class: 'nav-link', id: 'events-tab', data: { bs_toggle: 'tab', bs_target: '#events', turbo: false, 'better_together--tabs-target': 'tab' }, role: 'tab', aria: { controls: 'events', selected: 'false' }, tabindex: '0' %>
 
         <%# COMMENTED OUT UNTIL NEEDED  --------------
-        <%= link_to t('globals.tabs.events'), '#events', class: 'nav-link', id: 'events-tab', data: { bs_toggle: 'tab', bs_target: '#events', turbo: false, 'better_together--tabs-target': 'tab' }, role: 'tab', aria: { controls: 'events', selected: 'false' }, tabindex: '0' 
         <%= link_to t('globals.tabs.weather'), '#weather', class: 'nav-link', id: 'weather-tab', data: { bs_toggle: 'tab', bs_target: '#weather', turbo: false, 'better_together--tabs-target': 'tab' }, role: 'tab', aria: { controls: 'weather', selected: 'false' }, tabindex: '0' 
         <%= link_to t('globals.tabs.live_cam_views'), '#live_cam_views', class: 'nav-link', id: 'live_cam_views-tab', data: { bs_toggle: 'tab', bs_target: '#live_cam_views', turbo: false, 'better_together--tabs-target': 'tab' }, role: 'tab', aria: { controls: 'live_cam_views', selected: 'false' }, tabindex: '0' 
         <%= link_to t('globals.tabs.mutual_aid_hub'), '#mutual_aid_hub', class: 'nav-link', id: 'mutual_aid_hub-tab', data: { bs_toggle: 'tab', bs_target: '#mutual_aid_hub', turbo: false, 'better_together--tabs-target': 'tab' }, role: 'tab', aria: { controls: 'mutual_aid_hub', selected: 'false' }, tabindex: '0'        
@@ -82,15 +82,12 @@
           <% end %>
         </div>
 
-        <%# COMMENTED OUT UNTIL NEEDED  --------------
+        <%# Upcoming events located here, through the events policy scope so visibility never widens. %>
         <div id="events" class="nav-tab-pane tab-pane fade" role="tabpanel" aria-labelledby="events-tab">
-          <div class="row">
-            <div class="col-md-12">
-              <p>This is a test tab for events section</p>
+          <%= render 'better_together/geography/settlements/events', settlement: @geography_settlement %>
         </div>
-          </div>
-            </div>   
 
+        <%# COMMENTED OUT UNTIL NEEDED  --------------
         <div id="weather" class="nav-tab-pane tab-pane fade" role="tabpanel" aria-labelledby="weather-tab">
           <div class="row">
             <div class="col-md-12">
