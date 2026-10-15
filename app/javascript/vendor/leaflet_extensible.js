@@ -1,5 +1,6 @@
-// leaflet.markercluster assigns its classes onto the global L. CE's Leaflet global can be a sealed module
-// namespace, so give plugins a plain extensible copy first (the classes and functions are shared, not cloned).
+// Leaflet plugins (leaflet.markercluster) assign their classes onto the global L. Depending on how Leaflet was
+// loaded that global can be a sealed module namespace, so give plugins a plain extensible copy first (the classes
+// and functions are shared with the original, not cloned).
 import * as namespace from 'leaflet'
 
 const base = window.L || namespace

@@ -1,4 +1,4 @@
-<%# Copied from community-engine-rails dfad67df6da4 (app/views/better_together/geography/settlements/show.html.erb). Changes: the live image card, and a live Posts tab (the CE pane was commented out), a Communities tab, and the settlement map; re-diff when the CE pin moves. -%>
+<%# Copied from community-engine-rails dfad67df6da4 (app/views/better_together/geography/settlements/show.html.erb). Changes: the live image card, and a live Posts tab (the CE pane was commented out), a Communities tab, and the settlement map (a SettlementMap on CE's shared map partial); re-diff when the CE pin moves. -%>
 <div class="container">
 
   <div class="geography-settlement-header position-relative">
@@ -26,7 +26,12 @@
     <%= link_to t('.view-all-settlements'), geography_settlements_path(locale: I18n.locale), class: "btn btn-secondary me-2" %>
   </div>
 
-  <%= render 'newfoundland_labrador_online/settlements/map', settlement: @geography_settlement %>
+  <% located_map = settlement_map(@geography_settlement) %>
+  <% if located_map.spaces.any? %>
+    <section class="settlement-map mb-4" aria-label="<%= t('newfoundland_labrador_online.settlement_map.label', name: @geography_settlement.name) %>">
+      <%= render 'better_together/shared/map', map: located_map, types: located_map.types, boundary: located_map.boundary %>
+    </section>
+  <% end %>
 
   <% located_communities = policy_scope(BetterTogether::Community).located_in(@geography_settlement).with_translations.order(:identifier) %>
 
