@@ -110,8 +110,6 @@ es:
     settlement_events:
       empty: Aún no hay eventos próximos en %{name}.
       title: Eventos en %{name}
-    settlement_posts:
-      communities_heading: Comunidades en %{name}
     settlement_map:
       label: Mapa de %{name}
     settlement_posts:
