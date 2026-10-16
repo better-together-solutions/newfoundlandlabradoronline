@@ -14,7 +14,7 @@ module NewfoundlandLabradorOnline
 
     def self.prepended(base)
       base.attributes :community_id, :video_block_id, :attachment_block_ids, :category_identifiers, :contributor_specs,
-                      :cover_image_data, :cover_image_filename, :created_at
+                      :cover_image_data, :cover_image_filename
       base.singleton_class.prepend(ClassMethods)
     end
 
