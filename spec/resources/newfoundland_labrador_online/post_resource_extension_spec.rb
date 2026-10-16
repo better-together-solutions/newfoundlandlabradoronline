@@ -5,6 +5,11 @@ require 'rails_helper'
 RSpec.describe NewfoundlandLabradorOnline::PostResourceExtension do
   let(:resource) { BetterTogether::Api::V1::PostResource }
 
+  it 'lets a backfill set created_at on create but never on update', :aggregate_failures do
+    expect(resource.creatable_fields({})).to include(:created_at)
+    expect(resource.updatable_fields({})).not_to include(:created_at)
+  end
+
   it 'adds the publisher fields to creatable fields' do
     expect(resource.creatable_fields({})).to include(
       :community_id, :published_at, :video_block_id, :category_identifiers, :contributor_specs

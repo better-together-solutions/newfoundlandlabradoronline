@@ -7,13 +7,14 @@ module NewfoundlandLabradorOnline
   module PostResourceExtension
     EXTRA_FIELDS = %i[
       community_id published_at video_block_id attachment_block_ids category_identifiers contributor_specs
-      cover_image_data cover_image_filename
+      cover_image_data cover_image_filename created_at
     ].freeze
-    CREATE_ONLY_FIELDS = %i[contributor_specs video_block_id attachment_block_ids].freeze
+    # created_at is create-only so a backfill can keep the original date; it is never rewritten afterwards.
+    CREATE_ONLY_FIELDS = %i[contributor_specs video_block_id attachment_block_ids created_at].freeze
 
     def self.prepended(base)
       base.attributes :community_id, :video_block_id, :attachment_block_ids, :category_identifiers, :contributor_specs,
-                      :cover_image_data, :cover_image_filename
+                      :cover_image_data, :cover_image_filename, :created_at
       base.singleton_class.prepend(ClassMethods)
     end
 
