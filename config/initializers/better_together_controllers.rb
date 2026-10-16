@@ -10,4 +10,5 @@ Rails.application.config.to_prepare do
   # included), so the helper is added to every view rather than to individual controllers.
   ActionView::Base.include(BetterTogether::Content::BlocksHelper)
   ActionView::Base.include(NewfoundlandLabradorOnline::LocationPickerHelper)
+  ActionView::Base.include(NewfoundlandLabradorOnline::SettlementMapHelper)
 end

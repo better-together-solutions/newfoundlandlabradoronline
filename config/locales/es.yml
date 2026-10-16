@@ -29,6 +29,24 @@ es:
       resource: Recurso
       resource/document: Documento
       resource/link: Enlace
+  better_together:
+    shared:
+      map:
+        buttons:
+          geolocate: Ubicarme
+          map: Mapa
+          satellite: Satélite
+        geolocation:
+          denied: El acceso a la ubicación está bloqueado. Permítalo para este sitio
+            en la configuración del navegador e inténtelo de nuevo.
+          located: Mostrando su ubicación.
+          locating: Buscando su ubicación...
+          timeout: Encontrar su ubicación tardó demasiado. Inténtelo de nuevo.
+          unavailable: No se pudo determinar su ubicación. Compruebe que los servicios
+            de ubicación estén activados e inténtelo de nuevo.
+          unsupported: Su navegador no admite la ubicación.
+          you_are_here: Usted está aquí
+        show_on_map: Mostrar en el mapa
   globals:
     attached_file: Archivo adjunto
     download: Descargar
@@ -94,6 +112,9 @@ es:
       title: Eventos en %{name}
     settlement_posts:
       communities_heading: Comunidades en %{name}
+    settlement_map:
+      label: Mapa de %{name}
+    settlement_posts:
       loading: Cargando publicaciones...
       located_in: Ubicado en
       title: Publicaciones en %{name}
