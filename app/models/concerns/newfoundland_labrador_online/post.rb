@@ -8,23 +8,13 @@ module NewfoundlandLabradorOnline
 
     include NewfoundlandLabradorOnline::PostVideo
     include NewfoundlandLabradorOnline::PostCoverImage
+    include NewfoundlandLabradorOnline::CategoryIdentifiers
 
     included do
       attr_accessor :pin_timestamps_to_creation
 
-      validate :category_identifiers_must_exist
       validate :contributor_specs_must_be_supported
       after_commit :pin_updated_at_to_created_at, on: :create, if: :pin_timestamps_to_creation
-    end
-
-    def category_identifiers
-      categories.map(&:identifier)
-    end
-
-    def category_identifiers=(identifiers)
-      @pending_category_identifiers = Array(identifiers).map(&:to_s).compact_blank.uniq
-      found = ::BetterTogether::Category.where(identifier: @pending_category_identifiers).to_a
-      self.categories = found if found.size == @pending_category_identifiers.size
     end
 
     def contributor_specs
@@ -65,14 +55,6 @@ module NewfoundlandLabradorOnline
       return if @unsupported_contributor_types.blank?
 
       errors.add(:base, "unsupported contributor type: #{@unsupported_contributor_types.join(', ')}")
-    end
-
-    def category_identifiers_must_exist
-      return if @pending_category_identifiers.blank?
-
-      known = ::BetterTogether::Category.where(identifier: @pending_category_identifiers).pluck(:identifier)
-      missing = @pending_category_identifiers - known
-      errors.add(:base, "unknown categories: #{missing.join(', ')}") if missing.any?
     end
   end
 end

@@ -9,4 +9,13 @@
   <% if block.caption.present? %>
     <figcaption class="post-image__caption text-muted small mt-1"><%= block.caption %></figcaption>
   <% end %>
+  <% if block.attribution.present? %>
+    <p class="post-image__attribution text-muted small mb-0">
+      <% if block.attribution_url.present? %>
+        <%= link_to block.attribution, block.attribution_url, target: '_blank', rel: 'noopener noreferrer' %>
+      <% else %>
+        <%= block.attribution %>
+      <% end %>
+    </p>
+  <% end %>
 </figure>
