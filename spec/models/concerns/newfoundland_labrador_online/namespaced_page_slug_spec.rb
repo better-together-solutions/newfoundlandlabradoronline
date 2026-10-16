@@ -27,6 +27,23 @@ RSpec.describe NewfoundlandLabradorOnline::NamespacedPageSlug do
     expect(page.slug).to eq('ships/mt-explora-iii')
   end
 
+  describe 'a saved namespaced page' do
+    let(:page) do
+      create(:better_together_page, title: 'EXPLORA III', slug: 'ships/mt-explora-iii', platform:, privacy: 'private')
+    end
+
+    before { page.update!(title: 'EXPLORA III (renamed)') }
+
+    it 'keeps the slash in its slug and identifier after reloading and retitling', :aggregate_failures do
+      expect(page.reload.slug).to eq('ships/mt-explora-iii')
+      expect(page.identifier).to eq('ships/mt-explora-iii')
+    end
+
+    it 'is found by its namespaced slug' do
+      expect(BetterTogether::Page.friendly.find('ships/mt-explora-iii')).to eq(page)
+    end
+  end
+
   it 'leaves an ordinary slug unchanged' do
     page = page_with_slug('about-us')
     page.valid?
