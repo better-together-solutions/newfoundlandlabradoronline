@@ -10,8 +10,11 @@ module NewfoundlandLabradorOnline
     include NewfoundlandLabradorOnline::PostCoverImage
 
     included do
+      attr_accessor :pin_timestamps_to_creation
+
       validate :category_identifiers_must_exist
       validate :contributor_specs_must_be_supported
+      after_commit :pin_updated_at_to_created_at, on: :create, if: :pin_timestamps_to_creation
     end
 
     def category_identifiers
@@ -37,6 +40,12 @@ module NewfoundlandLabradorOnline
     end
 
     private
+
+    # A backfilled post shows its updated date when that is later than its creation date (CE's post page), and
+    # attaching the cover and blocks touches it, so the import time would show instead of the original date.
+    def pin_updated_at_to_created_at
+      update_columns(updated_at: created_at)
+    end
 
     def build_contribution(spec)
       type = spec[:author_type].to_s

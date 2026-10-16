@@ -29,6 +29,14 @@ module NewfoundlandLabradorOnline
       end
     end
 
+    # A backfill sends created_at on create: keep it, and keep updated_at equal to it
+    # (see Post#pin_updated_at_to_created_at).
+    def created_at=(value)
+      _model.created_at = value
+      _model.updated_at = value
+      _model.pin_timestamps_to_creation = true
+    end
+
     # Write-only inputs: video_block_id and attachment_block_ids attach blocks at creation and the cover image fields
     # attach the image, so none of them is returned (cover_image_url shows the result).
     def fetchable_fields

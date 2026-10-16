@@ -5,6 +5,14 @@ require 'rails_helper'
 RSpec.describe NewfoundlandLabradorOnline::PostResourceExtension do
   let(:resource) { BetterTogether::Api::V1::PostResource }
 
+  it 'pins updated_at to a backfilled created_at', :aggregate_failures do
+    post = BetterTogether::Post.new
+    resource.new(post, {}).created_at = Time.zone.parse('2026-09-30 06:30')
+
+    expect(post.updated_at).to eq(post.created_at)
+    expect(post.pin_timestamps_to_creation).to be(true)
+  end
+
   it 'lets a backfill set created_at on create but never on update', :aggregate_failures do
     expect(resource.creatable_fields({})).to include(:created_at)
     expect(resource.updatable_fields({})).not_to include(:created_at)
