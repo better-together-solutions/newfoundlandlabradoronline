@@ -55,6 +55,13 @@ RSpec.describe NewfoundlandLabradorOnline::HeroBlock do
     expect(block.background_image_data).to be_nil
   end
 
+  it 'replaces the background of a saved block without recursing', :aggregate_failures do
+    block.save!
+    block.update!(background_image_data: Base64.strict_encode64(png), background_image_filename: 'replacement.png')
+
+    expect(block.reload.background_image_file.filename.to_s).to eq('replacement.png')
+  end
+
   it 'leaves an existing background alone when no data is sent', :aggregate_failures do
     block.save!
     block.update!(heading: 'EXPLORA III (updated)')

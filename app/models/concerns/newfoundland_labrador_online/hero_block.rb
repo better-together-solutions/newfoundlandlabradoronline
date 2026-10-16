@@ -17,8 +17,12 @@ module NewfoundlandLabradorOnline
 
     private
 
+    # Attaching to a saved record saves it again, which would run this callback again; the data is cleared first
+    # so replacing the background of an existing block (an API update) cannot recurse.
     def assign_background_image_data
-      result = ImageInput.decode(background_image_data)
+      data = background_image_data
+      self.background_image_data = nil
+      result = ImageInput.decode(data)
       @background_image_error = result.error
       return if result.error
 
