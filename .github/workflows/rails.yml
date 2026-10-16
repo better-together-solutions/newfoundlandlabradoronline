@@ -62,6 +62,10 @@ jobs:
 
   i18n-health:
     runs-on: ubuntu-latest
+    # The auto-fix commits to the branch tip, so only the newest push's run may proceed.
+    concurrency:
+      group: i18n-health-${{ github.head_ref || github.ref_name }}
+      cancel-in-progress: true
     env:
       HAS_PUSH_TOKEN: ${{ secrets.BTS_ROBOT_PUSH_TOKEN != '' }}
     steps:

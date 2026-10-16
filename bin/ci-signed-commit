@@ -26,4 +26,13 @@ jq -n --slurpfile additions "$additions" --slurpfile deletions "$deletions" \
       expectedHeadOid: $oid,
       message: {headline: $headline},
       fileChanges: {additions: $additions[0], deletions: ($deletions[0] | map({path: .}))}}}}' \
-  | gh api graphql --input - --jq '.data.createCommitOnBranch.commit.url'
+  | gh api graphql --input - > "$additions.out" 2>&1 || {
+  # A newer push moved the branch; that push's own run re-evaluates the tip.
+  if grep -q STALE_DATA "$additions.out"; then
+    echo "Branch moved since checkout; skipping, the newer run will handle it." >&2
+    exit 0
+  fi
+  cat "$additions.out" >&2
+  exit 1
+}
+jq -r '.data.createCommitOnBranch.commit.url' "$additions.out"
