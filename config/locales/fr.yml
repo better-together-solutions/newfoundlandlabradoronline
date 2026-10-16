@@ -29,6 +29,24 @@ fr:
       resource: Ressource
       resource/document: Document
       resource/link: Lien
+  better_together:
+    shared:
+      map:
+        buttons:
+          geolocate: Me localiser
+          map: Carte
+          satellite: Satellite
+        geolocation:
+          denied: L'accès à la localisation est bloqué. Autorisez-le pour ce site
+            dans les paramètres du navigateur, puis réessayez.
+          located: Affichage de votre position.
+          locating: Recherche de votre position...
+          timeout: La recherche de votre position a pris trop de temps. Réessayez.
+          unavailable: Votre position n'a pas pu être déterminée. Vérifiez que les
+            services de localisation sont activés, puis réessayez.
+          unsupported: Votre navigateur ne prend pas en charge la localisation.
+          you_are_here: Vous êtes ici
+        show_on_map: Afficher sur la carte
   globals:
     attached_file: Fichier joint
     download: Télécharger
@@ -66,8 +84,38 @@ fr:
   journeys:
     title: Mon parcours
   newfoundland_labrador_online:
+    image_blocks:
+      preview: 'Image : %{caption}'
+    live_images:
+      alt: Dernière image de la caméra sur %{name}
+      title: "%{name} en direct"
+      updated: Photo prise à
+    locations:
+      picker:
+        announcements:
+          cancelled: Nouvelle adresse annulée. Retour au champ de recherche du lieu.
+          creating: Création d'une nouvelle adresse. Remplissez les champs ci-dessous,
+            puis enregistrez.
+        cancel_new_address: Annuler la nouvelle adresse
+        create_new: Créer %{model}
+        hint: Recherchez une localité, une région, une adresse ou un bâtiment. Saisissez
+          un nom pour l'utiliser comme lieu personnalisé.
+        label: Lieu
+        new_address_legend: Nouvelle adresse
+        new_named_with_query: 'Créer %{model} : « %{q} »'
+        tab: Lieu
+        use_typed_name: Utiliser « %{q} » comme nom de lieu personnalisé
     robots:
       avatar_label: Auteur robot
+    settlement_events:
+      empty: Aucun événement à venir à %{name} pour le moment.
+      title: Événements à %{name}
+    settlement_map:
+      label: Carte de %{name}
+    settlement_posts:
+      loading: Chargement des publications...
+      located_in: Situé à
+      title: Publications à %{name}
     video_blocks:
       preview: 'Vidéo : %{url}'
   time:

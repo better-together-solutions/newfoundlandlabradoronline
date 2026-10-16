@@ -18,8 +18,34 @@ RSpec.describe NewfoundlandLabradorOnline::VideoCategoryBuilder do
     portrait = described_class.identifiers_for(kind: 'daily', orientation: 'portrait')
     landscape = described_class.identifiers_for(kind: 'monthly', orientation: 'landscape')
 
-    expect(portrait).to eq(%w[timelapse daily-timelapse shorts])
-    expect(landscape).to eq(%w[timelapse monthly-timelapse])
+    expect(portrait).to eq(%w[timelapse daily-timelapse sky shorts])
+    expect(landscape).to eq(%w[timelapse monthly-timelapse sky])
+  end
+
+  describe 'a re-run after changes' do
+    before do
+      described_class.seed_data(platform:)
+      sky = BetterTogether::Category.find_by!(identifier: 'sky', platform:)
+      Mobility.with_locale(:en) { sky.update!(name: 'Sky and weather') }
+      BetterTogether::Category.where(identifier: 'shorts', platform:).delete_all
+    end
+
+    it 'adds only the missing category' do
+      expect { described_class.seed_data(platform:) }.to change(BetterTogether::Category, :count).by(1)
+    end
+
+    it 'leaves existing categories unchanged' do
+      described_class.seed_data(platform:)
+      sky = BetterTogether::Category.find_by!(identifier: 'sky', platform:)
+
+      expect(Mobility.with_locale(:en) { sky.name }).to eq('Sky and weather')
+    end
+  end
+
+  it 'seeds the sky category', :aggregate_failures do
+    described_class.seed_data(platform:)
+
+    expect(BetterTogether::Category.find_by(identifier: 'sky', platform:)).to be_present
   end
 
   it 'refuses to clear protected categories' do

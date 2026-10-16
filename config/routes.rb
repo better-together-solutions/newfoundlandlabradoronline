@@ -2,12 +2,17 @@
 
 Rails.application.routes.draw do
   get 'healthcheck', to: 'healthcheck#index'
+  get 'live/:slug.jpg', to: 'newfoundland_labrador_online/live_images#show',
+                        constraints: { slug: /[a-z-]+/ }, format: false
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   scope ':locale',
         locale: /#{I18n.available_locales.join('|')}/ do
     authenticated :user do # rubocop:todo Lint/EmptyBlock
     end
+
+    get 'locations/available', to: 'newfoundland_labrador_online/locations#available',
+                               as: :newfoundland_labrador_online_available_locations
   end
 
   root to: redirect("/#{I18n.default_locale}")

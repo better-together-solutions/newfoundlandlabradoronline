@@ -6,13 +6,13 @@ module NewfoundlandLabradorOnline
   # CE ships natively (see docs/ce-api-mcp-discrepancies-*.md in management-tool).
   module PostResourceExtension
     EXTRA_FIELDS = %i[
-      community_id published_at video_block_id category_identifiers contributor_specs
+      community_id published_at video_block_id attachment_block_ids category_identifiers contributor_specs
       cover_image_data cover_image_filename
     ].freeze
-    CREATE_ONLY_FIELDS = %i[contributor_specs video_block_id].freeze
+    CREATE_ONLY_FIELDS = %i[contributor_specs video_block_id attachment_block_ids].freeze
 
     def self.prepended(base)
-      base.attributes :community_id, :video_block_id, :category_identifiers, :contributor_specs,
+      base.attributes :community_id, :video_block_id, :attachment_block_ids, :category_identifiers, :contributor_specs,
                       :cover_image_data, :cover_image_filename
       base.singleton_class.prepend(ClassMethods)
     end
@@ -28,10 +28,10 @@ module NewfoundlandLabradorOnline
       end
     end
 
-    # Write-only inputs: video_block_id attaches the block at creation and the cover image fields
+    # Write-only inputs: video_block_id and attachment_block_ids attach blocks at creation and the cover image fields
     # attach the image, so none of them is returned (cover_image_url shows the result).
     def fetchable_fields
-      super - %i[video_block_id cover_image_data cover_image_filename]
+      super - %i[video_block_id attachment_block_ids cover_image_data cover_image_filename]
     end
   end
 end

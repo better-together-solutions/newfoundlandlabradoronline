@@ -29,6 +29,24 @@ en:
       resource: Resource
       resource/document: Document
       resource/link: Link
+  better_together:
+    shared:
+      map:
+        buttons:
+          geolocate: Geolocate Me
+          map: Map
+          satellite: Satellite
+        geolocation:
+          denied: Location access is blocked. Allow it for this site in your browser
+            settings and try again.
+          located: Showing your location.
+          locating: Finding your location...
+          timeout: Finding your location took too long. Try again.
+          unavailable: Your location could not be determined. Check that location
+            services are on and try again.
+          unsupported: Your browser does not support location.
+          you_are_here: You are here
+        show_on_map: Show on the map
   globals:
     attached_file: Attached file
     download: Download
@@ -66,8 +84,38 @@ en:
   journeys:
     title: My Journey
   newfoundland_labrador_online:
+    image_blocks:
+      preview: 'Image: %{caption}'
+    live_images:
+      alt: Latest camera image over %{name}
+      title: "%{name} right now"
+      updated: Photo taken
+    locations:
+      picker:
+        announcements:
+          cancelled: New address cancelled. Returned to the location search field.
+          creating: Creating a new address. Fill in the address fields below, then
+            save.
+        cancel_new_address: Cancel new address
+        create_new: Create new %{model}
+        hint: Search for a settlement, region, address or building. Type a name to
+          use it as a custom location.
+        label: Location
+        new_address_legend: New address
+        new_named_with_query: 'Create new %{model}: "%{q}"'
+        tab: Location
+        use_typed_name: Use "%{q}" as a custom location name
     robots:
       avatar_label: Robot author
+    settlement_events:
+      empty: No upcoming events in %{name} yet.
+      title: Events in %{name}
+    settlement_map:
+      label: Map of %{name}
+    settlement_posts:
+      loading: Loading posts...
+      located_in: Located in
+      title: Posts in %{name}
     video_blocks:
       preview: 'Video: %{url}'
   time:

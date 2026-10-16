@@ -94,6 +94,60 @@ RSpec.describe NewfoundlandLabradorOnline::Post do
     end
   end
 
+  describe 'attachment_block_ids' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+    let(:png) do
+      Base64.strict_decode64(
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
+      )
+    end
+    let(:image_block) do
+      BetterTogether::Content::Image.create!(platform:, privacy: 'private', identifier: 'ab-img', creator: person,
+                                             caption: 'Sunrise, 07:38', media_data: Base64.strict_encode64(png),
+                                             media_filename: 'sunrise.png')
+    end
+
+    def attachables(record)
+      BetterTogether::Post.find(record.id).content.body.attachables
+    end
+
+    it 'attaches image blocks ahead of the description', :aggregate_failures do
+      post.assign_attributes(content: 'Sunrise over Corner Brook', attachment_block_ids: [image_block.id])
+      post.save!
+
+      expect(attachables(post)).to eq([image_block])
+      expect(post.reload.content.body.to_html).to match(/\A<action-text-attachment.*Sunrise over Corner Brook/m)
+    end
+
+    it 'attaches the video block first, then the images, in order', :aggregate_failures do
+      post.assign_attributes(video_block_id: video_block.id, attachment_block_ids: [image_block.id])
+      post.save!
+
+      expect(attachables(post)).to eq([video_block, image_block])
+    end
+
+    it 'rejects an unknown block id', :aggregate_failures do
+      post.attachment_block_ids = [SecureRandom.uuid]
+
+      expect(post).not_to be_valid
+      expect(post.errors[:attachment_block_ids]).to be_present
+    end
+
+    it 'rejects blocks of other types' do
+      other = BetterTogether::Content::Markdown.create!(platform:, privacy: 'private', identifier: 'ab-md',
+                                                        creator: person, markdown_source: '# Heading')
+      post.attachment_block_ids = [other.id]
+
+      expect(post).not_to be_valid
+    end
+
+    it 'ignores the ids on update' do
+      post.save!
+      post.update!(attachment_block_ids: [image_block.id])
+
+      expect(attachables(post)).to be_empty
+    end
+  end
+
   describe '#category_identifiers=' do
     before { NewfoundlandLabradorOnline::VideoCategoryBuilder.seed_data(platform:) }
 

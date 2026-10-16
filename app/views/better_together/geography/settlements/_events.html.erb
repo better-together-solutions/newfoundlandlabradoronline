@@ -1,0 +1,16 @@
+<%# Upcoming events located at +settlement+ (see NewfoundlandLabradorOnline::LocationInterface.located_in). %>
+<% events = policy_scope(BetterTogether::Event).located_in(settlement).upcoming.reorder(:starts_at).limit(50).to_a %>
+<% if events.any? %>
+  <ul class="list-unstyled" aria-label="<%= t('newfoundland_labrador_online.settlement_events.title', name: settlement.name) %>">
+    <% events.each do |event| %>
+      <li class="mb-3">
+        <%= link_to event.name, event_path(event), class: 'fw-semibold' %>
+        <% if event.local_starts_at %>
+          <div class="text-muted small"><%= l(event.local_starts_at, format: :long) %></div>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p class="text-muted"><%= t('newfoundland_labrador_online.settlement_events.empty', name: settlement.name) %></p>
+<% end %>

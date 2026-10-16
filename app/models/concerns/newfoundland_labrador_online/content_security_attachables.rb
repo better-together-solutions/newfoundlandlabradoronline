@@ -5,7 +5,7 @@ module NewfoundlandLabradorOnline
   # CE rejects and holds every attachment that is not an ActiveStorage blob; each
   # extension only adds an exception for ALLOWED and defers to CE otherwise.
   module ContentSecurityAttachables
-    ALLOWED = %w[BetterTogether::Content::VideoBlock].freeze
+    ALLOWED = %w[BetterTogether::Content::VideoBlock BetterTogether::Content::Image].freeze
 
     def self.allowed?(attachable)
       ALLOWED.include?(attachable.class.name)

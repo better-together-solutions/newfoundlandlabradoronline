@@ -1,0 +1,102 @@
+<%# Copied from community-engine-rails dfad67df6da4 (app/views/better_together/posts/_form.html.erb). The only change is the shared location picker before published_at; re-diff when the CE pin moves. -%>
+<%= form_with(model: post, class: 'form', id: dom_id(post, 'form'), data: { controller: "better_together--form-validation" }) do |form| %>
+  <%= form.hidden_field :creator_id, value: current_person&.id unless form.object.creator_id %>
+  <%= form.hidden_field :community_id, value: post.community_id if post.community_id.present? %>
+  <% content_for :resource_toolbar do %>
+    <div class="btn-toolbar mb-3" role="toolbar" aria-label="<%= t('helpers.toolbar.aria_label') %>">
+      <div class="btn-group me-2" role="group">
+        <%= link_to t('better_together.posts.back_to_posts', default: 'Back to Posts'), posts_path, class: 'btn btn-secondary' %>
+      </div>
+      <div class="btn-group me-2" role="group">
+        <%= form.submit t('better_together.posts.save_post', default: 'Save Post'), class: 'btn btn-primary' %>
+      </div>
+      <% if post.persisted? %>
+        <div class="btn-group me-2" role="group">
+          <%= link_to t('better_together.posts.view_post', default: 'View Post'), post, class: 'btn btn-info' %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= yield :resource_toolbar %>
+
+  <%= render 'layouts/better_together/errors', object: post if post.errors.any? %>
+
+  <div class="mb-3">
+    <%= render partial: 'better_together/shared/translated_string_field', locals: { model: post, form: form, attribute: 'title' } %>
+  </div>
+
+  <div class="mb-3">
+    <%= render partial: 'better_together/shared/translated_string_field', locals: { model: post, form: form, attribute: 'slug' } %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :privacy, t('better_together.posts.labels.privacy', default: 'Privacy') %>
+    <% _post_platform = post.platform || Current.platform %>
+    <% _post_community = post.community %>
+    <% _max_privacy = max_allowed_privacy(platform: _post_platform, community: _post_community) %>
+    <%= privacy_field(form:, klass: post.class, max_privacy: _max_privacy) %>
+    <% if (hint = privacy_constraint_hint(platform: _post_platform, community: _post_community)) %>
+      <small class="form-text text-muted mt-1" id="<%= dom_id(post, :privacy_hint) %>">
+        <%= hint %>
+      </small>
+    <% end %>
+  </div>
+
+  <%= federation_visibility_field(form:) %>
+  <%= federation_content_grants_field(form:, record: post, connections: federation_connections_for(post)) %>
+
+  <div class="mb-3">
+    <%= required_label form, :categories %>
+    <%= form.select :category_ids,
+      options_from_collection_for_select(
+        resource_class.category_klass.positioned.all.includes(:string_translations),
+        :id, :name, post.category_ids
+      ),
+      { include_blank: true, multiple: true },
+      class: 'form-select', data: { controller: 'better_together--slim_select' } %>
+    <small class="form-text text-muted"><%= t('hints.categories.select_multiple') %></small>
+  </div>
+
+  <div class="mb-3">
+    <%= contributions_fieldset(form:, record: post) %>
+  </div>
+
+  <div class="mb-3">
+    <%= contributor_display_visibility_field(
+          form:,
+          include_inherit: true,
+          label: t('better_together.authorable_contributor_visibility.labels.record', default: 'Contributor display'),
+          hint: t('better_together.authorable_contributor_visibility.hints.post', default: 'Choose whether this post shows contributor bylines on public-facing views, or inherits the platform setting.')
+        ) %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.fields_for :comment_config, (post.comment_config || post.build_comment_config) do |cc_form| %>
+      <%= comment_permission_field(form: cc_form, commentable: post) %>
+      <%= comment_visibility_field(form: cc_form, commentable: post) %>
+    <% end %>
+  </div>
+
+  <%= render 'newfoundland_labrador_online/locations/picker', form: form, record: post %>
+
+  <div class="mb-3">
+    <%= form.label :published_at %>
+    <%= form.datetime_field :published_at, include_seconds: false, class: 'form-control' %>
+  </div>
+
+  <div class="mb-3">
+    <%= render partial: 'better_together/shared/translated_rich_text_field',
+               locals: {
+                 model: post,
+                 form: form,
+                 attribute: 'content'
+               } %>
+  </div>
+
+  <div class="mb-3">
+    <%= render 'better_together/shared/fields/attachments/cover_image', form: form %>
+  </div>
+
+  <%= yield :resource_toolbar %>
+<% end %>
