@@ -1,0 +1,113 @@
+name: "Engine migrations"
+
+# Dependabot only bumps Gemfile.lock. When a gem (Solidus, solidus_auth_devise, ...) ships
+# migrations the app has not installed, this job installs them, runs them and refreshes
+# db/schema.rb via bin/install-engine-migrations.
+#
+# Pushing the result back to a Dependabot branch needs the BTS_ROBOT_PUSH_TOKEN Dependabot
+# secret (contents:write on this repo). Without it the job fails with instructions instead.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - Gemfile
+      - Gemfile.lock
+      - db/**
+      - bin/install-engine-migrations
+      - .github/workflows/engine-migrations.yml
+
+permissions:
+  contents: read
+
+jobs:
+  engine-migrations:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:latest
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_USER: rails
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: rails_test
+        options: >-
+          --health-cmd "pg_isready -U rails"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - "6379:6379"
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: "postgis://rails:password@localhost:5432/engine_migrations"
+      REDIS_URL: "redis://localhost:6379"
+      HAS_PUSH_TOKEN: ${{ secrets.BTS_ROBOT_PUSH_TOKEN != '' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+          token: ${{ secrets.BTS_ROBOT_PUSH_TOKEN || github.token }}
+
+      - name: Install Ruby & gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Install, run and dump engine migrations
+        id: install
+        run: |
+          set +e
+          bin/install-engine-migrations
+          echo "status=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Fail on unexpected error
+        if: steps.install.outputs.status != '0' && steps.install.outputs.status != '10'
+        run: exit 1
+
+      - name: Commit migrations and schema to the Dependabot branch
+        id: push
+        if: >-
+          steps.install.outputs.status == '10'
+          && github.actor == 'dependabot[bot]'
+          && github.event.pull_request.head.repo.full_name == github.repository
+          && env.HAS_PUSH_TOKEN == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BTS_ROBOT_PUSH_TOKEN }}
+          BRANCH: ${{ github.head_ref }}
+        # createCommitOnBranch makes GitHub sign the commit, so it shows as Verified;
+        # a `git commit` from the runner would be unsigned.
+        run: |
+          set -euo pipefail
+          files="$(mktemp)"
+          echo '[]' > "$files"
+          while IFS= read -r f; do
+            jq -c --arg p "$f" --rawfile c <(base64 -w0 "$f") '. + [{path: $p, contents: $c}]' "$files" > "$files.new"
+            mv "$files.new" "$files"
+          done < <(git ls-files --modified --others --exclude-standard -- db/)
+
+          jq -n --slurpfile additions "$files" \
+            --arg repo "$GITHUB_REPOSITORY" --arg branch "$BRANCH" --arg oid "$(git rev-parse HEAD)" \
+            '{query: "mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { url } } }",
+              variables: {input: {
+                branch: {repositoryNameWithOwner: $repo, branchName: $branch},
+                expectedHeadOid: $oid,
+                message: {headline: "chore(db): install engine migrations and refresh schema"},
+                fileChanges: {additions: $additions[0]}}}}' \
+            | gh api graphql --input - --jq '.data.createCommitOnBranch.commit.url'
+
+      - name: Report result
+        if: steps.install.outputs.status == '10'
+        run: |
+          git status --short -- db/
+          if [ "${{ steps.push.outcome }}" = "success" ]; then
+            echo "Pushed the installed migrations; CI reruns on the new commit."
+            exit 1
+          fi
+          echo "::error::Engine migrations are missing from db/. Run bin/install-engine-migrations (via bin/dc-run) and commit db/."
+          exit 1
