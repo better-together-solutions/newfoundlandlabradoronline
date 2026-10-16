@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe NewfoundlandLabradorOnline::ApiLocale, type: :controller do
   controller(ActionController::Base) do
-    include described_class
+    include NewfoundlandLabradorOnline::ApiLocale # rubocop:disable RSpec/DescribedClass
 
     def index
       render json: { locale: I18n.locale, mobility: Mobility.locale }
