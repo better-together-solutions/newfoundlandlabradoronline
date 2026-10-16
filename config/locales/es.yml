@@ -29,6 +29,24 @@ es:
       resource: Recurso
       resource/document: Documento
       resource/link: Enlace
+  better_together:
+    shared:
+      map:
+        buttons:
+          geolocate: Ubicarme
+          map: Mapa
+          satellite: Satélite
+        geolocation:
+          denied: El acceso a la ubicación está bloqueado. Permítalo para este sitio
+            en la configuración del navegador e inténtelo de nuevo.
+          located: Mostrando su ubicación.
+          locating: Buscando su ubicación...
+          timeout: Encontrar su ubicación tardó demasiado. Inténtelo de nuevo.
+          unavailable: No se pudo determinar su ubicación. Compruebe que los servicios
+            de ubicación estén activados e inténtelo de nuevo.
+          unsupported: Su navegador no admite la ubicación.
+          you_are_here: Usted está aquí
+        show_on_map: Mostrar en el mapa
   globals:
     attached_file: Archivo adjunto
     download: Descargar
@@ -68,8 +86,33 @@ es:
   newfoundland_labrador_online:
     image_blocks:
       preview: 'Imagen: %{caption}'
+    live_images:
+      alt: Última imagen de la cámara sobre %{name}
+      title: "%{name} en directo"
+      updated: Foto tomada a las
+    locations:
+      picker:
+        announcements:
+          cancelled: Nueva dirección cancelada. Volvió al campo de búsqueda de ubicación.
+          creating: Creando una nueva dirección. Complete los campos siguientes y
+            guarde.
+        cancel_new_address: Cancelar nueva dirección
+        create_new: Crear %{model}
+        hint: Busque una localidad, región, dirección o edificio. Escriba un nombre
+          para usarlo como ubicación personalizada.
+        label: Ubicación
+        new_address_legend: Nueva dirección
+        new_named_with_query: 'Crear %{model}: "%{q}"'
+        tab: Ubicación
+        use_typed_name: Usar "%{q}" como nombre de ubicación personalizado
     robots:
       avatar_label: Robot autor
+    settlement_map:
+      label: Mapa de %{name}
+    settlement_posts:
+      loading: Cargando publicaciones...
+      located_in: Ubicado en
+      title: Publicaciones en %{name}
     video_blocks:
       preview: 'Video: %{url}'
   time:
