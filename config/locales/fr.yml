@@ -29,6 +29,24 @@ fr:
       resource: Ressource
       resource/document: Document
       resource/link: Lien
+  better_together:
+    shared:
+      map:
+        buttons:
+          geolocate: Me localiser
+          map: Carte
+          satellite: Satellite
+        geolocation:
+          denied: L'accès à la localisation est bloqué. Autorisez-le pour ce site
+            dans les paramètres du navigateur, puis réessayez.
+          located: Affichage de votre position.
+          locating: Recherche de votre position...
+          timeout: La recherche de votre position a pris trop de temps. Réessayez.
+          unavailable: Votre position n'a pas pu être déterminée. Vérifiez que les
+            services de localisation sont activés, puis réessayez.
+          unsupported: Votre navigateur ne prend pas en charge la localisation.
+          you_are_here: Vous êtes ici
+        show_on_map: Afficher sur la carte
   globals:
     attached_file: Fichier joint
     download: Télécharger
@@ -90,9 +108,7 @@ fr:
     robots:
       avatar_label: Auteur robot
     settlement_map:
-      count_label: lieux
       label: Carte de %{name}
-      show_types: Afficher sur la carte
     settlement_posts:
       loading: Chargement des publications...
       located_in: Situé à
