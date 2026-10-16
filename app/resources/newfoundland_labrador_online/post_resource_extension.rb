@@ -7,7 +7,7 @@ module NewfoundlandLabradorOnline
   module PostResourceExtension
     EXTRA_FIELDS = %i[
       community_id published_at video_block_id attachment_block_ids category_identifiers contributor_specs
-      cover_image_data cover_image_filename created_at
+      cover_image_data cover_image_filename created_at updated_at
     ].freeze
     # created_at is create-only so a backfill can keep the original date; it is never rewritten afterwards.
     CREATE_ONLY_FIELDS = %i[contributor_specs video_block_id attachment_block_ids created_at].freeze
@@ -35,6 +35,13 @@ module NewfoundlandLabradorOnline
       _model.created_at = value
       _model.updated_at = value
       _model.pin_timestamps_to_creation = true
+    end
+
+    # updated_at is accepted on create and update so a backfilled post can be set back to its original date;
+    # the model re-applies it after commit because attaching blocks and the cover touch the record.
+    def updated_at=(value)
+      _model.updated_at = value
+      _model.pinned_updated_at = value
     end
 
     # Write-only inputs: video_block_id and attachment_block_ids attach blocks at creation and the cover image fields

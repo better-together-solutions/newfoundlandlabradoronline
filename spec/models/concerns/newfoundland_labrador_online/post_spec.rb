@@ -31,6 +31,14 @@ RSpec.describe NewfoundlandLabradorOnline::Post do
       expect(post.updated_at).to be_within(1.second).of(original)
     end
 
+    it 'sets updated_at back on a later update when one is pinned', :aggregate_failures do
+      post.save!
+      post.update!(title: 'Changed', pinned_updated_at: original)
+
+      expect(post.reload.updated_at).to be_within(1.second).of(original)
+      expect(post.pinned_updated_at).to be_nil
+    end
+
     it 'leaves updated_at alone when not pinned' do
       post.save!
 

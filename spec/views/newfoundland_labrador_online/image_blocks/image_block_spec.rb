@@ -23,6 +23,7 @@ RSpec.describe 'newfoundland_labrador_online/image_blocks/_image_block' do
     expect(rendered).to include('Photo: Dag Chr Halvorsen, CC BY 4.0')
     expect(rendered).to include('href="https://commons.wikimedia.org/wiki/File:Ship.jpg"')
     expect(rendered).to include('rel="noopener noreferrer"')
+    expect(rendered).to include('fa-external-link-alt')
   end
 
   it 'shows attribution without a link when there is no URL', :aggregate_failures do
@@ -38,5 +39,6 @@ RSpec.describe 'newfoundland_labrador_online/image_blocks/_image_block' do
     render partial: 'newfoundland_labrador_online/image_blocks/image_block', locals: { image: block }
 
     expect(rendered).not_to include('post-image__attribution')
+    expect(rendered).to include('figure-caption')
   end
 end

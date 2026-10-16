@@ -11,10 +11,11 @@ module NewfoundlandLabradorOnline
     include NewfoundlandLabradorOnline::CategoryIdentifiers
 
     included do
-      attr_accessor :pin_timestamps_to_creation
+      attr_accessor :pin_timestamps_to_creation, :pinned_updated_at
 
       validate :contributor_specs_must_be_supported
       after_commit :pin_updated_at_to_created_at, on: :create, if: :pin_timestamps_to_creation
+      after_commit :apply_pinned_updated_at, on: %i[create update], if: :pinned_updated_at
     end
 
     def contributor_specs
@@ -35,6 +36,12 @@ module NewfoundlandLabradorOnline
     # attaching the cover and blocks touches it, so the import time would show instead of the original date.
     def pin_updated_at_to_created_at
       update_columns(updated_at: created_at)
+    end
+
+    # A publisher that sends updated_at (to repair a backfilled post) keeps it: saving touches the record again.
+    def apply_pinned_updated_at
+      update_columns(updated_at: pinned_updated_at)
+      self.pinned_updated_at = nil
     end
 
     def build_contribution(spec)

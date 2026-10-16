@@ -18,6 +18,15 @@ RSpec.describe NewfoundlandLabradorOnline::PostResourceExtension do
     expect(resource.updatable_fields({})).not_to include(:created_at)
   end
 
+  it 'accepts updated_at on create and update and remembers it for the model', :aggregate_failures do
+    expect(resource.creatable_fields({})).to include(:updated_at)
+    expect(resource.updatable_fields({})).to include(:updated_at)
+    post = BetterTogether::Post.new
+    resource.new(post, {}).updated_at = Time.zone.parse('2026-09-30 06:30')
+
+    expect(post.pinned_updated_at).to eq(Time.zone.parse('2026-09-30 06:30'))
+  end
+
   it 'adds the publisher fields to creatable fields' do
     expect(resource.creatable_fields({})).to include(
       :community_id, :published_at, :video_block_id, :category_identifiers, :contributor_specs
