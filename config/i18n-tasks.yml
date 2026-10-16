@@ -37,8 +37,12 @@ ignore_missing:
   - 'globals.*'
   - 'better_together.*'
   - 'partners.confirm_delete' # used by the copied CE communities show view; the key comes from the CE gem
+  - 'helpers.toolbar.aria_label' # used by the copied CE posts form; the key comes from the CE gem
+  - 'hints.categories.select_multiple' # used by the copied CE posts form; the key comes from the CE gem
 
 ignore_unused:
+  - "better_together.shared.map.**" # used by the shared map partial copied from CE (until the CE pin includes it)
+  - "newfoundland_labrador_online.locations.picker.**" # looked up through a scope variable in the shared picker partial
   - "actions.*"
   - "globals.**"
   - "date.**"

@@ -10,6 +10,9 @@ Rails.application.routes.draw do
         locale: /#{I18n.available_locales.join('|')}/ do
     authenticated :user do # rubocop:todo Lint/EmptyBlock
     end
+
+    get 'locations/available', to: 'newfoundland_labrador_online/locations#available',
+                               as: :newfoundland_labrador_online_available_locations
   end
 
   root to: redirect("/#{I18n.default_locale}")
