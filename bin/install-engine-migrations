@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Copies engine migrations (Solidus, solidus_marketplace, ...) that are missing from
+# db/migrate, runs them against a database built from the committed schema, and lets
+# Rails refresh db/schema.rb. Dependabot only bumps Gemfile.lock, so this is the step
+# that notices an upgraded gem now ships migrations the app has not installed.
+#
+# Exit codes: 0 = db/ is unchanged, 10 = db/ changed (new migrations and/or schema.rb).
+# Needs a reachable database (DATABASE_URL or the app's DB_* settings). It drops and reloads it.
+set -euo pipefail
+
+# db:drop/db:create can hit every local database (even with RAILS_ENV=test), so refuse to
+# run outside CI unless the caller points at a throwaway database and opts in.
+if [ -z "${CI:-}" ] && [ "${BTS_ALLOW_DB_DROP:-}" != "1" ]; then
+  echo "This drops and recreates the database. Run in CI, or set BTS_ALLOW_DB_DROP=1 with a throwaway database." >&2
+  exit 2
+fi
+
+export RAILS_ENV="${RAILS_ENV:-test}"
+export DISABLE_SPRING=1
+
+bundle exec rails db:drop db:create db:schema:load
+bundle exec rails railties:install:migrations
+bundle exec rails db:migrate
+
+# Copied migrations follow the engine's style, not ours; autocorrect so the rubocop job passes.
+new_migrations="$(git -c safe.directory="$PWD" ls-files --others --exclude-standard -- db/migrate)"
+if [ -n "$new_migrations" ]; then
+  # shellcheck disable=SC2086
+  bundle exec rubocop -A $new_migrations
+fi
+
+# safe.directory: the repo is a bind mount owned by another uid inside the container.
+changes="$(git -c safe.directory="$PWD" status --porcelain -- db/)" || {
+  echo "git status failed; cannot tell whether db/ changed." >&2
+  exit 1
+}
+
+if [ -z "$changes" ]; then
+  echo "No new engine migrations; db/ is up to date."
+  exit 0
+fi
+
+echo "Engine migrations were installed or schema.rb changed:"
+echo "$changes"
+exit 10
