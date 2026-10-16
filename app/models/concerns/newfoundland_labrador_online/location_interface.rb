@@ -54,6 +54,19 @@ module NewfoundlandLabradorOnline
       end
     end
 
+    # The map point for the record's own location when it has coordinates (an address or building with a geocoded
+    # space), as an array of zero or one, in the shape CE's maps use plus type, color and icon for typed pins. Names
+    # are user supplied, so they are HTML escaped. Separate from #leaflet_points so a model that already defines it
+    # (a community's building points) is left alone.
+    def located_leaflet_point
+      point = location&.location&.to_leaflet_point
+      return [] unless point
+
+      link = located_link
+      [point.merge(label: link, popup_html: "#{link}<br>#{ERB::Util.html_escape(location.display_name)}",
+                   **located_map_style)]
+    end
+
     # The record's own place, else the place it inherits, else nil. A location that is only free text
     # still counts as the record's own, so it does not inherit.
     def effective_location
@@ -61,6 +74,21 @@ module NewfoundlandLabradorOnline
 
       parent = self.class.location_inheritance && public_send(self.class.location_inheritance)
       parent&.effective_location
+    end
+
+    def located_link
+      "<a href='#{located_url}' class='text-decoration-none'><strong>#{ERB::Util.html_escape(to_s)}</strong></a>"
+    end
+
+    def located_map_style
+      style = LocatableModels.map_style(self.class.base_class)
+      { type: self.class.base_class.name, color: style[:color], icon: style[:icon] }
+    end
+
+    def located_url
+      BetterTogether::Engine.routes.url_helpers.polymorphic_path(self, locale: I18n.locale)
+    rescue NoMethodError
+      Rails.application.routes.url_helpers.polymorphic_path(self, locale: I18n.locale)
     end
 
     def clear_location
@@ -71,6 +99,6 @@ module NewfoundlandLabradorOnline
       errors.add(:settlement_identifier, :invalid) if @settlement_identifier_error
     end
 
-    private :clear_location, :settlement_identifier_must_exist
+    private :clear_location, :settlement_identifier_must_exist, :located_url, :located_link, :located_map_style
   end
 end

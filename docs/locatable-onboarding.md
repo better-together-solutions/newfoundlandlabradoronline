@@ -47,8 +47,10 @@ Pending, not yet onboarded (listed in `PENDING`, covered by a registry spec so t
 
 ## Settlement page
 
+- Map: pin, boundary and located items with coordinates, see `docs/settlement-map.md`. New onboarded models need a `map:` colour and icon in `LocatableModels`.
+
 - Posts tab: lazy turbo frame loading `/posts?settlement=<identifier>`, the normal posts index (filter sidebar, view switcher, pagination) scoped by `Post.located_in(settlement)` through `policy_scope`. Location never widens visibility.
-- About tab: lists communities located in the settlement (policy scoped); the community page shows "Located in <settlement>".
+- Communities tab: cards for the communities located in the settlement (policy scoped); the community page shows "Located in <settlement>".
 
 ## Performance note
 

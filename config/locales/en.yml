@@ -29,6 +29,24 @@ en:
       resource: Resource
       resource/document: Document
       resource/link: Link
+  better_together:
+    shared:
+      map:
+        buttons:
+          geolocate: Geolocate Me
+          map: Map
+          satellite: Satellite
+        geolocation:
+          denied: Location access is blocked. Allow it for this site in your browser
+            settings and try again.
+          located: Showing your location.
+          locating: Finding your location...
+          timeout: Finding your location took too long. Try again.
+          unavailable: Your location could not be determined. Check that location
+            services are on and try again.
+          unsupported: Your browser does not support location.
+          you_are_here: You are here
+        show_on_map: Show on the map
   globals:
     attached_file: Attached file
     download: Download
@@ -89,8 +107,9 @@ en:
         use_typed_name: Use "%{q}" as a custom location name
     robots:
       avatar_label: Robot author
+    settlement_map:
+      label: Map of %{name}
     settlement_posts:
-      communities_heading: Communities in %{name}
       loading: Loading posts...
       located_in: Located in
       title: Posts in %{name}

@@ -41,6 +41,7 @@ ignore_missing:
   - 'hints.categories.select_multiple' # used by the copied CE posts form; the key comes from the CE gem
 
 ignore_unused:
+  - "better_together.shared.map.**" # used by the shared map partial copied from CE (until the CE pin includes it)
   - "newfoundland_labrador_online.locations.picker.**" # looked up through a scope variable in the shared picker partial
   - "actions.*"
   - "globals.**"
