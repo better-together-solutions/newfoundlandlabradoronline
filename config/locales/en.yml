@@ -107,6 +107,11 @@ en:
         use_typed_name: Use "%{q}" as a custom location name
     robots:
       avatar_label: Robot author
+    settlement_events:
+      empty: No upcoming events in %{name} yet.
+      title: Events in %{name}
+    settlement_posts:
+      communities_heading: Communities in %{name}
     settlement_map:
       label: Map of %{name}
     settlement_posts:
