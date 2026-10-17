@@ -10,7 +10,7 @@ module NewfoundlandLabradorOnline
       cover_image_data cover_image_filename created_at updated_at
     ].freeze
     # created_at is create-only so a backfill can keep the original date; it is never rewritten afterwards.
-    CREATE_ONLY_FIELDS = %i[contributor_specs video_block_id attachment_block_ids created_at].freeze
+    CREATE_ONLY_FIELDS = %i[contributor_specs video_block_id created_at].freeze
 
     def self.prepended(base)
       base.attributes :community_id, :video_block_id, :attachment_block_ids, :category_identifiers, :contributor_specs,
@@ -44,8 +44,8 @@ module NewfoundlandLabradorOnline
       _model.pinned_updated_at = value
     end
 
-    # Write-only inputs: video_block_id and attachment_block_ids attach blocks at creation and the cover image fields
-    # attach the image, so none of them is returned (cover_image_url shows the result).
+    # Write-only inputs: video_block_id and attachment_block_ids attach blocks (the ids also on update) and the
+    # cover image fields attach the image, so none of them is returned (cover_image_url shows the result).
     def fetchable_fields
       super - %i[video_block_id attachment_block_ids cover_image_data cover_image_filename]
     end
