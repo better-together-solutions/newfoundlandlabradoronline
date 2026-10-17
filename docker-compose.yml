@@ -33,12 +33,14 @@ x-app-shared: &app-shared
     DB_PASSWORD: ${DB_PASSWORD:-postgres}
     BTR_WORKTREE_DB_SUFFIX: ${BTR_WORKTREE_DB_SUFFIX:-}
     REDIS_URL: ${REDIS_URL:-redis://host.docker.internal:6388}
+    HOME: /tmp/dc-home
     SEARCH_BACKEND: ${SEARCH_BACKEND:-pg_search}
     ELASTICSEARCH_DISABLED: ${ELASTICSEARCH_DISABLED:-true}
   depends_on:
     - db
     - redis
-  # user: $USER:$USER
+  # Run as the host user so files written to the bind mount (log, tmp, coverage, storage, credentials) are not root-owned.
+  user: "${DC_UID:-1000}:${DC_GID:-1000}"
 
 services:
   app: &app

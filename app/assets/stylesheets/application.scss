@@ -17,3 +17,14 @@
  @import 'theme';
 
 
+
+// Photo credits under embedded images: the theme styles links as uppercase display text, which is too loud for a credit.
+.figure-caption a,
+.post-image__attribution a {
+  font-family: inherit;
+  font-size: .875rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-decoration: underline;
+  text-transform: none;
+}

@@ -8,20 +8,14 @@ module NewfoundlandLabradorOnline
 
     include NewfoundlandLabradorOnline::PostVideo
     include NewfoundlandLabradorOnline::PostCoverImage
+    include NewfoundlandLabradorOnline::CategoryIdentifiers
 
     included do
-      validate :category_identifiers_must_exist
+      attr_accessor :pin_timestamps_to_creation, :pinned_updated_at
+
       validate :contributor_specs_must_be_supported
-    end
-
-    def category_identifiers
-      categories.map(&:identifier)
-    end
-
-    def category_identifiers=(identifiers)
-      @pending_category_identifiers = Array(identifiers).map(&:to_s).compact_blank.uniq
-      found = ::BetterTogether::Category.where(identifier: @pending_category_identifiers).to_a
-      self.categories = found if found.size == @pending_category_identifiers.size
+      after_commit :pin_updated_at_to_created_at, on: :create, if: :pin_timestamps_to_creation
+      after_commit :apply_pinned_updated_at, on: %i[create update], if: :pinned_updated_at
     end
 
     def contributor_specs
@@ -37,6 +31,18 @@ module NewfoundlandLabradorOnline
     end
 
     private
+
+    # A backfilled post shows its updated date when that is later than its creation date (CE's post page), and
+    # attaching the cover and blocks touches it, so the import time would show instead of the original date.
+    def pin_updated_at_to_created_at
+      update_columns(updated_at: created_at)
+    end
+
+    # A publisher that sends updated_at (to repair a backfilled post) keeps it: saving touches the record again.
+    def apply_pinned_updated_at
+      update_columns(updated_at: pinned_updated_at)
+      self.pinned_updated_at = nil
+    end
 
     def build_contribution(spec)
       type = spec[:author_type].to_s
@@ -56,14 +62,6 @@ module NewfoundlandLabradorOnline
       return if @unsupported_contributor_types.blank?
 
       errors.add(:base, "unsupported contributor type: #{@unsupported_contributor_types.join(', ')}")
-    end
-
-    def category_identifiers_must_exist
-      return if @pending_category_identifiers.blank?
-
-      known = ::BetterTogether::Category.where(identifier: @pending_category_identifiers).pluck(:identifier)
-      missing = @pending_category_identifiers - known
-      errors.add(:base, "unknown categories: #{missing.join(', ')}") if missing.any?
     end
   end
 end

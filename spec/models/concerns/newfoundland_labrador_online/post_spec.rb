@@ -19,6 +19,33 @@ RSpec.describe NewfoundlandLabradorOnline::Post do
     expect(BetterTogether::Post.included_modules).to include(described_class)
   end
 
+  describe 'backfilled timestamps' do
+    let(:original) { Time.zone.parse('2026-09-30 06:30') }
+
+    it 'keeps updated_at equal to created_at after saving when pinned', :aggregate_failures do
+      post.created_at = post.updated_at = original
+      post.pin_timestamps_to_creation = true
+      post.save!
+
+      expect(post.reload.created_at).to be_within(1.second).of(original)
+      expect(post.updated_at).to be_within(1.second).of(original)
+    end
+
+    it 'sets updated_at back on a later update when one is pinned', :aggregate_failures do
+      post.save!
+      post.update!(title: 'Changed', pinned_updated_at: original)
+
+      expect(post.reload.updated_at).to be_within(1.second).of(original)
+      expect(post.pinned_updated_at).to be_nil
+    end
+
+    it 'leaves updated_at alone when not pinned' do
+      post.save!
+
+      expect(post.reload.updated_at).to be_within(1.minute).of(Time.zone.now)
+    end
+  end
+
   describe 'posts without a video block' do
     it 'attaches nothing and does not touch video blocks', :aggregate_failures do
       allow(BetterTogether::Content::VideoBlock).to receive(:find_by).and_call_original
@@ -140,11 +167,39 @@ RSpec.describe NewfoundlandLabradorOnline::Post do
       expect(post).not_to be_valid
     end
 
-    it 'ignores the ids on update' do
-      post.save!
-      post.update!(attachment_block_ids: [image_block.id])
+    it 'leaves the body alone on an update that sends no ids', :aggregate_failures do
+      post.update!(content: 'First', attachment_block_ids: [image_block.id])
+      post.update!(title: 'Renamed')
 
-      expect(attachables(post)).to be_empty
+      expect(attachables(post).map(&:id)).to eq([image_block.id])
+      expect(post.reload.content.body.to_html).to include('First')
+    end
+
+    it 'replaces the text on update and puts the images back in front of it', :aggregate_failures do # rubocop:disable RSpec/ExampleLength
+      post.update!(content: 'Arrived', attachment_block_ids: [image_block.id])
+      post.update!(content: 'In port 8:42 AM to 4:42 PM', attachment_block_ids: [image_block.id])
+
+      expect(attachables(post).map(&:id)).to eq([image_block.id])
+      body = post.reload.content.body.to_html
+      expect(body).to match(/\A<action-text-attachment.*In port 8:42 AM/m)
+      expect(body).not_to include('Arrived')
+    end
+
+    it 'keeps the image blocks when only new text is sent', :aggregate_failures do # rubocop:disable RSpec/ExampleLength
+      post.update!(content: 'Arrived', attachment_block_ids: [image_block.id])
+      post = BetterTogether::Post.find(self.post.id)
+      post.update!(content: 'In port 8:42 AM to 4:42 PM')
+
+      expect(attachables(post).map(&:id)).to eq([image_block.id])
+      body = post.reload.content.body.to_html
+      expect(body).to match(/\A<action-text-attachment.*In port 8:42 AM/m)
+      expect(body).not_to include('Arrived')
+    end
+
+    it 'rejects an unknown block id on update' do
+      post.save!
+
+      expect(post.update(attachment_block_ids: [SecureRandom.uuid])).to be(false)
     end
   end
 
