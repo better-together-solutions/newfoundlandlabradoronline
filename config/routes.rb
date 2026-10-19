@@ -11,6 +11,8 @@ Rails.application.routes.draw do
     authenticated :user do # rubocop:todo Lint/EmptyBlock
     end
 
+    resources :districts, only: %i[index show], controller: 'newfoundland_labrador_online/districts',
+                          as: :newfoundland_labrador_online_districts
     get 'locations/available', to: 'newfoundland_labrador_online/locations#available',
                                as: :newfoundland_labrador_online_available_locations
   end

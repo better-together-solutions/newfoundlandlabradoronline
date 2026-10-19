@@ -84,6 +84,30 @@ en:
   journeys:
     title: My Journey
   newfoundland_labrador_online:
+    districts:
+      index:
+        intro: "%{count} districts in force since the 2015 election."
+        title: Provincial electoral districts
+      show:
+        all_districts: All districts
+        area: Area
+        area_km2: "%{value} km²"
+        authority: Authority
+        breadcrumb: Breadcrumb
+        facts: Facts
+        history: Names and boundaries over time
+        identifiers: Identifiers
+        in_force_since: In force since
+        kind: Provincial electoral district
+        licence: Licence
+        map_label: Map of %{name}
+        no_settlements: No settlements are recorded inside this district yet.
+        present: Present
+        settlements: Settlements inside
+        unknown: Unknown
+        valid_from: From
+        valid_to: To
+        version_name: Name
     image_blocks:
       preview: 'Image: %{caption}'
     live_images:

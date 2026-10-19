@@ -27,3 +27,15 @@ erDiagram
 `nlo_ped` identifier, and a version's boundary is rewritten only when the packet's `source_sha256` changes.
 
 The packet is built by management-tool `scripts/nl_regions_ingest.py` (`fetch-districts`, `build-districts`).
+
+## Public district pages
+
+- `GET /:locale/districts` lists the districts; `GET /:locale/districts/:id` (for example `/en/districts/nl-ped-corner-brook`)
+  shows the current boundary on the shared map, facts and source, settlements whose point falls inside the boundary, the
+  history of names and boundaries, and external identifiers. Both are public; policy is `ProvincialElectoralDistrictPolicy`.
+- Stable DOM ids are asserted in `spec/dom_contracts/district_page_spec.rb`.
+- Screenshots (desktop and mobile, plain and annotated) are captured with
+  `./bin/dc-run env RUN_DOCS_SCREENSHOTS=1 bundle exec rspec spec/docs_screenshots/districts_spec.rb` into `docs/screenshots/`.
+
+![District page, desktop](screenshots/desktop/district_show_annotated.png)
+![District page, mobile](screenshots/mobile/district_show.png)

@@ -1,0 +1,12 @@
+<div class="container py-4" id="districts-index">
+  <h1 class="mb-2"><%= t('.title') %></h1>
+  <p class="text-muted"><%= t('.intro', count: @districts.size) %></p>
+
+  <ul class="list-group" id="districts-list">
+    <% @districts.each do |district| %>
+      <li class="list-group-item" id="<%= dom_id(district, :row) %>">
+        <%= link_to district.name, newfoundland_labrador_online_district_path(district, locale: I18n.locale) %>
+      </li>
+    <% end %>
+  </ul>
+</div>

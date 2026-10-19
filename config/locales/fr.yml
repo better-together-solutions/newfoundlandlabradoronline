@@ -84,6 +84,30 @@ fr:
   journeys:
     title: Mon parcours
   newfoundland_labrador_online:
+    districts:
+      index:
+        intro: "%{count} circonscriptions en vigueur depuis l’élection de 2015."
+        title: Circonscriptions électorales provinciales
+      show:
+        all_districts: Toutes les circonscriptions
+        area: Superficie
+        area_km2: "%{value} km²"
+        authority: Autorité
+        breadcrumb: Fil d’Ariane
+        facts: Faits
+        history: Noms et limites au fil du temps
+        identifiers: Identifiants
+        in_force_since: En vigueur depuis
+        kind: Circonscription électorale provinciale
+        licence: Licence
+        map_label: Carte de %{name}
+        no_settlements: Aucune localité n’est encore enregistrée dans cette circonscription.
+        present: Aujourd’hui
+        settlements: Localités incluses
+        unknown: Inconnu
+        valid_from: Du
+        valid_to: Au
+        version_name: Nom
     image_blocks:
       preview: 'Image : %{caption}'
     live_images:
