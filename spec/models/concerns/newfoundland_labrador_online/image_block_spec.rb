@@ -20,51 +20,6 @@ RSpec.describe NewfoundlandLabradorOnline::ImageBlock do
     expect(BetterTogether::Content::Image.included_modules).to include(described_class)
   end
 
-  it 'attaches a base64 image and keeps the caption', :aggregate_failures do
-    block.save!
-
-    expect(block.reload.media).to be_attached
-    expect(block.media.content_type).to eq('image/png')
-    expect(block.media.filename.to_s).to eq('civil-dawn.png')
-    expect(block.caption).to eq('Civil dawn, 06:58')
-  end
-
-  it 'requires a caption for images created from data', :aggregate_failures do
-    block.caption = nil
-
-    expect(block).not_to be_valid
-    expect(block.errors[:caption]).to be_present
-  end
-
-  it 'rejects data that is not an allowed image', :aggregate_failures do
-    block.media_data = Base64.strict_encode64('not an image')
-
-    expect(block).not_to be_valid
-    expect(block.errors[:media_data]).to include('must be a JPEG, PNG or WebP image')
-  end
-
-  it 'rejects invalid base64 and oversized images', :aggregate_failures do
-    block.media_data = '***'
-    expect(block).not_to be_valid
-
-    block.media_data = Base64.strict_encode64(png + ('0' * (NewfoundlandLabradorOnline::ImageInput::MAX_BYTES + 1)))
-    expect(block).not_to be_valid
-    expect(block.errors[:media_data].join).to include('too large')
-  end
-
-  it 'does not keep the data after saving' do
-    block.save!
-
-    expect(block.media_data).to be_nil
-  end
-
-  it 'replaces the image of a saved block without recursing', :aggregate_failures do
-    block.save!
-    block.update!(media_data: Base64.strict_encode64(png), media_filename: 'replacement.png')
-
-    expect(block.reload.media.filename.to_s).to eq('replacement.png')
-  end
-
   describe 'attachable behaviour' do
     before { block.save! }
 

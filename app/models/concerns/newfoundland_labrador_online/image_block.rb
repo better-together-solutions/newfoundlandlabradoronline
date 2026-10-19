@@ -1,26 +1,13 @@
 # frozen_string_literal: true
 
 module NewfoundlandLabradorOnline
-  # Host additions to BetterTogether::Content::Image: creation from a base64 image through the
-  # blocks API (media_data), a required caption for API-created images, and use as an Action Text
-  # attachment so posts embed a real block.
+  # Host addition to BetterTogether::Content::Image: use as an Action Text attachment so posts embed
+  # a real block. Creation from base64 (media_data) is CE's.
   module ImageBlock
     extend ActiveSupport::Concern
 
     # Included at module level so the partial path methods below take precedence.
     include ActionText::Attachable
-
-    included do
-      attr_accessor :media_data, :media_filename
-
-      before_validation :assign_media_data, if: -> { media_data.present? }
-      validate :media_data_must_be_valid
-      validate :caption_required_for_api_images
-      after_save do
-        self.media_data = nil
-        @media_from_api = false
-      end
-    end
 
     def attachable_plain_text_representation(_caption = nil)
       caption.presence || '[Image]'
@@ -32,30 +19,6 @@ module NewfoundlandLabradorOnline
 
     def to_trix_content_attachment_partial_path
       'newfoundland_labrador_online/image_blocks/trix'
-    end
-
-    private
-
-    # Attaching to a saved record saves it again, which would run this callback again; the data is cleared first
-    # so replacing the image of an existing block (an API update) cannot recurse.
-    def assign_media_data
-      data = media_data
-      self.media_data = nil
-      @media_from_api = true
-      result = ImageInput.decode(data)
-      @media_error = result.error
-      return if result.error
-
-      media.attach(io: StringIO.new(result.bytes), content_type: result.type,
-                   filename: ImageInput.filename(media_filename, result.type, 'image'))
-    end
-
-    def media_data_must_be_valid
-      errors.add(:media_data, @media_error) if @media_error
-    end
-
-    def caption_required_for_api_images
-      errors.add(:caption, :blank) if (media_data.present? || @media_from_api) && caption.blank?
     end
   end
 end

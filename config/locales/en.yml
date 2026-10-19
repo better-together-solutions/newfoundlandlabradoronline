@@ -105,8 +105,6 @@ en:
         new_named_with_query: 'Create new %{model}: "%{q}"'
         tab: Location
         use_typed_name: Use "%{q}" as a custom location name
-    robots:
-      avatar_label: Robot author
     settlement_events:
       empty: No upcoming events in %{name} yet.
       title: Events in %{name}

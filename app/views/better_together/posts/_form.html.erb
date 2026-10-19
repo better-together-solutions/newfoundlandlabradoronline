@@ -1,4 +1,4 @@
-<%# Copied from community-engine-rails dfad67df6da4 (app/views/better_together/posts/_form.html.erb). The only change is the shared location picker before published_at; re-diff when the CE pin moves. -%>
+<%# Copied from community-engine-rails 929bb51a9492 (app/views/better_together/posts/_form.html.erb). The only change is the shared location picker before published_at; re-diff when the CE pin moves. -%>
 <%= form_with(model: post, class: 'form', id: dom_id(post, 'form'), data: { controller: "better_together--form-validation" }) do |form| %>
   <%= form.hidden_field :creator_id, value: current_person&.id unless form.object.creator_id %>
   <%= form.hidden_field :community_id, value: post.community_id if post.community_id.present? %>

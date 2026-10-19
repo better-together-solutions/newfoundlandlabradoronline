@@ -79,7 +79,7 @@ RSpec.describe NewfoundlandLabradorOnline::PostCoverImage do
   end
 
   it 'rejects an image over the size limit', :aggregate_failures do
-    stub_const("#{described_class}::MAX_BYTES", 10)
+    stub_const('BetterTogether::ImageInput::MAX_BYTES', 10)
     post.cover_image_data = encode(png)
 
     expect(post).not_to be_valid

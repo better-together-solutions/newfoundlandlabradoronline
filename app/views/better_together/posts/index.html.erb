@@ -1,4 +1,4 @@
-<%# Copied from community-engine-rails dfad67df6da4 (app/views/better_together/posts/index.html.erb). Changes: the settlement-scoped title and the turbo-frame wrapper (settlement page Posts tab); re-diff when the CE pin moves. -%>
+<%# Copied from community-engine-rails 929bb51a9492 (app/views/better_together/posts/index.html.erb). Changes: the settlement-scoped title and the turbo-frame wrapper (settlement page Posts tab); re-diff when the CE pin moves. -%>
 <% heading = @settlement ? t('newfoundland_labrador_online.settlement_posts.title', name: @settlement.name) : resource_class.model_name.human.pluralize %>
 <% content_for :page_title do %>
   <%= heading %>
@@ -63,6 +63,7 @@
               <thead>
                 <tr>
                   <th scope="col"><%= t('better_together.posts.index.table_headers.title') %></th>
+                  <th scope="col"><%= t('better_together.posts.index.table_headers.community') %></th>
                   <th scope="col"><%= t('better_together.posts.index.table_headers.categories') %></th>
                   <th scope="col"><%= t('better_together.posts.index.table_headers.authors') %></th>
                   <th scope="col"><%= t('better_together.posts.index.table_headers.published') %></th>

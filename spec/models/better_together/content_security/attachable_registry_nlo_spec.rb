@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe NewfoundlandLabradorOnline::ContentSecurityAttachables do
+RSpec.describe BetterTogether::ContentSecurity::AttachableRegistry do
   let(:platform) { BetterTogether::Platform.find_by(host: true) || create(:better_together_platform) }
   let(:person) { create(:better_together_person) }
   let(:embed) do
