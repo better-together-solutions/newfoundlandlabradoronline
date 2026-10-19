@@ -8,6 +8,12 @@ namespace :nlo do
       puts "created=#{result.created.size} updated=#{result.updated.size} unchanged=#{result.unchanged.size}"
     end
 
+    desc 'Add the Districts link to the platform header navigation; idempotent'
+    task create_districts_nav_item: :environment do
+      item = NewfoundlandLabradorOnline::Geography::DistrictsNavigationItem.new.call
+      puts "districts navigation item ready (position #{item.position})"
+    end
+
     desc 'Load provincial parties (colours, logos) from db/data/nl_regions, before the elections; idempotent'
     task load_political_parties: :environment do
       result = NewfoundlandLabradorOnline::Geography::PoliticalPartyLoader.new.call

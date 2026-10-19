@@ -24,12 +24,19 @@ module NewfoundlandLabradorOnline
 
     private
 
+    # Named parties come before independents and unaffiliated seats unless the latter hold more seats.
+    def seat_rank(party)
+      return 2 unless party
+
+      party.identifier == 'independent' ? 1 : 0
+    end
+
     # Each district's sitting member (by region id) and the seats per party for the legend.
     def load_current_members(districts)
       @current_terms = NewfoundlandLabradorOnline::ElectedTerm.current.where(region_id: districts.map(&:id))
                                                               .includes(:person, :political_party).index_by(&:region_id)
       counts = @current_terms.values.group_by(&:party_on).transform_values(&:size)
-      @seats = counts.sort_by { |party, count| [-count, party&.short_name.to_s] }
+      @seats = counts.sort_by { |party, count| [-count, seat_rank(party), party&.short_name.to_s] }
     end
 
     def load_electoral_history(district)
