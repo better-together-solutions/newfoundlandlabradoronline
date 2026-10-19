@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_20_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_20_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -2797,6 +2797,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_000000) do
     t.string "source_url"
     t.string "source_sha256", limit: 64
     t.string "license"
+    t.decimal "area_km2", precision: 12, scale: 2
     t.index ["boundary"], name: "index_region_versions_on_boundary", using: :gist
     t.index ["region_id", "valid_from"], name: "index_region_versions_on_region_and_valid_from", unique: true
   end

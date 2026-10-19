@@ -32,7 +32,7 @@
                 <% if party %>
                   <span class="d-inline-flex align-items-center gap-1" id="district-member-party">
                     <span class="d-inline-block rounded" style="width: 0.9rem; height: 0.9rem; background: <%= party.display_color %>"></span>
-                    <%= party.short_name %>
+                    <%= link_to party.short_name, party_path_for(party) %>
                     <% if party.logo.attached? %><%= image_tag url_for(party.logo), alt: '', height: 20 %><% end %>
                   </span>
                 <% end %>
@@ -87,7 +87,7 @@
           <% @terms.each do |term| %>
             <tr id="<%= dom_id(term) %>">
               <td><%= term.person.name %></td>
-              <td><%= term.party_name %></td>
+              <td><%= party_chip(term.political_party) if term.political_party %><%= term.party_name unless term.political_party %></td>
               <td><%= l(term.started_on, format: :long) %></td>
               <td><%= term.ended_on ? l(term.ended_on, format: :long) : t('.present') %></td>
             </tr>
@@ -101,7 +101,7 @@
     <div class="card-body">
       <h2 class="h5 card-title"><%= t('.results') %></h2>
       <% @contests.each do |contest| %>
-        <h3 class="h6 mt-3"><%= t('.election_results', year: contest.election.year) %>
+        <h3 class="h6 mt-3"><%= link_to t('.election_results', year: contest.election.year), election_path_for(contest.election) %>
           <% if contest.turnout %><small class="text-muted"><%= t('.turnout', value: contest.turnout) %></small><% end %>
         </h3>
         <table class="table table-sm" id="<%= dom_id(contest) %>">
@@ -117,7 +117,7 @@
             <% contest.candidacies.each do |candidacy| %>
               <tr id="<%= dom_id(candidacy) %>" class="<%= 'fw-bold' if candidacy.elected %>">
                 <td><%= candidacy.candidate_name %> <% if candidacy.elected %><span class="badge text-bg-success"><%= t('.elected') %></span><% end %></td>
-                <td><%= candidacy.party_name %></td>
+                <td><% if candidacy.political_party %><%= link_to candidacy.party_name, party_path_for(candidacy.political_party) %><% else %><%= candidacy.party_name %><% end %></td>
                 <td class="text-end"><%= number_with_delimiter(candidacy.votes) %></td>
                 <td class="text-end"><%= number_with_precision(candidacy.vote_share, precision: 1) %>%</td>
               </tr>

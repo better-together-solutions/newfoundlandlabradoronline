@@ -114,6 +114,8 @@ module NewfoundlandLabradorOnline
         membership = PartyMembership.find_or_initialize_by(person_id: run.first.person_id,
                                                            political_party_id: run.first.political_party_id,
                                                            started_on: run.first.started_on)
+        return if membership.end_reason == 'floor_crossing' # recorded by PartyChangeLoader; keep it
+
         membership.update!(ended_on: run.last.ended_on, start_reason: 'elected',
                            end_reason: run.last.ended_on && 'term_ended', source_url: run.first.election.source_url)
       end

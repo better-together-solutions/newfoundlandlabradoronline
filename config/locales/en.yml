@@ -86,12 +86,14 @@ en:
   newfoundland_labrador_online:
     districts:
       index:
+        elections: Elections
         intro: "%{count} districts in force since the 2015 election."
         kind: Provincial electoral district
         legend: Seats by party
         legend_note: Each district is coloured by its sitting member’s party. Logo
           licences are recorded with each party.
         no_party: No party recorded
+        parties: Political parties
         seats:
           one: "%{count} seat"
           other: "%{count} seats"
@@ -128,6 +130,16 @@ en:
         valid_to: To
         version_name: Name
         votes: Votes
+    elections:
+      index:
+        districts: Districts
+        election: "%{year} general election"
+        intro: General elections to the House of Assembly, with seats won by party.
+        parties: Parties
+        title: Elections
+      show:
+        all_elections: All elections
+        title: "%{year} general election"
     image_blocks:
       preview: 'Image: %{caption}'
     listing_map:
@@ -151,6 +163,25 @@ en:
         new_named_with_query: 'Create new %{model}: "%{q}"'
         tab: Location
         use_typed_name: Use "%{q}" as a custom location name
+    parties:
+      index:
+        districts: Districts
+        elections: Elections
+        intro: Parties that have held or contested seats in the House of Assembly,
+          with their current seats.
+        seats:
+          one: "%{count} seat"
+          other: "%{count} seats"
+        title: Political parties
+      show:
+        all_parties: All parties
+        current: Current members
+        districts: Districts
+        former: Former members
+        logo_licence: 'Logo licence: %{license}.'
+        logo_non_free: Non-free logo, shown under fair use.
+        logo_source: Source
+        none: No members recorded.
     settlement_events:
       empty: No upcoming events in %{name} yet.
       title: Events in %{name}

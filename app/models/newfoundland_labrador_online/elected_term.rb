@@ -19,7 +19,8 @@ module NewfoundlandLabradorOnline
 
     # The party the member belonged to on a date: their membership then (floor crossings), else the party elected.
     def party_on(date = Time.zone.today)
-      person.party_memberships.on(date).chronological.last&.political_party || political_party
+      held = person.party_memberships.select { |m| m.started_on <= date && (m.ended_on.nil? || m.ended_on > date) }
+      held.max_by(&:started_on)&.political_party || political_party
     end
   end
 end

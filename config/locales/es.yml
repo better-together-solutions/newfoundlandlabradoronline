@@ -86,12 +86,14 @@ es:
   newfoundland_labrador_online:
     districts:
       index:
+        elections: Elecciones
         intro: "%{count} distritos en vigor desde las elecciones de 2015."
         kind: Distrito electoral provincial
         legend: Escaños por partido
         legend_note: Cada distrito se colorea con el partido de su miembro actual.
           Las licencias de los logotipos se registran con cada partido.
         no_party: Sin partido registrado
+        parties: Partidos políticos
         seats:
           one: "%{count} escaño"
           other: "%{count} escaños"
@@ -128,6 +130,17 @@ es:
         valid_to: Hasta
         version_name: Nombre
         votes: Votos
+    elections:
+      index:
+        districts: Distritos
+        election: Elecciones generales de %{year}
+        intro: Elecciones generales a la Cámara de la Asamblea, con los escaños ganados
+          por partido.
+        parties: Partidos
+        title: Elecciones
+      show:
+        all_elections: Todas las elecciones
+        title: Elecciones generales de %{year}
     image_blocks:
       preview: 'Imagen: %{caption}'
     listing_map:
@@ -151,6 +164,25 @@ es:
         new_named_with_query: 'Crear %{model}: "%{q}"'
         tab: Ubicación
         use_typed_name: Usar "%{q}" como nombre de ubicación personalizado
+    parties:
+      index:
+        districts: Distritos
+        elections: Elecciones
+        intro: Partidos que han tenido o disputado escaños en la Cámara de la Asamblea,
+          con sus escaños actuales.
+        seats:
+          one: "%{count} escaño"
+          other: "%{count} escaños"
+        title: Partidos políticos
+      show:
+        all_parties: Todos los partidos
+        current: Miembros actuales
+        districts: Distritos
+        former: Antiguos miembros
+        logo_licence: 'Licencia del logotipo: %{license}.'
+        logo_non_free: Logotipo no libre, mostrado como uso legítimo.
+        logo_source: Fuente
+        none: No hay miembros registrados.
     settlement_events:
       empty: Aún no hay eventos próximos en %{name}.
       title: Eventos en %{name}

@@ -1,0 +1,336 @@
+{
+ "source_url": "https://assembly.nl.ca/Members/HistoricalStandings.aspx",
+ "roster_url": "https://assembly.nl.ca/Members/members.aspx",
+ "roster": [
+  {
+   "name": "Riley Balsom",
+   "listed_as": "Balsom, Riley",
+   "district": "Carbonear - Trinity - Bay de Verde",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/BalsomRiley.aspx"
+  },
+  {
+   "name": "Andrea Barbour",
+   "listed_as": "Barbour, Andrea",
+   "district": "St. Barbe - L'Anse aux Meadows",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/BarbourAndrea.aspx"
+  },
+  {
+   "name": "Mark Butt",
+   "listed_as": "Butt, Mark",
+   "district": "Lewisporte - Twillingate",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/ButtMark.aspx"
+  },
+  {
+   "name": "Helen Conway Ottenheimer",
+   "listed_as": "Conway Ottenheimer, Helen",
+   "district": "Harbour Main",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/ConwayOttenheimerHelen.aspx"
+  },
+  {
+   "name": "Hal Cormier",
+   "listed_as": "Cormier, Hal",
+   "district": "St. George's - Humber",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/CormierHal.aspx"
+  },
+  {
+   "name": "Bernard Davis",
+   "listed_as": "Davis, Bernard",
+   "district": "Virginia Waters - Pleasantville",
+   "party": "Liberal",
+   "party_key": "liberal",
+   "profile_path": "/Members/YourMember/DavisBernard.aspx"
+  },
+  {
+   "name": "Lisa Dempster",
+   "listed_as": "Dempster, Lisa",
+   "district": "Cartwright - L'Anse au Clair",
+   "party": "Liberal",
+   "party_key": "liberal",
+   "profile_path": "/Members/YourMember/DempsterLisa.aspx"
+  },
+  {
+   "name": "James Dinn",
+   "listed_as": "Dinn, James",
+   "district": "St. John's Centre",
+   "party": "New Democrat",
+   "party_key": "ndp",
+   "profile_path": "/Members/YourMember/DinnJames.aspx"
+  },
+  {
+   "name": "Paul Dinn",
+   "listed_as": "Dinn, Paul",
+   "district": "Topsail - Paradise",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/DinnPaul.aspx"
+  },
+  {
+   "name": "Jeff Dwyer",
+   "listed_as": "Dwyer, Jeff",
+   "district": "Placentia West - Bellevue",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/DwyerJeff.aspx"
+  },
+  {
+   "name": "Lela Evans",
+   "listed_as": "Evans, Lela",
+   "district": "Torngat Mountains",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/EvansLela.aspx"
+  },
+  {
+   "name": "Bettina Ford",
+   "listed_as": "Ford, Bettina",
+   "district": "Gander",
+   "party": "Liberal",
+   "party_key": "liberal",
+   "profile_path": "/Members/YourMember/FordBettina.aspx"
+  },
+  {
+   "name": "Pleaman Forsey",
+   "listed_as": "Forsey, Pleaman",
+   "district": "Exploits",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/ForseyPleaman.aspx"
+  },
+  {
+   "name": "Sherry Gambin-Walsh",
+   "listed_as": "Gambin-Walsh, Sherry",
+   "district": "Placentia - St. Mary's",
+   "party": "Liberal",
+   "party_key": "liberal",
+   "profile_path": "/Members/YourMember/GambinWalshSherry.aspx"
+  },
+  {
+   "name": "Mike Goosney",
+   "listed_as": "Goosney, Mike",
+   "district": "Humber - Gros Morne",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/GoosneyMike.aspx"
+  },
+  {
+   "name": "John Hogan",
+   "listed_as": "Hogan, John",
+   "district": "Windsor Lake",
+   "party": "Liberal",
+   "party_key": "liberal",
+   "profile_path": "/Members/YourMember/HoganJohn.aspx"
+  },
+  {
+   "name": "Fred Hutton",
+   "listed_as": "Hutton, Fred",
+   "district": "Conception Bay East - Bell Island",
+   "party": "Liberal",
+   "party_key": "liberal",
+   "profile_path": "/Members/YourMember/HuttonFred.aspx"
+  },
+  {
+   "name": "Eddie Joyce",
+   "listed_as": "Joyce, Eddie",
+   "district": "Humber - Bay of Islands",
+   "party": "Independent/Non-Affiliated",
+   "party_key": "independent",
+   "profile_path": "/Members/YourMember/JoyceEddie.aspx"
+  },
+  {
+   "name": "Michael King",
+   "listed_as": "King, Michael",
+   "district": "Burgeo - La Poile",
+   "party": "Liberal",
+   "party_key": "liberal",
+   "profile_path": "/Members/YourMember/KingMichael.aspx"
+  },
+  {
+   "name": "Jamie Korab",
+   "listed_as": "Korab, Jamie",
+   "district": "Waterford Valley",
+   "party": "Liberal",
+   "party_key": "liberal",
+   "profile_path": "/Members/YourMember/KorabJamie.aspx"
+  },
+  {
+   "name": "Paul Lane",
+   "listed_as": "Lane, Paul",
+   "district": "Mount Pearl - Southlands",
+   "party": "Independent/Non-Affiliated",
+   "party_key": "independent",
+   "profile_path": "/Members/YourMember/LanePaul.aspx"
+  },
+  {
+   "name": "Elvis Loveless",
+   "listed_as": "Loveless, Elvis",
+   "district": "Fortune Bay - Cape La Hune",
+   "party": "Liberal",
+   "party_key": "liberal",
+   "profile_path": "/Members/YourMember/LovelessElvis.aspx"
+  },
+  {
+   "name": "Jim McKenna",
+   "listed_as": "McKenna, Jim",
+   "district": "Fogo Island - Cape Freels",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/McKennaJim.aspx"
+  },
+  {
+   "name": "Loyola O'Driscoll",
+   "listed_as": "O\\'Driscoll, Loyola",
+   "district": "Ferryland",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/ODriscollLoyola.aspx"
+  },
+  {
+   "name": "Sheilagh O'Leary",
+   "listed_as": "O\\'Leary, Sheilagh",
+   "district": "St. John's East - Quidi Vidi",
+   "party": "New Democrat",
+   "party_key": "ndp",
+   "profile_path": "/Members/YourMember/OLearySheilagh.aspx"
+  },
+  {
+   "name": "Lin Paddock",
+   "listed_as": "Paddock, Lin",
+   "district": "Baie Verte - Green Bay",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/PaddockLin.aspx"
+  },
+  {
+   "name": "Craig Pardy",
+   "listed_as": "Pardy, Craig",
+   "district": "Bonavista",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/PardyCraig.aspx"
+  },
+  {
+   "name": "Lloyd Parrott",
+   "listed_as": "Parrott, Lloyd",
+   "district": "Terra Nova",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/ParrottLloyd.aspx"
+  },
+  {
+   "name": "Jim Parsons",
+   "listed_as": "Parsons, Jim",
+   "district": "Corner Brook",
+   "party": "Liberal",
+   "party_key": "liberal",
+   "profile_path": "/Members/YourMember/ParsonsJim.aspx"
+  },
+  {
+   "name": "Pam Parsons",
+   "listed_as": "Parsons, Pam",
+   "district": "Harbour Grace - Port de Grave",
+   "party": "Liberal",
+   "party_key": "liberal",
+   "profile_path": "/Members/YourMember/ParsonsPam.aspx"
+  },
+  {
+   "name": "Barry Petten",
+   "listed_as": "Petten, Barry",
+   "district": "Conception Bay South",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/PettenBarry.aspx"
+  },
+  {
+   "name": "Paul Pike",
+   "listed_as": "Pike, Paul",
+   "district": "Burin - Grand Bank",
+   "party": "Liberal",
+   "party_key": "liberal",
+   "profile_path": "/Members/YourMember/PikePaul.aspx"
+  },
+  {
+   "name": "Joseph Power",
+   "listed_as": "Power, Joseph",
+   "district": "Labrador West",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/PowerJoseph.aspx"
+  },
+  {
+   "name": "Keith Russell",
+   "listed_as": "Russell, Keith",
+   "district": "Lake Melville",
+   "party": "Independent/Non-Affiliated",
+   "party_key": "independent",
+   "profile_path": "/Members/YourMember/RussellKeith.aspx"
+  },
+  {
+   "name": "Sarah Stoodley",
+   "listed_as": "Stoodley, Sarah",
+   "district": "Mount Scio",
+   "party": "Liberal",
+   "party_key": "liberal",
+   "profile_path": "/Members/YourMember/StoodleySarah.aspx"
+  },
+  {
+   "name": "Lucy Stoyles",
+   "listed_as": "Stoyles, Lucy",
+   "district": "Mount Pearl North",
+   "party": "Liberal",
+   "party_key": "liberal",
+   "profile_path": "/Members/YourMember/StoylesLucy.aspx"
+  },
+  {
+   "name": "Chris Tibbs",
+   "listed_as": "Tibbs, Chris",
+   "district": "Grand Falls-Windsor - Buchans",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/TibbsChris.aspx"
+  },
+  {
+   "name": "Tony Wakeham",
+   "listed_as": "Wakeham, Tony",
+   "district": "Stephenville - Port au Port",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/WakehamTony.aspx"
+  },
+  {
+   "name": "Joedy Wall",
+   "listed_as": "Wall, Joedy",
+   "district": "Cape St. Francis",
+   "party": "Progressive Conservative",
+   "party_key": "pc",
+   "profile_path": "/Members/YourMember/WallJoedy.aspx"
+  },
+  {
+   "name": "Keith White",
+   "listed_as": "White, Keith",
+   "district": "St. John's West",
+   "party": "Liberal",
+   "party_key": "liberal",
+   "profile_path": "/Members/YourMember/WhiteKeith.aspx"
+  }
+ ],
+ "party_changes": [
+  {
+   "member": "Keith Russell",
+   "effective_on": "2026-09-14",
+   "party": "Independent/Non-Affiliated",
+   "party_key": "independent",
+   "reason": "floor_crossing"
+  }
+ ],
+ "unparsed_sentences": []
+}

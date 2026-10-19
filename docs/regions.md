@@ -30,7 +30,7 @@ The packet is built by management-tool `scripts/nl_regions_ingest.py` (`fetch-di
 
 ## Public district pages
 
-- `GET /:locale/districts` lists the districts; `GET /:locale/districts/:id` (for example `/en/districts/nl-ped-corner-brook`)
+- `GET /:locale/g/districts/provincial` lists the districts; `GET /:locale/g/districts/provincial/:id` (for example `/en/g/districts/provincial/nl-ped-corner-brook`)
   shows the current boundary on the shared map, facts and source, settlements whose point falls inside the boundary, the
   history of names and boundaries, and external identifiers. Both are public; policy is `ProvincialElectoralDistrictPolicy`.
 - Stable DOM ids are asserted in `spec/dom_contracts/district_page_spec.rb`.
@@ -84,5 +84,29 @@ Parties load first from `db/data/nl_regions/provincial_parties.json` (built by m
   `ElectedTerm#party_on(date)` answers from the membership in force, else the party elected.
 - The districts map fills each district in its sitting member's party colour (no member: grey) with a legend and
   seat counts; the district page shows the member's party swatch and logo.
-- Not yet sourced: dated floor crossings (Wikidata party membership has no dates; record them as memberships).
+- Floor crossings come from the official House of Assembly "History of the Standings" page, parsed by management-tool
+  `scripts/nl_assembly_ingest.py` into `db/data/nl_regions/provincial_party_changes.json` (which also carries the current
+  roster). The roster is a static script file, so plain HTTP works and no browser crawler is needed.
+
+```bash
+./bin/dc-run bin/rails nlo:regions:load_party_changes   # after the elections load; idempotent, reports roster mismatches
+./bin/dc-run bin/rails nlo:regions:create_districts_nav_item   # public Districts link in the platform header
+```
 - Diagram: `docs/diagrams/exports/png/nlo_elections_schema_erd.png`.
+
+## Parties, elections, cards and routes
+
+- District pages live under the geography prefix, one sub-path per district type: `/:locale/g/districts/provincial` and
+  `/:locale/g/districts/provincial/:id`. `/:locale/districts` and `/:locale/districts/:id` redirect (301). Federal and
+  other provincial district types get their own sub-path later.
+- `GET /:locale/parties` lists parties with current seats; `GET /:locale/parties/:jurisdiction/:identifier` (for example
+  `/en/parties/provincial-nl/liberal`) shows the logo and licence, current members and former members, each with
+  their districts linked back. Every party name on district, results and election pages links here.
+- `GET /:locale/elections` lists elections with seats by party; `GET /:locale/elections/:jurisdiction/:year` shows
+  every contest with linked districts and parties.
+- District cards (`districts/_card`) wrap CE's `shared/_card`: name, sitting member, party chip, and the cover image
+  through `BetterTogether::Attachments::Images` (`attachable_cover_image` on `ProvincialElectoralDistrict`; the card image is
+  the cover image). Districts without an image show CE's placeholder.
+- Query budget: every page above runs under 70 queries regardless of row count (preloaded translations, memberships,
+  attachments); `spec/dom_contracts/party_election_pages_spec.rb` guards it. The listing map's simplified outlines are
+  cached for 12 hours and keyed on the spaces' `updated_at`; uncached they cost about 3 s on 40 districts.

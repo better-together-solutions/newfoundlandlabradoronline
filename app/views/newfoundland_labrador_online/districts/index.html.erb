@@ -1,6 +1,8 @@
 <div class="container py-4" id="districts-index">
   <h1 class="mb-2"><%= t('.title') %></h1>
-  <p class="text-muted"><%= t('.intro', count: @districts.size) %></p>
+  <p class="text-muted"><%= t('.intro', count: @districts.size) %>
+    <%= link_to t('.parties'), newfoundland_labrador_online_parties_path(locale: I18n.locale) %> ·
+    <%= link_to t('.elections'), newfoundland_labrador_online_elections_path(locale: I18n.locale) %></p>
 
   <%# Resolved here: a lazy t('.kind') inside the lambda would look up under the map partial's scope. %>
   <% kind = t('.kind') %>
@@ -20,7 +22,7 @@
           <% if party&.logo&.attached? %>
             <%= image_tag url_for(party.logo), alt: '', height: 24, class: 'align-middle' %>
           <% end %>
-          <strong><%= party&.short_name || t('.no_party') %></strong>
+          <strong><%= party ? link_to(party.short_name, party_path_for(party)) : t('.no_party') %></strong>
           <span class="text-muted"><%= t('.seats', count:) %></span>
         </li>
       <% end %>
@@ -28,11 +30,9 @@
     <p class="small text-muted mb-0"><%= t('.legend_note') %></p>
   </section>
 
-  <ul class="list-group" id="districts-list">
+  <div class="row" id="districts-list">
     <% @districts.each do |district| %>
-      <li class="list-group-item" id="<%= dom_id(district, :row) %>">
-        <%= link_to district.name, newfoundland_labrador_online_district_path(district, locale: I18n.locale) %>
-      </li>
+      <%= render 'newfoundland_labrador_online/districts/card', district:, term: terms[district.id] %>
     <% end %>
-  </ul>
+  </div>
 </div>

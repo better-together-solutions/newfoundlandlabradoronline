@@ -1,0 +1,22 @@
+<div class="container py-4" id="party-page">
+  <nav aria-label="<%= t('newfoundland_labrador_online.districts.show.breadcrumb') %>">
+    <%= link_to t('.all_parties'), newfoundland_labrador_online_parties_path(locale: I18n.locale) %>
+  </nav>
+  <div class="d-flex align-items-center gap-3 my-3">
+    <% if @party.logo.attached? %>
+      <%= image_tag url_for(@party.logo), alt: '', height: 64, id: 'party-logo' %>
+    <% end %>
+    <h1 id="party-name" class="mb-0"><%= @party.name %></h1>
+    <span class="d-inline-block rounded" id="party-color" style="width: 1.5rem; height: 1.5rem; background: <%= @party.display_color %>" title="<%= @party.display_color %>"></span>
+  </div>
+  <% if @party.logo.attached? && @party.logo_license.present? %>
+    <p class="small text-muted" id="party-logo-licence">
+      <%= t('.logo_licence', license: @party.logo_license) %>
+      <%= t('.logo_non_free') if @party.logo_non_free %>
+      <% if @party.logo_source_url.present? %><%= link_to t('.logo_source'), @party.logo_source_url, rel: 'noopener' %><% end %>
+    </p>
+  <% end %>
+
+  <%= render 'members', memberships: @current, terms_by_person: @terms_by_person, id: 'party-current-members', heading: t('.current') %>
+  <%= render 'members', memberships: @former, terms_by_person: @terms_by_person, id: 'party-former-members', heading: t('.former') %>
+</div>

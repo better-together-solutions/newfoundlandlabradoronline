@@ -22,8 +22,11 @@ module NewfoundlandLabradorOnline
       end
     end
 
+    # Uses the loaded versions when they were preloaded (listing pages), else asks the database.
     def version_on(date)
-      versions.on(date).chronological.last
+      return versions.on(date).chronological.last unless versions.loaded?
+
+      versions.select { |v| v.valid_from <= date && (v.valid_to.nil? || v.valid_to >= date) }.max_by(&:valid_from)
     end
 
     def current_version

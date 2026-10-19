@@ -1,0 +1,30 @@
+<%# locals: (memberships:, terms_by_person:, id:, heading:) %>
+<section class="card mt-4" id="<%= id %>">
+  <div class="card-body">
+    <h2 class="h5 card-title"><%= heading %></h2>
+    <% if memberships.empty? %>
+      <p class="text-muted mb-0"><%= t('newfoundland_labrador_online.parties.show.none') %></p>
+    <% else %>
+      <table class="table table-sm mb-0">
+        <thead>
+          <tr>
+            <th scope="col"><%= t('newfoundland_labrador_online.districts.show.member') %></th>
+            <th scope="col"><%= t('newfoundland_labrador_online.parties.show.districts') %></th>
+            <th scope="col"><%= t('newfoundland_labrador_online.districts.show.valid_from') %></th>
+            <th scope="col"><%= t('newfoundland_labrador_online.districts.show.valid_to') %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% memberships.each do |membership| %>
+            <tr id="<%= dom_id(membership) %>">
+              <td><%= membership.person.name %></td>
+              <td><%= safe_join(terms_by_person.fetch(membership.person_id, []).map(&:region).uniq.map { |r| district_link(r) }, ', ') %></td>
+              <td><%= l(membership.started_on, format: :long) %></td>
+              <td><%= membership.ended_on ? l(membership.ended_on, format: :long) : t('newfoundland_labrador_online.districts.show.present') %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</section>

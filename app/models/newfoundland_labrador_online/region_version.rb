@@ -15,6 +15,8 @@ module NewfoundlandLabradorOnline
     }
     scope :current, -> { on(Time.zone.today) }
     scope :chronological, -> { order(:valid_from) }
+    # Everything but the full-resolution boundary, for listings that only need names, dates and area.
+    scope :without_boundary, -> { select(column_names - ['boundary']) }
 
     # Sets the boundary from a GeoJSON geometry (hash or string), repaired to a valid multi polygon.
     def assign_boundary_from_geojson!(geometry)
@@ -24,14 +26,8 @@ module NewfoundlandLabradorOnline
          'ST_Multi(ST_CollectionExtract(ST_MakeValid(ST_GeomFromGeoJSON(?)), 3))::geography WHERE id = ?', json, id]
       )
       self.class.connection.execute(sql)
+      self.class.where(id:).update_all('area_km2 = ST_Area(boundary) / 1000000.0')
       reload
-    end
-
-    # Square kilometres, computed in PostGIS; nil when there is no boundary.
-    def area_km2
-      return unless boundary
-
-      self.class.where(id:).pick(Arel.sql('ST_Area(boundary) / 1000000.0'))
     end
 
     private

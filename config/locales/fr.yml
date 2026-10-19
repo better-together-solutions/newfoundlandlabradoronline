@@ -86,12 +86,14 @@ fr:
   newfoundland_labrador_online:
     districts:
       index:
+        elections: Élections
         intro: "%{count} circonscriptions en vigueur depuis l’élection de 2015."
         kind: Circonscription électorale provinciale
         legend: Sièges par parti
         legend_note: Chaque circonscription est colorée selon le parti de son député
           actuel. Les licences des logos sont consignées avec chaque parti.
         no_party: Aucun parti enregistré
+        parties: Partis politiques
         seats:
           one: "%{count} siège"
           other: "%{count} sièges"
@@ -128,6 +130,17 @@ fr:
         valid_to: Au
         version_name: Nom
         votes: Voix
+    elections:
+      index:
+        districts: Circonscriptions
+        election: Élection générale de %{year}
+        intro: Élections générales à la Chambre d’assemblée, avec les sièges remportés
+          par parti.
+        parties: Partis
+        title: Élections
+      show:
+        all_elections: Toutes les élections
+        title: Élection générale de %{year}
     image_blocks:
       preview: 'Image : %{caption}'
     listing_map:
@@ -151,6 +164,25 @@ fr:
         new_named_with_query: 'Créer %{model} : « %{q} »'
         tab: Lieu
         use_typed_name: Utiliser « %{q} » comme nom de lieu personnalisé
+    parties:
+      index:
+        districts: Circonscriptions
+        elections: Élections
+        intro: Partis qui ont détenu ou disputé des sièges à la Chambre d’assemblée,
+          avec leurs sièges actuels.
+        seats:
+          one: "%{count} siège"
+          other: "%{count} sièges"
+        title: Partis politiques
+      show:
+        all_parties: Tous les partis
+        current: Députés actuels
+        districts: Circonscriptions
+        former: Anciens députés
+        logo_licence: 'Licence du logo : %{license}.'
+        logo_non_free: Logo non libre, affiché au titre de l’utilisation équitable.
+        logo_source: Source
+        none: Aucun député enregistré.
     settlement_events:
       empty: Aucun événement à venir à %{name} pour le moment.
       title: Événements à %{name}

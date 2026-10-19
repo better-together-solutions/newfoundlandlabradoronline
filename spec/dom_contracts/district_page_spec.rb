@@ -31,16 +31,16 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
   end
 
   it 'exposes the index identifiers', :aggregate_failures do
-    get "/#{locale}/districts"
+    get "/#{locale}/g/districts/provincial"
 
     expect(response).to have_http_status(:ok)
     expect(response.body).to include('id="districts-index"', 'id="districts-list"', 'id="listing-map-section"')
-    expect(response.body).to include('id="row_newfoundland_labrador_online_provincial_electoral_district_')
+    expect(response.body).to include('id="newfoundland_labrador_online_provincial_electoral_district_')
   end
 
   context 'with the listing map' do
     let(:points) do
-      get "/#{locale}/districts"
+      get "/#{locale}/g/districts/provincial"
       JSON.parse(CGI.unescapeHTML(response.body[/data-better_together--map-spaces-value="([^"]*)"/, 1]))
     end
     let(:popup) { points.first['popup_html'] }
@@ -50,7 +50,8 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
     end
 
     it 'titles and describes each pin in its popup' do
-      expect(popup).to include('<h3', '/districts/nl-ped-corner-brook', 'km²', 'Provincial electoral district')
+      expect(popup).to include('<h3', '/g/districts/provincial/nl-ped-corner-brook', 'km²',
+                               'Provincial electoral district')
     end
 
     it 'draws the outlines' do
@@ -63,7 +64,7 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
     before do
       NewfoundlandLabradorOnline::Geography::PoliticalPartyLoader.new.call
       load_elections
-      get "/#{locale}/districts"
+      get "/#{locale}/g/districts/provincial"
     end
 
     it 'colours each district area and lists the parties in a legend', :aggregate_failures do
@@ -81,27 +82,27 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
   it 'exposes the district page identifiers', :aggregate_failures do
     NewfoundlandLabradorOnline::Geography::PoliticalPartyLoader.new.call
     load_elections
-    get "/#{locale}/districts/nl-ped-corner-brook"
+    get "/#{locale}/g/districts/provincial/nl-ped-corner-brook"
 
     expect(response).to have_http_status(:ok)
     page_ids.each { |id| expect(response.body).to include(%(id="#{id}")) }
   end
 
   it 'draws the current boundary on the map' do
-    get "/#{locale}/districts/nl-ped-corner-brook"
+    get "/#{locale}/g/districts/provincial/nl-ped-corner-brook"
 
     expect(response.body).to include('data-party-overlay-overlays-value')
   end
 
   it 'lists settlements whose point falls inside the boundary' do
     place_settlement(create(:geography_settlement, identifier: 'in-district', name: 'Insideville'))
-    get "/#{locale}/districts/nl-ped-corner-brook"
+    get "/#{locale}/g/districts/provincial/nl-ped-corner-brook"
 
     expect(response.body).to include('Insideville')
   end
 
   it 'answers 404 for an unknown district' do
-    get "/#{locale}/districts/nl-ped-nowhere"
+    get "/#{locale}/g/districts/provincial/nl-ped-nowhere"
 
     expect(response).to have_http_status(:not_found)
   end

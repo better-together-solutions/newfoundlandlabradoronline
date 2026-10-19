@@ -4,7 +4,7 @@ module NewfoundlandLabradorOnline
   # The map at the top of a geospatial listing page (districts, regions, settlements, states, countries, continents).
   # One pin per listed record that has coordinates, with a popup (linked title plus an HTML body), and the outline of
   # every listed record that has a boundary. Built on CE's map classes and never saved; ListingMapHelper builds it.
-  class ListingMap < BetterTogether::Geography::LocatableMap
+  class ListingMap < BetterTogether::Geography::LocatableMap # rubocop:disable Metrics/ClassLength
     RELATIVE_TOLERANCE = 0.01
     MIN_PART_SHARE = 0.0005
     COORDINATE_DECIMALS = 3 # about 100 m, enough for an overview map and a fraction of the payload
@@ -28,7 +28,7 @@ module NewfoundlandLabradorOnline
     # Labrador district and a town both stay light and legible.
     def boundary
       @boundary ||= begin
-        json = BetterTogether::Geography::Space.connection.select_value(boundary_sql)
+        json = cached_geometries('boundary') { BetterTogether::Geography::Space.connection.select_value(boundary_sql) }
         collection(json)
       end
     end
@@ -39,7 +39,7 @@ module NewfoundlandLabradorOnline
       return [] unless overlay_for
 
       @overlays ||= begin
-        geometries = BetterTogether::Geography::Space.connection.select_rows(overlay_sql).to_h
+        geometries = cached_geometries('overlays') { BetterTogether::Geography::Space.connection.select_rows(overlay_sql).to_h }
         records.filter_map { |record| overlay_for_record(record, geometries) }
       end
     end
@@ -60,6 +60,14 @@ module NewfoundlandLabradorOnline
     end
 
     private
+
+    # Simplifying every boundary costs seconds, and boundaries change only when a space is saved.
+    def cached_geometries(kind, &)
+      stamp = BetterTogether::Geography::Space.where(id: spaces.map(&:id)).maximum(:updated_at)&.to_f
+      ids = Digest::SHA256.hexdigest(spaces.map(&:id).sort.join)
+      key = ['listing-map', kind, ids, stamp, tolerance, COORDINATE_DECIMALS]
+      Rails.cache.fetch(key, expires_in: 12.hours, &)
+    end
 
     # Latitudes and longitudes of every pin plus the corners of the combined outline.
     def framed_coordinates
@@ -97,10 +105,13 @@ module NewfoundlandLabradorOnline
       SQL
     end
 
+    # The geography-to-geometry cast of a full boundary is the expensive step, so it runs once per space.
     def parts_sql
       <<~SQL.squish
-        SELECT id, (ST_Dump(boundary::geometry)).geom AS part, ST_Area(boundary::geometry) AS total
-        FROM better_together_geography_spaces WHERE boundary IS NOT NULL AND id IN (#{quoted_ids})
+        WITH shapes AS MATERIALIZED (
+          SELECT id, boundary::geometry AS geom FROM better_together_geography_spaces
+          WHERE boundary IS NOT NULL AND id IN (#{quoted_ids}))
+        SELECT id, (ST_Dump(geom)).geom AS part, ST_Area(geom) AS total FROM shapes
       SQL
     end
 

@@ -1,0 +1,24 @@
+<div class="container py-4" id="parties-index">
+  <h1 class="mb-2"><%= t('.title') %></h1>
+  <p class="text-muted"><%= t('.intro') %></p>
+
+  <div class="row" id="parties-list">
+    <% @parties.each do |party| %>
+      <div class="col-12 col-md-6 col-xl-4 mb-3" id="<%= dom_id(party) %>">
+        <div class="card h-100 shadow-sm border-0" style="border-top: 4px solid <%= party.display_color %> !important">
+          <div class="card-body d-flex align-items-center gap-3">
+            <% if party.logo.attached? %>
+              <%= image_tag url_for(party.logo), alt: '', height: 48, class: 'flex-shrink-0' %>
+            <% end %>
+            <div>
+              <h2 class="h5 mb-1"><%= link_to party.name, party_path_for(party), class: 'stretched-link text-decoration-none' %></h2>
+              <p class="small text-muted mb-0" id="<%= dom_id(party, :seats) %>"><%= t('.seats', count: @seats.fetch(party.id, 0)) %></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <p><%= link_to t('.elections'), newfoundland_labrador_online_elections_path(locale: I18n.locale) %> ·
+     <%= link_to t('.districts'), newfoundland_labrador_online_districts_path(locale: I18n.locale) %></p>
+</div>

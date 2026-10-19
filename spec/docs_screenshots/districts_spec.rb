@@ -30,22 +30,52 @@ RSpec.describe 'Documentation screenshots for electoral districts', :js, type: :
   end
 
   it 'captures the district index' do
-    visit "/#{locale}/districts"
+    visit "/#{locale}/g/districts/provincial"
 
     callouts = [{ selector: '#listing-map-section', title: 'Districts coloured by party' },
                 { selector: '#districts-party-legend', title: 'Party legend with seat counts' },
-                { selector: '#districts-list', title: 'All 40 districts' }]
+                { selector: '#districts-list', title: 'District cards with member and party' }]
 
     expect(captured('districts_index', callouts)).to all(be > 10_000)
   end
 
   it 'captures the Corner Brook district page' do
-    visit "/#{locale}/districts/nl-ped-corner-brook"
+    visit "/#{locale}/g/districts/provincial/nl-ped-corner-brook"
     callouts = %w[#district-map-section #district-member #district-facts #district-settlements #district-members
                   #district-results #district-history].map do |selector|
       { selector:, title: selector.delete_prefix('#district-').tr('-', ' ') }
     end
 
     expect(captured('district_show', callouts)).to all(be > 10_000)
+  end
+
+  it 'captures the party index' do
+    visit "/#{locale}/parties"
+
+    expect(captured('parties_index', [{ selector: '#parties-list', title: 'Parties with current seats' }]))
+      .to all(be > 10_000)
+  end
+
+  it 'captures a party page' do
+    visit "/#{locale}/parties/provincial-nl/liberal"
+    callouts = %w[#party-current-members #party-former-members].map do |selector|
+      { selector:, title: selector.delete_prefix('#party-').tr('-', ' ') }
+    end
+
+    expect(captured('party_show', callouts)).to all(be > 10_000)
+  end
+
+  it 'captures the elections index' do
+    visit "/#{locale}/elections"
+
+    expect(captured('elections_index', [{ selector: '#elections-list', title: 'Elections with seats by party' }]))
+      .to all(be > 10_000)
+  end
+
+  it 'captures an election page' do
+    visit "/#{locale}/elections/provincial/2025"
+
+    expect(captured('election_show', [{ selector: '#election-name', title: 'Election and its contests' }]))
+      .to all(be > 10_000)
   end
 end
