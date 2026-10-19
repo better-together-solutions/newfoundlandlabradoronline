@@ -6,8 +6,11 @@ ActiveSupport::Reloader.to_prepare do
   require_dependency 'better_together/content/image'
   require_dependency 'better_together/community'
   require_dependency 'better_together/event'
+  require_dependency 'better_together/geography/region'
 
   BetterTogether::Post.include(NewfoundlandLabradorOnline::Post)
+  # Regions: versioned boundaries and external identifiers (the typed subclasses live in app/models).
+  BetterTogether::Geography::Region.include(NewfoundlandLabradorOnline::Region)
   # Locations: every record in LocatableModels gets the shared location interface.
   NewfoundlandLabradorOnline::LocatableModels.wire!
   BetterTogether::Content::VideoBlock.include(NewfoundlandLabradorOnline::VideoBlock)
