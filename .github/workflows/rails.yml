@@ -39,8 +39,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - name: Install Chrome
-        run: sudo apt-get install -y chromium-browser
       - name: Install libvips
         run: sudo apt-get install -y libvips42
       # Add or replace database setup steps here
