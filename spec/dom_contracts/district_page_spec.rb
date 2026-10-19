@@ -8,10 +8,21 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
 
   let(:locale) { I18n.default_locale }
   let(:path) { Rails.root.join('spec/fixtures/nl_regions/two_districts.geojson') }
+  let(:page_ids) do
+    %w[district-page district-name district-kind district-map-section district-facts district-area
+       district-since district-authority district-licence district-settlements district-history
+       district-identifiers district-member district-members district-results]
+  end
 
   before do
     configure_host_platform
     NewfoundlandLabradorOnline::Geography::ProvincialDistrictLoader.new(path:).call
+  end
+
+  def load_elections
+    NewfoundlandLabradorOnline::Geography::ProvincialElectionLoader.new(
+      path: Rails.root.join('spec/fixtures/nl_regions/two_elections.json')
+    ).call
   end
 
   def place_settlement(settlement)
@@ -49,12 +60,11 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
   end
 
   it 'exposes the district page identifiers', :aggregate_failures do
+    load_elections
     get "/#{locale}/districts/nl-ped-corner-brook"
 
-    ids = %w[district-page district-name district-kind district-map-section district-facts district-area district-since
-             district-authority district-licence district-settlements district-history district-identifiers]
     expect(response).to have_http_status(:ok)
-    ids.each { |id| expect(response.body).to include(%(id="#{id}")) }
+    page_ids.each { |id| expect(response.body).to include(%(id="#{id}")) }
   end
 
   it 'draws the current boundary on the map' do

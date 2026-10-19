@@ -7,5 +7,12 @@ namespace :nlo do
       result = NewfoundlandLabradorOnline::Geography::ProvincialDistrictLoader.new.call
       puts "created=#{result.created.size} updated=#{result.updated.size} unchanged=#{result.unchanged.size}"
     end
+
+    desc 'Load provincial general-election results and elected members (2015-2025) from db/data/nl_regions; idempotent'
+    task load_provincial_elections: :environment do
+      result = NewfoundlandLabradorOnline::Geography::ProvincialElectionLoader.new.call
+      puts result.to_h.except(:missing_districts).map { |key, value| "#{key}=#{value}" }.join(' ')
+      puts "missing districts: #{result.missing_districts.uniq.join(', ')}" if result.missing_districts.any?
+    end
   end
 end

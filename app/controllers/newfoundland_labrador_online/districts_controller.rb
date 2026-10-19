@@ -18,9 +18,15 @@ module NewfoundlandLabradorOnline
       @versions = @district.versions.chronological
       @identifiers = @district.identifiers.order(:scheme)
       @settlements = settlements_inside(@district)
+      load_electoral_history(@district)
     end
 
     private
+
+    def load_electoral_history(district)
+      @terms = district.elected_terms.includes(:person, :election).latest_first
+      @contests = district.contests.includes(:election, :candidacies).sort_by { |c| c.election.held_on }.reverse
+    end
 
     def settlements_inside(district)
       version = district.current_version

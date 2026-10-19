@@ -1,0 +1,18 @@
+# frozen_string_literal: true
+
+module NewfoundlandLabradorOnline
+  # A person holding a district's seat after an election (the join between Person, district and election cycle).
+  class ElectedTerm < BetterTogether::ApplicationRecord
+    self.table_name = 'elected_terms'
+
+    belongs_to :person, class_name: 'BetterTogether::Person', inverse_of: :elected_terms
+    belongs_to :region, class_name: 'BetterTogether::Geography::Region', inverse_of: :elected_terms
+    belongs_to :election, class_name: 'NewfoundlandLabradorOnline::Election', inverse_of: :terms
+    belongs_to :candidacy, class_name: 'NewfoundlandLabradorOnline::Candidacy', inverse_of: :term
+
+    validates :office, :party_name, :started_on, presence: true
+
+    scope :current, -> { where(ended_on: nil) }
+    scope :latest_first, -> { order(started_on: :desc) }
+  end
+end

@@ -95,6 +95,10 @@ fr:
         area_km2: "%{value} km²"
         authority: Autorité
         breadcrumb: Fil d’Ariane
+        candidate: Candidature
+        current_member: Député ou députée à la Chambre d’assemblée
+        elected: Élu
+        election_results: Élections de %{year}
         facts: Faits
         history: Noms et limites au fil du temps
         identifiers: Identifiants
@@ -102,13 +106,21 @@ fr:
         kind: Circonscription électorale provinciale
         licence: Licence
         map_label: Carte de %{name}
+        member: Député
+        members: Députés à la Chambre d’assemblée
+        no_member: Aucun député n’est encore enregistré pour cette circonscription.
         no_settlements: Aucune localité n’est encore enregistrée dans cette circonscription.
+        party: Parti
         present: Aujourd’hui
+        results: Résultats électoraux
         settlements: Localités incluses
+        share: Part
+        turnout: Participation %{value} %
         unknown: Inconnu
         valid_from: Du
         valid_to: Au
         version_name: Nom
+        votes: Voix
     image_blocks:
       preview: 'Image : %{caption}'
     listing_map:

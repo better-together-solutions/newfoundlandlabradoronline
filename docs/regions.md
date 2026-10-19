@@ -47,3 +47,20 @@ Sources in `docs/diagrams/source`, exports in `docs/diagrams/exports` (see `docs
 ![Schema ERD](diagrams/exports/png/nlo_regions_schema_erd.png)
 ![District page layers](diagrams/exports/png/nlo_district_page_layers.png)
 ![District load flow](diagrams/exports/png/nlo_district_load_flow.png)
+
+## Elections and members (phase 2)
+
+Provincial general-election results for 2015, 2019, 2021 and 2025 load from `db/data/nl_regions/provincial_election_results.json`
+(built by management-tool `scripts/nl_elections_ingest.py` from Wikipedia, with source URL, revision id and checksum on
+each election; cross-check against Elections NL before relying on a figure).
+
+```bash
+./bin/dc-run bin/rails nlo:regions:load_provincial_elections   # idempotent; run after load_provincial_districts
+```
+
+- `elections` holds one row per general election; `electoral_contests` one per district per election;
+  `candidacies` the candidates (names only).
+- Only elected candidates become `BetterTogether::Person` records (identifier `nl-mha-<name>`), joined to the district
+  and election cycle by `elected_terms`. A term ends when the next election's winner takes the seat.
+- By-elections, floor crossings and mid-term resignations are not loaded yet, so a term's party is the party elected.
+- Diagram: `docs/diagrams/exports/png/nlo_elections_schema_erd.png`.

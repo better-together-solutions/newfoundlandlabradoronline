@@ -18,6 +18,7 @@ RSpec.describe 'Documentation screenshots for electoral districts', :js, type: :
 
     configure_host_platform.update!(privacy: 'public')
     NewfoundlandLabradorOnline::Geography::ProvincialDistrictLoader.new(path: data_path).call
+    NewfoundlandLabradorOnline::Geography::ProvincialElectionLoader.new.call
     settlement = create(:geography_settlement, identifier: 'corner-brook', name: 'Corner Brook')
     space = BetterTogether::Geography::Space.create!(latitude: 48.95, longitude: -57.95)
     BetterTogether::Geography::GeospatialSpace.create!(geospatial: settlement, space:)
@@ -38,7 +39,8 @@ RSpec.describe 'Documentation screenshots for electoral districts', :js, type: :
 
   it 'captures the Corner Brook district page' do
     visit "/#{locale}/districts/nl-ped-corner-brook"
-    callouts = %w[#district-map-section #district-facts #district-settlements #district-history].map do |selector|
+    callouts = %w[#district-map-section #district-facts #district-settlements #district-members #district-results
+                  #district-history].map do |selector|
       { selector:, title: selector.delete_prefix('#district-').tr('-', ' ') }
     end
 

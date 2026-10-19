@@ -20,6 +20,11 @@
         <div class="card-body">
           <h2 class="h5 card-title"><%= t('.facts') %></h2>
           <dl class="row mb-0">
+            <dt class="col-sm-5"><%= t('.current_member') %></dt>
+            <dd class="col-sm-7" id="district-member">
+              <% member = @terms.find { |term| term.ended_on.nil? } %>
+              <%= member ? "#{member.person.name} (#{member.party_name})" : t('.no_member') %>
+            </dd>
             <dt class="col-sm-5"><%= t('.area') %></dt>
             <dd class="col-sm-7" id="district-area"><%= current ? t('.area_km2', value: number_with_delimiter(current.area_km2.round)) : t('.unknown') %></dd>
             <dt class="col-sm-5"><%= t('.in_force_since') %></dt>
@@ -50,6 +55,63 @@
       </section>
     </div>
   </div>
+
+  <section class="card mt-4" id="district-members">
+    <div class="card-body">
+      <h2 class="h5 card-title"><%= t('.members') %></h2>
+      <table class="table table-sm mb-0">
+        <thead>
+          <tr>
+            <th scope="col"><%= t('.member') %></th>
+            <th scope="col"><%= t('.party') %></th>
+            <th scope="col"><%= t('.valid_from') %></th>
+            <th scope="col"><%= t('.valid_to') %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @terms.each do |term| %>
+            <tr id="<%= dom_id(term) %>">
+              <td><%= term.person.name %></td>
+              <td><%= term.party_name %></td>
+              <td><%= l(term.started_on, format: :long) %></td>
+              <td><%= term.ended_on ? l(term.ended_on, format: :long) : t('.present') %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card mt-4" id="district-results">
+    <div class="card-body">
+      <h2 class="h5 card-title"><%= t('.results') %></h2>
+      <% @contests.each do |contest| %>
+        <h3 class="h6 mt-3"><%= t('.election_results', year: contest.election.year) %>
+          <% if contest.turnout %><small class="text-muted"><%= t('.turnout', value: contest.turnout) %></small><% end %>
+        </h3>
+        <table class="table table-sm" id="<%= dom_id(contest) %>">
+          <thead>
+            <tr>
+              <th scope="col"><%= t('.candidate') %></th>
+              <th scope="col"><%= t('.party') %></th>
+              <th scope="col" class="text-end"><%= t('.votes') %></th>
+              <th scope="col" class="text-end"><%= t('.share') %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% contest.candidacies.each do |candidacy| %>
+              <tr id="<%= dom_id(candidacy) %>" class="<%= 'fw-bold' if candidacy.elected %>">
+                <td><%= candidacy.candidate_name %> <% if candidacy.elected %><span class="badge text-bg-success"><%= t('.elected') %></span><% end %></td>
+                <td><%= candidacy.party_name %></td>
+                <td class="text-end"><%= number_with_delimiter(candidacy.votes) %></td>
+                <td class="text-end"><%= number_with_precision(candidacy.vote_share, precision: 1) %>%</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+  </section>
 
   <section class="card mt-4" id="district-history">
     <div class="card-body">

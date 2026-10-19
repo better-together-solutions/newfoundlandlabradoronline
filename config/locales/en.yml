@@ -95,6 +95,10 @@ en:
         area_km2: "%{value} km²"
         authority: Authority
         breadcrumb: Breadcrumb
+        candidate: Candidate
+        current_member: Member of the House of Assembly
+        elected: Elected
+        election_results: "%{year} election"
         facts: Facts
         history: Names and boundaries over time
         identifiers: Identifiers
@@ -102,13 +106,21 @@ en:
         kind: Provincial electoral district
         licence: Licence
         map_label: Map of %{name}
+        member: Member
+        members: Members of the House of Assembly
+        no_member: No member is recorded for this district yet.
         no_settlements: No settlements are recorded inside this district yet.
+        party: Party
         present: Present
+        results: Election results
         settlements: Settlements inside
+        share: Share
+        turnout: Turnout %{value}%
         unknown: Unknown
         valid_from: From
         valid_to: To
         version_name: Name
+        votes: Votes
     image_blocks:
       preview: 'Image: %{caption}'
     listing_map:

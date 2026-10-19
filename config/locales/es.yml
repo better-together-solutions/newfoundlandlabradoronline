@@ -95,6 +95,10 @@ es:
         area_km2: "%{value} km²"
         authority: Autoridad
         breadcrumb: Ruta de navegación
+        candidate: Candidatura
+        current_member: Miembro de la Cámara de la Asamblea
+        elected: Electo
+        election_results: Elecciones de %{year}
         facts: Datos
         history: Nombres y límites a lo largo del tiempo
         identifiers: Identificadores
@@ -102,13 +106,21 @@ es:
         kind: Distrito electoral provincial
         licence: Licencia
         map_label: Mapa de %{name}
+        member: Miembro
+        members: Miembros de la Cámara de la Asamblea
+        no_member: Todavía no hay un miembro registrado para este distrito.
         no_settlements: Todavía no hay localidades registradas en este distrito.
+        party: Partido
         present: Actualidad
+        results: Resultados electorales
         settlements: Localidades dentro
+        share: Porcentaje
+        turnout: Participación %{value}%
         unknown: Desconocido
         valid_from: Desde
         valid_to: Hasta
         version_name: Nombre
+        votes: Votos
     image_blocks:
       preview: 'Imagen: %{caption}'
     listing_map:
