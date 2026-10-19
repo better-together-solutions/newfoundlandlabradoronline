@@ -23,8 +23,29 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
     get "/#{locale}/districts"
 
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include('id="districts-index"', 'id="districts-list"')
+    expect(response.body).to include('id="districts-index"', 'id="districts-list"', 'id="listing-map-section"')
     expect(response.body).to include('id="row_newfoundland_labrador_online_provincial_electoral_district_')
+  end
+
+  context 'with the listing map' do
+    let(:points) do
+      get "/#{locale}/districts"
+      JSON.parse(CGI.unescapeHTML(response.body[/data-better_together--map-spaces-value="([^"]*)"/, 1]))
+    end
+    let(:popup) { points.first['popup_html'] }
+
+    it 'has a pin per district' do
+      expect(points.size).to eq(2)
+    end
+
+    it 'titles and describes each pin in its popup' do
+      expect(popup).to include('<h3', '/districts/nl-ped-corner-brook', 'km²', 'Provincial electoral district')
+    end
+
+    it 'draws the outlines' do
+      points
+      expect(response.body).to include('data-better_together--map-boundary-value')
+    end
   end
 
   it 'exposes the district page identifiers', :aggregate_failures do

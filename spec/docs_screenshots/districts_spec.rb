@@ -30,7 +30,8 @@ RSpec.describe 'Documentation screenshots for electoral districts', :js, type: :
   it 'captures the district index' do
     visit "/#{locale}/districts"
 
-    callouts = [{ selector: '#districts-list', title: 'All 40 districts' }]
+    callouts = [{ selector: '#listing-map-section', title: 'Every district on the map' },
+                { selector: '#districts-list', title: 'All 40 districts' }]
 
     expect(captured('districts_index', callouts)).to all(be > 10_000)
   end

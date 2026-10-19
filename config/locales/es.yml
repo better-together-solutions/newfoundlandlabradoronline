@@ -87,6 +87,7 @@ es:
     districts:
       index:
         intro: "%{count} distritos en vigor desde las elecciones de 2015."
+        kind: Distrito electoral provincial
         title: Distritos electorales provinciales
       show:
         all_districts: Todos los distritos
@@ -110,6 +111,8 @@ es:
         version_name: Nombre
     image_blocks:
       preview: 'Imagen: %{caption}'
+    listing_map:
+      label: 'Mapa: %{title}'
     live_images:
       alt: Última imagen de la cámara sobre %{name}
       title: "%{name} en directo"

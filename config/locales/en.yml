@@ -87,6 +87,7 @@ en:
     districts:
       index:
         intro: "%{count} districts in force since the 2015 election."
+        kind: Provincial electoral district
         title: Provincial electoral districts
       show:
         all_districts: All districts
@@ -110,6 +111,8 @@ en:
         version_name: Name
     image_blocks:
       preview: 'Image: %{caption}'
+    listing_map:
+      label: Map of %{title}
     live_images:
       alt: Latest camera image over %{name}
       title: "%{name} right now"

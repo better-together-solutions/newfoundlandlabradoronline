@@ -1,0 +1,6 @@
+<%# locals: (map:, title:, height: nil) %>
+<%# The map between a listing page heading and its list. height: a CSS length for places spread over a tall area. %>
+<section class="listing-map mb-4" id="listing-map-section" aria-label="<%= t('newfoundland_labrador_online.listing_map.label', title:) %>">
+  <%= render 'better_together/shared/map', map: map, types: [], boundary: map.boundary, cluster: false,
+             attributes: (height ? { 'style' => "height: #{height}" } : {}) %>
+</section>

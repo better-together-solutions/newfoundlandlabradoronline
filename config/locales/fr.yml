@@ -87,6 +87,7 @@ fr:
     districts:
       index:
         intro: "%{count} circonscriptions en vigueur depuis l’élection de 2015."
+        kind: Circonscription électorale provinciale
         title: Circonscriptions électorales provinciales
       show:
         all_districts: Toutes les circonscriptions
@@ -110,6 +111,8 @@ fr:
         version_name: Nom
     image_blocks:
       preview: 'Image : %{caption}'
+    listing_map:
+      label: 'Carte : %{title}'
     live_images:
       alt: Dernière image de la caméra sur %{name}
       title: "%{name} en direct"
