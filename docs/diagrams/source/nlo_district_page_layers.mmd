@@ -1,0 +1,31 @@
+%% render.orientation: landscape
+flowchart LR
+  subgraph Request["Request"]
+    R1["GET /:locale/districts/:id"]
+  end
+  subgraph Controller["Controller and policy"]
+    C1["NewfoundlandLabradorOnline::DistrictsController#show"]
+    P1["ProvincialElectoralDistrictPolicy (public read)"]
+  end
+  subgraph Models["Models"]
+    M1["ProvincialElectoralDistrict (STI of Geography::Region)"]
+    M2["RegionVersion (name, boundary, valid range, source)"]
+    M3["RegionIdentifier (scheme, value)"]
+    M4["DistrictMap (outline, viewport, no pins)"]
+  end
+  subgraph Views["Views"]
+    V1["districts/show.html.erb"]
+    V2["shared/_map (CE partial, boundary outline)"]
+  end
+  subgraph Spatial["PostGIS"]
+    S1["ST_Covers(boundary, settlement point)"]
+  end
+  R1 --> C1 --> P1
+  C1 --> M1
+  M1 --> M2
+  M1 --> M3
+  C1 --> S1
+  S1 --> M2
+  C1 --> V1
+  V1 --> M4 --> V2
+  M4 --> M2

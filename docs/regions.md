@@ -39,3 +39,11 @@ The packet is built by management-tool `scripts/nl_regions_ingest.py` (`fetch-di
 
 ![District page, desktop](screenshots/desktop/district_show_annotated.png)
 ![District page, mobile](screenshots/mobile/district_show.png)
+
+## Diagrams
+
+Sources in `docs/diagrams/source`, exports in `docs/diagrams/exports` (see `docs/diagrams/README.md`).
+
+![Schema ERD](diagrams/exports/png/nlo_regions_schema_erd.png)
+![District page layers](diagrams/exports/png/nlo_district_page_layers.png)
+![District load flow](diagrams/exports/png/nlo_district_load_flow.png)

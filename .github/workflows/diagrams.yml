@@ -1,0 +1,33 @@
+name: Diagrams Check
+
+on:
+  pull_request:
+    branches: ['**']
+
+jobs:
+  render-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Verify every diagram source renders and has committed exports
+        run: |
+          ./bin/render_diagrams --force
+          MISSING=0
+          for src in docs/diagrams/source/*.mmd; do
+            base=$(basename "$src" .mmd)
+            for fmt in png svg; do
+              if ! git ls-files --error-unmatch "docs/diagrams/exports/$fmt/$base.$fmt" >/dev/null 2>&1; then
+                echo "Missing committed export: docs/diagrams/exports/$fmt/$base.$fmt (run bin/export_diagrams and commit)" >&2
+                MISSING=1
+              fi
+            done
+          done
+          exit $MISSING
+        shell: bash

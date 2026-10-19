@@ -1,0 +1,15 @@
+%% render.orientation: portrait
+flowchart TD
+  A["Open Data NL dataset 361 (shapefile, SESA-TM)"] --> B["scripts/nl_regions_ingest.py build-districts (management-tool)"]
+  B --> C["Reproject to EPSG:4326, repair and simplify with PostGIS"]
+  C --> D["db/data/nl_regions/provincial_electoral_districts_2015.geojson"]
+  D --> E["rake nlo:regions:load_provincial_districts"]
+  E --> F{"District already loaded?"}
+  F -->|No| G["Create ProvincialElectoralDistrict, identifier nl-ped-slug"]
+  F -->|Yes| H{"Source checksum changed?"}
+  H -->|No| I["Unchanged"]
+  H -->|Yes| J["Update the version for the same valid_from"]
+  G --> K["Write RegionVersion with boundary, authority, licence, checksum"]
+  J --> K
+  K --> L["Refresh Space boundary cache and representative point"]
+  L --> M["HierarchyResolutionJob places points inside the district"]
