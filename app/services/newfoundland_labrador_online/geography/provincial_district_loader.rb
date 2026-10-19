@@ -74,7 +74,7 @@ module NewfoundlandLabradorOnline
           ['UPDATE better_together_geography_spaces SET boundary = v.boundary, ' \
            'latitude = ST_Y(v.point), longitude = ST_X(v.point) ' \
            'FROM (SELECT boundary, ST_PointOnSurface(boundary::geometry) AS point ' \
-           'FROM nlo_region_versions WHERE id = ?) v WHERE better_together_geography_spaces.id = ?',
+           'FROM region_versions WHERE id = ?) v WHERE better_together_geography_spaces.id = ?',
            version.id, space.id]
         )
         BetterTogether::Geography::Space.connection.execute(sql)

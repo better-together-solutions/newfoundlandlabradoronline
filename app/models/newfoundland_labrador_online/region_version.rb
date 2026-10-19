@@ -3,7 +3,7 @@
 module NewfoundlandLabradorOnline
   # One boundary and name a region had over a date range (a region keeps one identity across redistributions).
   class RegionVersion < BetterTogether::ApplicationRecord
-    self.table_name = 'nlo_region_versions'
+    self.table_name = 'region_versions'
 
     belongs_to :region, class_name: 'BetterTogether::Geography::Region', inverse_of: :versions
 
@@ -20,7 +20,7 @@ module NewfoundlandLabradorOnline
     def assign_boundary_from_geojson!(geometry)
       json = geometry.is_a?(String) ? geometry : geometry.to_json
       sql = self.class.sanitize_sql_array(
-        ['UPDATE nlo_region_versions SET boundary = ' \
+        ['UPDATE region_versions SET boundary = ' \
          'ST_Multi(ST_CollectionExtract(ST_MakeValid(ST_GeomFromGeoJSON(?)), 3))::geography WHERE id = ?', json, id]
       )
       self.class.connection.execute(sql)

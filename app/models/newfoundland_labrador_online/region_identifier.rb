@@ -5,7 +5,7 @@ module NewfoundlandLabradorOnline
   class RegionIdentifier < BetterTogether::ApplicationRecord
     SCHEMES = %w[nlo_ped statcan_dguid statcan_feduid wikidata osm_relation elections_nl].freeze
 
-    self.table_name = 'nlo_region_identifiers'
+    self.table_name = 'region_identifiers'
 
     belongs_to :region, class_name: 'BetterTogether::Geography::Region', inverse_of: :identifiers
 

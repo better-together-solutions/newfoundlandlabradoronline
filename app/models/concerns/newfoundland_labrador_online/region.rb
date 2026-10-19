@@ -14,7 +14,7 @@ module NewfoundlandLabradorOnline
 
     class_methods do
       def with_identifier(scheme, value)
-        joins(:identifiers).find_by(nlo_region_identifiers: { scheme:, value: })
+        joins(:identifiers).find_by(region_identifiers: { scheme:, value: })
       end
     end
 

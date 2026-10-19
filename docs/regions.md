@@ -15,11 +15,10 @@ erDiagram
 
 - `Region` keeps one identity across redistributions. `NewfoundlandLabradorOnline::ProvincialElectoralDistrict` is an STI
   subtype (identifier `nl-ped-<slug>`).
-- `RegionVersion` (`nlo_region_versions`) stores the name and boundary in force over a date range. `region.version_on(date)`
+- `RegionVersion` (`region_versions`) stores the name and boundary in force over a date range. `region.version_on(date)`
   and `region.current_version` resolve it. The region's `Space#boundary` caches the current version for placement.
-- `RegionIdentifier` (`nlo_region_identifiers`) holds external ids, unique per scheme (`nlo_ped`, `statcan_dguid`,
+- `RegionIdentifier` (`region_identifiers`) holds external ids, unique per scheme (`nlo_ped`, `statcan_dguid`,
   `statcan_feduid`, `wikidata`, `osm_relation`, `elections_nl`).
-- Tables are `nlo_` prefixed so a CE backport can copy data across without a name clash.
 
 ## Loading the 40 districts (2015 map)
 
