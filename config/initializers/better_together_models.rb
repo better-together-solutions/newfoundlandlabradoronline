@@ -4,8 +4,6 @@ ActiveSupport::Reloader.to_prepare do
   require_dependency 'better_together/post'
   require_dependency 'better_together/content/video_block'
   require_dependency 'better_together/content/image'
-  require_dependency 'better_together/content/hero'
-  require_dependency 'better_together/page'
   require_dependency 'better_together/community'
   require_dependency 'better_together/event'
 
@@ -14,15 +12,11 @@ ActiveSupport::Reloader.to_prepare do
   NewfoundlandLabradorOnline::LocatableModels.wire!
   BetterTogether::Content::VideoBlock.include(NewfoundlandLabradorOnline::VideoBlock)
   BetterTogether::Content::Image.include(NewfoundlandLabradorOnline::ImageBlock)
-  BetterTogether::Content::Hero.include(NewfoundlandLabradorOnline::HeroBlock)
-  BetterTogether::Page.prepend(NewfoundlandLabradorOnline::NamespacedPageSlug)
-  BetterTogether::Page.include(NewfoundlandLabradorOnline::CategoryIdentifiers)
 
-  # Video attachments: let CE's rich-text controls accept the video block as an attachable and
-  # let the sanitizer keep its iframe (see NewfoundlandLabradorOnline::ContentSecurityAttachables).
-  BetterTogether::ContentSecurity::ActionTextRichTextControls
-    .prepend(NewfoundlandLabradorOnline::ContentSecurityAttachables::RichTextControls)
-  BetterTogether::ContentSecurity::RichTextAttachmentFilter
-    .prepend(NewfoundlandLabradorOnline::ContentSecurityAttachables::AttachmentFilter)
+  # Video and image blocks are accepted in rich text and rendered while public (CE's attachable registry); the
+  # scrubber keeps the video iframe (see NewfoundlandLabradorOnline::VideoBlockScrubber).
+  BetterTogether::ContentSecurity::AttachableRegistry.register(
+    'BetterTogether::Content::VideoBlock', 'BetterTogether::Content::Image'
+  )
   ActionText::ContentHelper.scrubber = NewfoundlandLabradorOnline::VideoBlockScrubber.new
 end
