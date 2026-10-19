@@ -16,7 +16,10 @@ module NewfoundlandLabradorOnline
       before_validation :assign_media_data, if: -> { media_data.present? }
       validate :media_data_must_be_valid
       validate :caption_required_for_api_images
-      after_save { self.media_data = nil }
+      after_save do
+        self.media_data = nil
+        @media_from_api = false
+      end
     end
 
     def attachable_plain_text_representation(_caption = nil)
@@ -33,8 +36,13 @@ module NewfoundlandLabradorOnline
 
     private
 
+    # Attaching to a saved record saves it again, which would run this callback again; the data is cleared first
+    # so replacing the image of an existing block (an API update) cannot recurse.
     def assign_media_data
-      result = ImageInput.decode(media_data)
+      data = media_data
+      self.media_data = nil
+      @media_from_api = true
+      result = ImageInput.decode(data)
       @media_error = result.error
       return if result.error
 
@@ -47,7 +55,7 @@ module NewfoundlandLabradorOnline
     end
 
     def caption_required_for_api_images
-      errors.add(:caption, :blank) if media_data.present? && caption.blank?
+      errors.add(:caption, :blank) if (media_data.present? || @media_from_api) && caption.blank?
     end
   end
 end

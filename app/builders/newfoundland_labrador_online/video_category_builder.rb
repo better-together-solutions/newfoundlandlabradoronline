@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module NewfoundlandLabradorOnline
-  # Seeds the categories used by timelapse video and sky posts (Shorts, the portrait videos, form their
+  # Seeds the categories used by timelapse video, sky and ship posts (Shorts, the portrait videos, form their
   # own group). Idempotent and additive: existing categories are never changed; run with `NewfoundlandLabradorOnline::VideoCategoryBuilder.build`
   # or `rake nlo:categories:seed_video`.
   class VideoCategoryBuilder < ::BetterTogether::Builder
@@ -11,7 +11,8 @@ module NewfoundlandLabradorOnline
       'monthly-timelapse' => { en: 'Monthly Timelapse', fr: 'Timelapse mensuel' },
       'annual-timelapse' => { en: 'Annual Timelapse', fr: 'Timelapse annuel' },
       'shorts' => { en: 'Shorts', fr: 'Shorts' },
-      'sky' => { en: 'Sky', fr: 'Ciel' }
+      'sky' => { en: 'Sky', fr: 'Ciel' },
+      'ships' => { en: 'Ships', fr: 'Navires' }
     }.freeze
 
     class << self

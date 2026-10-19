@@ -58,6 +58,13 @@ RSpec.describe NewfoundlandLabradorOnline::ImageBlock do
     expect(block.media_data).to be_nil
   end
 
+  it 'replaces the image of a saved block without recursing', :aggregate_failures do
+    block.save!
+    block.update!(media_data: Base64.strict_encode64(png), media_filename: 'replacement.png')
+
+    expect(block.reload.media.filename.to_s).to eq('replacement.png')
+  end
+
   describe 'attachable behaviour' do
     before { block.save! }
 

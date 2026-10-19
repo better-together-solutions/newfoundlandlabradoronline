@@ -4,9 +4,31 @@
 <%# A plain same-origin path: image_tag would prefix the asset host, which does not serve blobs, and the
     view-context route helper is missing when the API renders post content. -%>
 <% source = Rails.application.routes.url_helpers.rails_storage_proxy_path(block.media, only_path: true) %>
-<figure class="post-image mb-4">
-  <%= tag.img src: source, class: 'img-fluid w-100', alt: block.alt_text.presence || block.caption, loading: 'lazy' %>
-  <% if block.caption.present? %>
-    <figcaption class="post-image__caption text-muted small mt-1"><%= block.caption %></figcaption>
-  <% end %>
-</figure>
+<%# Same figure markup as CE's image block (Content::Image), so a photo credit reads the same in a post and on a page. -%>
+<% if block.caption.present? || block.attribution.present? %>
+  <figure class="figure text-center w-100 post-image mb-4">
+    <%= tag.img src: source, class: 'figure-img img-fluid d-block mx-auto', alt: block.alt_text.presence || block.caption, loading: 'lazy' %>
+    <figcaption class="figure-caption text-center">
+      <% if block.caption.present? %>
+        <p class="mb-1"><%= block.caption %></p>
+      <% end %>
+      <% if block.attribution.present? %>
+        <p class="text-muted small post-image__attribution">
+          <% if block.attribution_url.present? %>
+            <a href="<%= block.attribution_url %>" target="_blank" rel="noopener noreferrer">
+              <%= block.attribution %>
+              <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+              <span class="sr-only">(opens in a new tab)</span>
+            </a>
+          <% else %>
+            <%= block.attribution %>
+          <% end %>
+        </p>
+      <% end %>
+    </figcaption>
+  </figure>
+<% else %>
+  <figure class="post-image mb-4">
+    <%= tag.img src: source, class: 'img-fluid d-block mx-auto', alt: block.alt_text.presence || block.caption, loading: 'lazy' %>
+  </figure>
+<% end %>

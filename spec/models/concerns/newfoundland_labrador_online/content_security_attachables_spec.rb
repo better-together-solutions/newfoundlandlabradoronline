@@ -80,7 +80,7 @@ RSpec.describe NewfoundlandLabradorOnline::ContentSecurityAttachables do
     it 'renders the image with its caption', :aggregate_failures do
       html = render_content(ActionText::Content.new(ActionText::Attachment.from_attachable(image).to_html))
 
-      expect(html).to include('<img', 'Noon, 12:00', 'post-image__caption', 'alt="Noon, 12:00"')
+      expect(html).to include('<img', 'Noon, 12:00', 'figure-caption', 'alt="Noon, 12:00"')
       expect(html).not_to include('held-review')
     end
 
