@@ -18,6 +18,7 @@ RSpec.describe 'Documentation screenshots for electoral districts', :js, type: :
 
     configure_host_platform.update!(privacy: 'public')
     NewfoundlandLabradorOnline::Geography::ProvincialDistrictLoader.new(path: data_path).call
+    NewfoundlandLabradorOnline::Geography::PoliticalPartyLoader.new.call
     NewfoundlandLabradorOnline::Geography::ProvincialElectionLoader.new.call
     settlement = create(:geography_settlement, identifier: 'corner-brook', name: 'Corner Brook')
     space = BetterTogether::Geography::Space.create!(latitude: 48.95, longitude: -57.95)
@@ -31,7 +32,8 @@ RSpec.describe 'Documentation screenshots for electoral districts', :js, type: :
   it 'captures the district index' do
     visit "/#{locale}/districts"
 
-    callouts = [{ selector: '#listing-map-section', title: 'Every district on the map' },
+    callouts = [{ selector: '#listing-map-section', title: 'Districts coloured by party' },
+                { selector: '#districts-party-legend', title: 'Party legend with seat counts' },
                 { selector: '#districts-list', title: 'All 40 districts' }]
 
     expect(captured('districts_index', callouts)).to all(be > 10_000)
@@ -39,8 +41,8 @@ RSpec.describe 'Documentation screenshots for electoral districts', :js, type: :
 
   it 'captures the Corner Brook district page' do
     visit "/#{locale}/districts/nl-ped-corner-brook"
-    callouts = %w[#district-map-section #district-facts #district-settlements #district-members #district-results
-                  #district-history].map do |selector|
+    callouts = %w[#district-map-section #district-member #district-facts #district-settlements #district-members
+                  #district-results #district-history].map do |selector|
       { selector:, title: selector.delete_prefix('#district-').tr('-', ' ') }
     end
 

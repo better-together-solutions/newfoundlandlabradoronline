@@ -12,6 +12,10 @@ module NewfoundlandLabradorOnline
       DEFAULT_PATH = Rails.root.join('db/data/nl_regions/provincial_election_results.json')
       JURISDICTION = 'provincial'
       MEMBER_PREFIX = 'nl-mha-'
+      JURISDICTION_PARTIES = 'provincial-nl'
+      PARTY_KEYS = { 'liberal' => 'liberal', 'pc' => 'pc', 'ndp' => 'ndp', 'alliance' => 'nl-alliance',
+                     'nl alliance' => 'nl-alliance', 'independent' => 'independent', 'ind.' => 'independent' }.freeze
+      LABEL = /\s*\((?<label>[^)]*)\)\z/
       Result = Struct.new(:elections, :contests, :candidacies, :terms, :missing_districts, keyword_init: true)
 
       def self.key(name)
@@ -35,6 +39,7 @@ module NewfoundlandLabradorOnline
         ActiveRecord::Base.transaction do
           packet.each { |entry| load_election(entry) }
           close_terms
+          build_memberships
         end
       end
 
@@ -60,9 +65,23 @@ module NewfoundlandLabradorOnline
         row.fetch('candidates').each { |candidate| load_candidacy(contest, candidate) }
       end
 
+      # The results page files independents and small parties under "Other" with the label after the name.
+      def name_and_party(candidate)
+        raw = candidate.fetch('candidate')
+        label = raw[LABEL, :label]
+        party = label && PARTY_KEYS.key?(label.downcase) ? label : candidate.fetch('party')
+        [raw.sub(LABEL, '').strip, PARTY_KEYS[party.downcase] == 'independent' ? 'Independent' : party]
+      end
+
+      def party_record(label)
+        key = PARTY_KEYS[label.downcase]
+        key && PoliticalParty.find_by(jurisdiction: JURISDICTION_PARTIES, identifier: key)
+      end
+
       def load_candidacy(contest, candidate)
-        candidacy = contest.candidacies.find_or_initialize_by(candidate_name: candidate.fetch('candidate'))
-        candidacy.update!(party_name: candidate.fetch('party'), votes: candidate.fetch('votes'),
+        name, party_name = name_and_party(candidate)
+        candidacy = contest.candidacies.find_or_initialize_by(candidate_name: name)
+        candidacy.update!(party_name:, political_party: party_record(party_name), votes: candidate.fetch('votes'),
                           vote_share: candidate['share'], elected: candidate.fetch('elected'),
                           wikipedia_path: candidate['wikipedia_path'])
         @result.candidacies += 1
@@ -72,7 +91,7 @@ module NewfoundlandLabradorOnline
       def load_term(contest, candidacy)
         term = ElectedTerm.find_or_initialize_by(region: contest.region, election: contest.election, office: 'mha')
         term.update!(person: person_for(candidacy.candidate_name), candidacy:, party_name: candidacy.party_name,
-                     started_on: contest.election.held_on)
+                     political_party: candidacy.political_party, started_on: contest.election.held_on)
         @result.terms += 1
       end
 
@@ -81,6 +100,22 @@ module NewfoundlandLabradorOnline
         identifier = "#{MEMBER_PREFIX}#{clean.parameterize}"
         BetterTogether::Person.find_by(identifier:) ||
           BetterTogether::Person.create!(identifier:, name: clean, privacy: 'public', locale: 'en')
+      end
+
+      # One membership per run of consecutive terms for the same party (a party change starts a new one).
+      def build_memberships
+        ElectedTerm.where.not(political_party_id: nil).order(:started_on).group_by(&:person_id).each_value do |terms|
+          terms.slice_when { |a, b| a.political_party_id != b.political_party_id || a.ended_on != b.started_on }
+               .each { |run| save_membership(run) }
+        end
+      end
+
+      def save_membership(run)
+        membership = PartyMembership.find_or_initialize_by(person_id: run.first.person_id,
+                                                           political_party_id: run.first.political_party_id,
+                                                           started_on: run.first.started_on)
+        membership.update!(ended_on: run.last.ended_on, start_reason: 'elected',
+                           end_reason: run.last.ended_on && 'term_ended', source_url: run.first.election.source_url)
       end
 
       # Each term ends when the district's next term starts; the newest stays open.

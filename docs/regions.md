@@ -62,5 +62,27 @@ each election; cross-check against Elections NL before relying on a figure).
   `candidacies` the candidates (names only).
 - Only elected candidates become `BetterTogether::Person` records (identifier `nl-mha-<name>`), joined to the district
   and election cycle by `elected_terms`. A term ends when the next election's winner takes the seat.
-- By-elections, floor crossings and mid-term resignations are not loaded yet, so a term's party is the party elected.
+- By-elections and mid-term resignations are not loaded yet.
+
+### Parties, brand colours and affiliation over time
+
+Parties load first from `db/data/nl_regions/provincial_parties.json` (built by management-tool
+`scripts/nl_parties_ingest.py`; logos in `db/data/nl_regions/party_logos/`):
+
+```bash
+./bin/dc-run bin/rails nlo:regions:load_political_parties   # idempotent; run before load_provincial_elections
+```
+
+- `political_parties` are scoped by `jurisdiction` (`provincial-nl`). Provincial and federal parties are separate
+  entities even when they share a name: the provincial Liberals and NDP are not their federal counterparts. The
+  association between them (same organisation, affiliated, or unrelated) is modelled with the federal electoral work.
+- The brand colour is derived from the logo (SVG fills or dominant saturated pixels), falling back to Wikipedia's
+  chart colour, then a neutral grey; `color_source` records which. Logo licence and source are stored per party.
+  The PC and NL Alliance logos are Wikipedia fair-use (non-free): confirm permission before public production use.
+- `party_memberships` are dated rows (`started_on`, `ended_on`, start and end reasons such as `elected`,
+  `floor_crossing`) so a member can change party mid-term. The loader seeds one per run of terms in the party elected;
+  `ElectedTerm#party_on(date)` answers from the membership in force, else the party elected.
+- The districts map fills each district in its sitting member's party colour (no member: grey) with a legend and
+  seat counts; the district page shows the member's party swatch and logo.
+- Not yet sourced: dated floor crossings (Wikidata party membership has no dates; record them as memberships).
 - Diagram: `docs/diagrams/exports/png/nlo_elections_schema_erd.png`.

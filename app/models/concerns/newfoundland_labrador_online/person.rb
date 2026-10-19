@@ -8,6 +8,8 @@ module NewfoundlandLabradorOnline
     included do
       has_many :elected_terms, class_name: 'NewfoundlandLabradorOnline::ElectedTerm', foreign_key: :person_id,
                                inverse_of: :person, dependent: :destroy
+      has_many :party_memberships, class_name: 'NewfoundlandLabradorOnline::PartyMembership', foreign_key: :person_id,
+                                   inverse_of: :person, dependent: :destroy
     end
   end
 end

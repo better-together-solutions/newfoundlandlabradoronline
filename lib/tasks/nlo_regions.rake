@@ -8,6 +8,12 @@ namespace :nlo do
       puts "created=#{result.created.size} updated=#{result.updated.size} unchanged=#{result.unchanged.size}"
     end
 
+    desc 'Load provincial parties (colours, logos) from db/data/nl_regions, before the elections; idempotent'
+    task load_political_parties: :environment do
+      result = NewfoundlandLabradorOnline::Geography::PoliticalPartyLoader.new.call
+      puts result.to_h.map { |key, value| "#{key}=#{value}" }.join(' ')
+    end
+
     desc 'Load provincial general-election results and elected members (2015-2025) from db/data/nl_regions; idempotent'
     task load_provincial_elections: :environment do
       result = NewfoundlandLabradorOnline::Geography::ProvincialElectionLoader.new.call

@@ -7,6 +7,8 @@ module NewfoundlandLabradorOnline
 
     belongs_to :electoral_contest, class_name: 'NewfoundlandLabradorOnline::ElectoralContest',
                                    inverse_of: :candidacies
+    belongs_to :political_party, class_name: 'NewfoundlandLabradorOnline::PoliticalParty', optional: true,
+                                 inverse_of: false
     has_one :term, class_name: 'NewfoundlandLabradorOnline::ElectedTerm', dependent: :destroy, inverse_of: :candidacy
 
     validates :candidate_name, :party_name, :votes, presence: true

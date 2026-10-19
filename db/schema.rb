@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_19_230000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_20_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -2591,8 +2591,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_230000) do
     t.decimal "vote_share", precision: 5, scale: 2
     t.boolean "elected", default: false, null: false
     t.string "wikipedia_path"
+    t.uuid "political_party_id"
     t.index ["electoral_contest_id", "candidate_name"], name: "index_candidacies_on_contest_and_name", unique: true
     t.index ["electoral_contest_id"], name: "index_candidacies_on_electoral_contest_id"
+    t.index ["political_party_id"], name: "index_candidacies_on_political_party_id"
   end
 
   create_table "elected_terms", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -2608,9 +2610,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_230000) do
     t.date "started_on", null: false
     t.date "ended_on"
     t.string "end_reason", limit: 50
+    t.uuid "political_party_id"
     t.index ["candidacy_id"], name: "index_elected_terms_on_candidacy_id", unique: true
     t.index ["election_id"], name: "index_elected_terms_on_election_id"
     t.index ["person_id"], name: "index_elected_terms_on_person_id"
+    t.index ["political_party_id"], name: "index_elected_terms_on_political_party_id"
     t.index ["region_id", "election_id", "office"], name: "index_elected_terms_on_seat_and_election", unique: true
     t.index ["region_id"], name: "index_elected_terms_on_region_id"
   end
@@ -2733,6 +2737,39 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_230000) do
     t.index ["event_id"], name: "index_noticed_notifications_on_event_id"
     t.index ["platform_id"], name: "index_noticed_notifications_on_platform_id"
     t.index ["recipient_type", "recipient_id"], name: "index_noticed_notifications_on_recipient"
+  end
+
+  create_table "party_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "person_id", null: false
+    t.uuid "political_party_id", null: false
+    t.date "started_on", null: false
+    t.date "ended_on"
+    t.string "start_reason", limit: 50
+    t.string "end_reason", limit: 50
+    t.string "source_url"
+    t.index ["person_id", "political_party_id", "started_on"], name: "index_party_memberships_on_person_party_start", unique: true
+    t.index ["person_id"], name: "index_party_memberships_on_person_id"
+    t.index ["political_party_id"], name: "index_party_memberships_on_political_party_id"
+  end
+
+  create_table "political_parties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "jurisdiction", limit: 50, null: false
+    t.string "identifier", limit: 100, null: false
+    t.string "name", null: false
+    t.string "short_name", null: false
+    t.string "color", limit: 7
+    t.string "color_source"
+    t.string "wikipedia_page"
+    t.string "logo_source_url"
+    t.string "logo_license"
+    t.boolean "logo_non_free"
+    t.index ["jurisdiction", "identifier"], name: "index_political_parties_on_jurisdiction_and_identifier", unique: true
   end
 
   create_table "region_identifiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -3049,15 +3086,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_230000) do
   add_foreign_key "better_together_wizard_steps", "better_together_wizards", column: "wizard_id"
   add_foreign_key "better_together_wizards", "better_together_platforms", column: "platform_id"
   add_foreign_key "candidacies", "electoral_contests"
+  add_foreign_key "candidacies", "political_parties"
   add_foreign_key "elected_terms", "better_together_geography_regions", column: "region_id"
   add_foreign_key "elected_terms", "better_together_people", column: "person_id"
   add_foreign_key "elected_terms", "candidacies"
   add_foreign_key "elected_terms", "elections"
+  add_foreign_key "elected_terms", "political_parties"
   add_foreign_key "electoral_contests", "better_together_geography_regions", column: "region_id"
   add_foreign_key "electoral_contests", "elections"
   add_foreign_key "nlo_region_identifiers", "better_together_geography_regions", column: "region_id"
   add_foreign_key "nlo_region_versions", "better_together_geography_regions", column: "region_id"
   add_foreign_key "noticed_notifications", "better_together_platforms", column: "platform_id"
+  add_foreign_key "party_memberships", "better_together_people", column: "person_id"
+  add_foreign_key "party_memberships", "political_parties"
   add_foreign_key "region_identifiers", "better_together_geography_regions", column: "region_id"
   add_foreign_key "region_versions", "better_together_geography_regions", column: "region_id"
 end

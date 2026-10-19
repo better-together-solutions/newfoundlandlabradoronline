@@ -4,10 +4,29 @@
 
   <%# Resolved here: a lazy t('.kind') inside the lambda would look up under the map partial's scope. %>
   <% kind = t('.kind') %>
+  <% terms = @current_terms %>
   <%= render 'newfoundland_labrador_online/shared/listing_map',
              map: listing_map(@districts, kind: 'districts', url_for: ->(district) { newfoundland_labrador_online_district_path(district, locale: I18n.locale) },
-                                          popup_body: ->(district) { district_popup_body(district, kind:) }),
+                                          popup_body: ->(district) { district_popup_body(district, kind:, term: terms[district.id]) },
+                                          overlay_for: ->(district) { district_overlay(district, terms[district.id], kind:) }),
              title: t('.title'), height: '700px' %>
+
+  <section class="mb-4" id="districts-party-legend" aria-label="<%= t('.legend') %>">
+    <h2 class="h5"><%= t('.legend') %></h2>
+    <ul class="list-inline mb-1">
+      <% @seats.each do |party, count| %>
+        <li class="list-inline-item me-3 mb-2" id="<%= party ? dom_id(party, :legend) : 'legend_no_party' %>">
+          <span class="d-inline-block align-middle rounded" style="width: 1rem; height: 1rem; background: <%= party&.display_color || NewfoundlandLabradorOnline::PoliticalParty::FALLBACK_COLOR %>"></span>
+          <% if party&.logo&.attached? %>
+            <%= image_tag url_for(party.logo), alt: '', height: 24, class: 'align-middle' %>
+          <% end %>
+          <strong><%= party&.short_name || t('.no_party') %></strong>
+          <span class="text-muted"><%= t('.seats', count:) %></span>
+        </li>
+      <% end %>
+    </ul>
+    <p class="small text-muted mb-0"><%= t('.legend_note') %></p>
+  </section>
 
   <ul class="list-group" id="districts-list">
     <% @districts.each do |district| %>

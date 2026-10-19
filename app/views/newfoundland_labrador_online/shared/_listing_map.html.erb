@@ -1,6 +1,10 @@
 <%# locals: (map:, title:, height: nil) %>
-<%# The map between a listing page heading and its list. height: a CSS length for places spread over a tall area. %>
+<%# The map between a listing page heading and its list. height: a CSS length for places spread over a tall area.
+    When the map has overlays (coloured areas) they replace the plain outline. %>
+<% overlays = map.overlays %>
+<% attributes = height ? { 'style' => "height: #{height}" } : {} %>
+<% attributes['data-party-overlay-overlays-value'] = overlays.to_json if overlays.any? %>
 <section class="listing-map mb-4" id="listing-map-section" aria-label="<%= t('newfoundland_labrador_online.listing_map.label', title:) %>">
-  <%= render 'better_together/shared/map', map: map, types: [], boundary: map.boundary, cluster: false,
-             attributes: (height ? { 'style' => "height: #{height}" } : {}) %>
+  <%= render 'better_together/shared/map', map: map, types: [], boundary: (overlays.any? ? nil : map.boundary), cluster: false,
+             extra_controllers: (overlays.any? ? ['party-overlay'] : nil), attributes: %>
 </section>

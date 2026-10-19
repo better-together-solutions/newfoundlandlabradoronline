@@ -8,9 +8,14 @@
 
   <% current = @district.current_version %>
   <% located_map = district_map(@district) %>
+  <% sitting = @terms.find { |term| term.ended_on.nil? } %>
+  <% party = sitting&.party_on %>
   <% if current&.boundary %>
     <section class="mb-4" id="district-map-section" aria-label="<%= t('.map_label', name: @district.name) %>">
-      <%= render 'better_together/shared/map', map: located_map, types: [], boundary: located_map.boundary, cluster: false %>
+      <% overlay = [{ geometry: located_map.boundary, color: party&.display_color || NewfoundlandLabradorOnline::PoliticalParty::FALLBACK_COLOR,
+                      popup: ERB::Util.html_escape(@district.name) }] %>
+      <%= render 'better_together/shared/map', map: located_map, types: [], boundary: nil, cluster: false,
+                 extra_controllers: ['party-overlay'], attributes: { 'data-party-overlay-overlays-value' => overlay.to_json } %>
     </section>
   <% end %>
 
@@ -22,8 +27,18 @@
           <dl class="row mb-0">
             <dt class="col-sm-5"><%= t('.current_member') %></dt>
             <dd class="col-sm-7" id="district-member">
-              <% member = @terms.find { |term| term.ended_on.nil? } %>
-              <%= member ? "#{member.person.name} (#{member.party_name})" : t('.no_member') %>
+              <% if sitting %>
+                <%= sitting.person.name %>
+                <% if party %>
+                  <span class="d-inline-flex align-items-center gap-1" id="district-member-party">
+                    <span class="d-inline-block rounded" style="width: 0.9rem; height: 0.9rem; background: <%= party.display_color %>"></span>
+                    <%= party.short_name %>
+                    <% if party.logo.attached? %><%= image_tag url_for(party.logo), alt: '', height: 20 %><% end %>
+                  </span>
+                <% end %>
+              <% else %>
+                <%= t('.no_member') %>
+              <% end %>
             </dd>
             <dt class="col-sm-5"><%= t('.area') %></dt>
             <dd class="col-sm-7" id="district-area"><%= current ? t('.area_km2', value: number_with_delimiter(current.area_km2.round)) : t('.unknown') %></dd>

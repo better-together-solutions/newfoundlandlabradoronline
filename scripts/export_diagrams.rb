@@ -11,7 +11,8 @@ DIAGRAMS = {
                                  NewfoundlandLabradorOnline::RegionIdentifier],
   'nlo_elections_schema_erd' => %w[BetterTogether::Geography::Region NewfoundlandLabradorOnline::Election
                                    NewfoundlandLabradorOnline::ElectoralContest NewfoundlandLabradorOnline::Candidacy
-                                   NewfoundlandLabradorOnline::ElectedTerm]
+                                   NewfoundlandLabradorOnline::ElectedTerm NewfoundlandLabradorOnline::PoliticalParty
+                                   NewfoundlandLabradorOnline::PartyMembership]
 }.freeze
 
 TYPE_MAP = { 'uuid' => 'uuid', 'string' => 'string', 'text' => 'text', 'integer' => 'int', 'date' => 'date',

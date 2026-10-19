@@ -47,6 +47,7 @@ erDiagram
     decimal vote_share
     bool elected
     string wikipedia_path
+    uuid political_party_id FK
   }
   ELECTED_TERMS {
     uuid id PK
@@ -62,6 +63,36 @@ erDiagram
     date started_on
     date ended_on
     string end_reason
+    uuid political_party_id FK
+  }
+  POLITICAL_PARTIES {
+    uuid id PK
+    int lock_version
+    datetime created_at
+    datetime updated_at
+    string jurisdiction
+    string identifier
+    string name
+    string short_name
+    string color
+    string color_source
+    string wikipedia_page
+    string logo_source_url
+    string logo_license
+    bool logo_non_free
+  }
+  PARTY_MEMBERSHIPS {
+    uuid id PK
+    int lock_version
+    datetime created_at
+    datetime updated_at
+    uuid person_id FK
+    uuid political_party_id FK
+    date started_on
+    date ended_on
+    string start_reason
+    string end_reason
+    string source_url
   }
   BETTER_TOGETHER_GEOGRAPHY_REGIONS ||--o{ ELECTORAL_CONTESTS : "contests"
   BETTER_TOGETHER_GEOGRAPHY_REGIONS ||--o{ ELECTED_TERMS : "elected_terms"
@@ -69,3 +100,5 @@ erDiagram
   ELECTIONS ||--o{ ELECTED_TERMS : "terms"
   ELECTORAL_CONTESTS ||--o{ CANDIDACIES : "candidacies"
   CANDIDACIES ||--o| ELECTED_TERMS : "term"
+  POLITICAL_PARTIES ||--o{ PARTY_MEMBERSHIPS : "memberships"
+  POLITICAL_PARTIES ||--o{ ELECTED_TERMS : "elected_terms"

@@ -88,6 +88,13 @@ fr:
       index:
         intro: "%{count} circonscriptions en vigueur depuis l’élection de 2015."
         kind: Circonscription électorale provinciale
+        legend: Sièges par parti
+        legend_note: Chaque circonscription est colorée selon le parti de son député
+          actuel. Les licences des logos sont consignées avec chaque parti.
+        no_party: Aucun parti enregistré
+        seats:
+          one: "%{count} siège"
+          other: "%{count} sièges"
         title: Circonscriptions électorales provinciales
       show:
         all_districts: Toutes les circonscriptions

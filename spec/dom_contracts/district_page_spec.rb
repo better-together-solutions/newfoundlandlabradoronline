@@ -11,7 +11,7 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
   let(:page_ids) do
     %w[district-page district-name district-kind district-map-section district-facts district-area
        district-since district-authority district-licence district-settlements district-history
-       district-identifiers district-member district-members district-results]
+       district-identifiers district-member district-members district-results district-member-party]
   end
 
   before do
@@ -55,11 +55,31 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
 
     it 'draws the outlines' do
       points
-      expect(response.body).to include('data-better_together--map-boundary-value')
+      expect(response.body).to include('data-party-overlay-overlays-value')
+    end
+  end
+
+  context 'with party colours' do
+    before do
+      NewfoundlandLabradorOnline::Geography::PoliticalPartyLoader.new.call
+      load_elections
+      get "/#{locale}/districts"
+    end
+
+    it 'colours each district area and lists the parties in a legend', :aggregate_failures do
+      expect(response.body).to include('id="districts-party-legend"', 'data-party-overlay-overlays-value')
+      expect(response.body).to include('id="legend_newfoundland_labrador_online_political_party_')
+    end
+
+    it 'uses the sitting member party colour for the area' do
+      liberal = NewfoundlandLabradorOnline::PoliticalParty.find_by!(identifier: 'liberal')
+
+      expect(CGI.unescapeHTML(response.body)).to include(%("color":"#{liberal.display_color}"))
     end
   end
 
   it 'exposes the district page identifiers', :aggregate_failures do
+    NewfoundlandLabradorOnline::Geography::PoliticalPartyLoader.new.call
     load_elections
     get "/#{locale}/districts/nl-ped-corner-brook"
 
@@ -70,7 +90,7 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
   it 'draws the current boundary on the map' do
     get "/#{locale}/districts/nl-ped-corner-brook"
 
-    expect(response.body).to include('data-better_together--map-boundary-value')
+    expect(response.body).to include('data-party-overlay-overlays-value')
   end
 
   it 'lists settlements whose point falls inside the boundary' do

@@ -9,7 +9,7 @@ module NewfoundlandLabradorOnline
     MIN_PART_SHARE = 0.0005
     COORDINATE_DECIMALS = 3 # about 100 m, enough for an overview map and a fraction of the payload
 
-    attr_accessor :records, :url_for, :popup_body, :tolerance
+    attr_accessor :records, :url_for, :popup_body, :tolerance, :overlay_for
 
     def leaflet_points
       @leaflet_points ||= records.filter_map { |record| point_for(record) }
@@ -30,6 +30,17 @@ module NewfoundlandLabradorOnline
       @boundary ||= begin
         json = BetterTogether::Geography::Space.connection.select_value(boundary_sql)
         collection(json)
+      end
+    end
+
+    # One coloured, clickable area per record that has a boundary when overlay_for is set. overlay_for maps a record to
+    # { color:, popup: }; each overlay carries its simplified GeoJSON geometry.
+    def overlays
+      return [] unless overlay_for
+
+      @overlays ||= begin
+        geometries = BetterTogether::Geography::Space.connection.select_rows(overlay_sql).to_h
+        records.filter_map { |record| overlay_for_record(record, geometries) }
       end
     end
 
@@ -68,15 +79,39 @@ module NewfoundlandLabradorOnline
       point.merge(label: link, popup_html: popup)
     end
 
-    def boundary_sql
-      ids = spaces.map(&:id).map { |id| BetterTogether::Geography::Space.connection.quote(id) }.join(', ')
+    def overlay_for_record(record, geometries)
+      json = geometries[record.space&.id]
+      return unless json
+
+      overlay_for.call(record).merge(geometry: JSON.parse(json))
+    end
+
+    def quoted_ids
+      ids = spaces.map { |space| BetterTogether::Geography::Space.connection.quote(space.id) }
+      ids.join(', ').presence || 'NULL'
+    end
+
+    def simplified_parts
       <<~SQL.squish
-        SELECT ST_AsGeoJSON(ST_Collect(ST_SimplifyPreserveTopology(part, GREATEST(#{tolerance.to_f}, SQRT(total) * #{RELATIVE_TOLERANCE}))), #{COORDINATE_DECIMALS})
-        FROM (
-          SELECT (ST_Dump(boundary::geometry)).geom AS part, ST_Area(boundary::geometry) AS total
-          FROM better_together_geography_spaces WHERE boundary IS NOT NULL AND id IN (#{ids.presence || 'NULL'})
-        ) parts WHERE ST_Area(part) >= total * #{MIN_PART_SHARE}
+        ST_Collect(ST_SimplifyPreserveTopology(part, GREATEST(#{tolerance.to_f}, SQRT(total) * #{RELATIVE_TOLERANCE})))
       SQL
+    end
+
+    def parts_sql
+      <<~SQL.squish
+        SELECT id, (ST_Dump(boundary::geometry)).geom AS part, ST_Area(boundary::geometry) AS total
+        FROM better_together_geography_spaces WHERE boundary IS NOT NULL AND id IN (#{quoted_ids})
+      SQL
+    end
+
+    def boundary_sql
+      "SELECT ST_AsGeoJSON(#{simplified_parts}, #{COORDINATE_DECIMALS}) " \
+        "FROM (#{parts_sql}) parts WHERE ST_Area(part) >= total * #{MIN_PART_SHARE}"
+    end
+
+    def overlay_sql
+      "SELECT id, ST_AsGeoJSON(#{simplified_parts}, #{COORDINATE_DECIMALS}) " \
+        "FROM (#{parts_sql}) parts WHERE ST_Area(part) >= total * #{MIN_PART_SHARE} GROUP BY id"
     end
 
     def boundary_scope

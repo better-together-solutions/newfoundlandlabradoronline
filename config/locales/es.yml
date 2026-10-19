@@ -88,6 +88,13 @@ es:
       index:
         intro: "%{count} distritos en vigor desde las elecciones de 2015."
         kind: Distrito electoral provincial
+        legend: Escaños por partido
+        legend_note: Cada distrito se colorea con el partido de su miembro actual.
+          Las licencias de los logotipos se registran con cada partido.
+        no_party: Sin partido registrado
+        seats:
+          one: "%{count} escaño"
+          other: "%{count} escaños"
         title: Distritos electorales provinciales
       show:
         all_districts: Todos los distritos
