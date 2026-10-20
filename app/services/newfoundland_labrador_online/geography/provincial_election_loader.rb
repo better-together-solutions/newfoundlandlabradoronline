@@ -42,8 +42,10 @@ module NewfoundlandLabradorOnline
 
       def load_all(packet)
         ActiveRecord::Base.transaction do
-          packet.each { |entry| load_election(entry) }
-          close_terms
+          packet.sort_by { |entry| entry.fetch('date') }.each do |entry|
+            load_election(entry)
+            close_terms
+          end
           build_memberships
         end
       end
@@ -98,8 +100,9 @@ module NewfoundlandLabradorOnline
       end
 
       def load_term(contest, candidacy)
-        writer.hold_seat(person: person_for(candidacy.candidate_name), region: contest.region,
-                         from: contest.election.held_on, candidacy:, state:)
+        person = person_for(candidacy.candidate_name)
+        writer.end_open_seats(person, on: contest.election.held_on)
+        writer.hold_seat(person:, region: contest.region, from: contest.election.held_on, candidacy:, state:)
         @result.terms += 1
       end
 

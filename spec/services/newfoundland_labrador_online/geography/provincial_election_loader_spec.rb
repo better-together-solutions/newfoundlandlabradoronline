@@ -45,4 +45,12 @@ RSpec.describe NewfoundlandLabradorOnline::Geography::ProvincialElectionLoader d
 
     expect { described_class.new(path:).call }.not_to(change(&counts))
   end
+
+  it 'loads the full packet twice without overlapping re-elected terms' do
+    full = NewfoundlandLabradorOnline::Geography::ProvincialDistrictLoader
+    full.new(path: Rails.root.join('db/data/nl_regions/provincial_electoral_districts_2015.geojson')).call
+    2.times { described_class.new.call }
+
+    expect(NewfoundlandLabradorOnline::Civic::Roster.current_holdings.size).to eq(40)
+  end
 end

@@ -33,9 +33,11 @@ module NewfoundlandLabradorOnline
         return party.community if party.community
 
         identifier = ['party', party.jurisdiction, party.state && Province.code_for(party.state), party.identifier]
-        party.update!(community: PartyCommunity.create!(community_attributes(identifier.compact.join('-'),
-                                                                             party.name)))
-        party.community
+        identifier = identifier.compact.join('-')
+        community = PartyCommunity.find_by(identifier:) ||
+                    PartyCommunity.create!(community_attributes(identifier, party.name))
+        party.update!(community:)
+        community
       end
 
       private
@@ -54,8 +56,11 @@ module NewfoundlandLabradorOnline
       def create_legislature(state)
         code = Province.code_for(state)
         defaults = LEGISLATURES.fetch(code, { name: "Legislature of #{state.name}" })
-        community = LegislatureCommunity.create!(community_attributes("provincial-legislature-#{code}",
-                                                                      defaults[:name]))
+        identifier = "provincial-legislature-#{code}"
+        community = LegislatureCommunity.find_by(identifier:) ||
+                    LegislatureCommunity.create!(community_attributes(identifier, defaults[:name]))
+        return community if community.legislature_detail
+
         community.create_legislature_detail!(level: 'provincial', jurisdiction: state,
                                              seat_count: defaults[:seat_count], member_title: defaults[:member_title])
         community

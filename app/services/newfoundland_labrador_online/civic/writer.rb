@@ -31,6 +31,13 @@ module NewfoundlandLabradorOnline
                 source_url: extra[:source_url] })
       end
 
+      # Ends the person's other open seats when they take a new one (a member re-elected elsewhere).
+      def end_open_seats(person, on:)
+        Roster.seat_memberships.where(member_id: person.id, ends_at: nil)
+              .where(BetterTogether::PersonCommunityMembership.arel_table[:starts_at].lt(Civic.local_midnight(on)))
+              .includes(:mandate).each { |m| end_membership(m, on:, reason: 'next_election') }
+      end
+
       def end_membership(membership, on:, reason:)
         membership.assign_attributes(ends_at: Civic.local_midnight(on), skip_notifications: true,
                                      skip_eligibility: true)
@@ -49,8 +56,9 @@ module NewfoundlandLabradorOnline
           member_id: person.id, joinable: community, role: Civic.role(role_identifier),
           starts_at: Civic.local_midnight(window.first)
         )
-        membership.assign_attributes(status: 'active', ends_at: Civic.local_midnight(window.last),
-                                     skip_notifications: true, skip_eligibility: true)
+        membership.assign_attributes(status: 'active', skip_notifications: true, skip_eligibility: true)
+        # An open window never reopens a membership that a later term has already closed.
+        membership.ends_at = Civic.local_midnight(window.last) if window.last || membership.new_record?
         (membership.mandate || membership.build_mandate).assign_attributes(mandate_attributes)
         membership.save!
         membership
