@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe NewfoundlandLabradorOnline::Geography::PoliticalPartyLoader do
   include RequestSpecHelper
 
-  let(:liberal) { NewfoundlandLabradorOnline::PoliticalParty.find_by!(jurisdiction: 'provincial-nl', identifier: 'liberal') }
+  let(:liberal) { NewfoundlandLabradorOnline::PoliticalParty.find_by!(jurisdiction: 'provincial', identifier: 'liberal') }
 
   before { configure_host_platform }
 

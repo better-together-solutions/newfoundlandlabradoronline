@@ -19,7 +19,7 @@ module NewfoundlandLabradorOnline
       def attributes_for(area, item)
         position = item.position || (area.navigation_items.maximum(:position).to_i + 1)
         titles = TITLES.transform_keys { |locale| :"title_#{locale}" }
-        { slug_en: 'districts', item_type: 'link', url: '/g/districts/provincial', visible: true, privacy: 'public',
+        { slug_en: 'districts', item_type: 'link', url: '/e/districts/provincial', visible: true, privacy: 'public',
           visibility_strategy: 'authenticated', position:, navigation_area: area }.merge(titles)
       end
     end

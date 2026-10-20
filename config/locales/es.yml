@@ -133,14 +133,18 @@ es:
     elections:
       index:
         districts: Distritos
-        election: Elecciones generales de %{year}
         intro: Elecciones generales a la Cámara de la Asamblea, con los escaños ganados
           por partido.
+        kinds:
+          provincial: Elecciones generales provinciales de %{year}
         parties: Partidos
         title: Elecciones
+        titles:
+          provincial: Elecciones provinciales
       show:
         all_elections: Todas las elecciones
-        title: Elecciones generales de %{year}
+        kinds:
+          provincial: Elecciones generales provinciales de %{year}
     image_blocks:
       preview: 'Imagen: %{caption}'
     listing_map:
@@ -174,6 +178,9 @@ es:
           one: "%{count} escaño"
           other: "%{count} escaños"
         title: Partidos políticos
+        titles:
+          provincial: Partidos políticos provinciales
+      logo_alt: Logotipo de %{name}
       show:
         all_parties: Todos los partidos
         current: Miembros actuales
@@ -183,6 +190,17 @@ es:
         logo_non_free: Logotipo no libre, mostrado como uso legítimo.
         logo_source: Fuente
         none: No hay miembros registrados.
+    provinces:
+      show:
+        all_districts: Todos los distritos de esta provincia
+        all_elections: Todas las elecciones de esta provincia
+        all_parties: Todos los partidos de esta provincia
+        tabs:
+          districts: Distritos electorales
+          elections: Elecciones
+          parties: Partidos políticos
+          regions: Otras regiones
+          settlements: Localidades
     settlement_events:
       empty: Aún no hay eventos próximos en %{name}.
       title: Eventos en %{name}

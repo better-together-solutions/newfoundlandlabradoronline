@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_20_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_20_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -2629,7 +2629,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_100000) do
     t.integer "source_revid"
     t.string "source_sha256", limit: 64
     t.string "license"
-    t.index ["jurisdiction", "held_on"], name: "index_elections_on_jurisdiction_and_held_on", unique: true
+    t.uuid "state_id"
+    t.index ["jurisdiction", "state_id", "held_on"], name: "index_elections_on_jurisdiction_state_held_on", unique: true, nulls_not_distinct: true
+    t.index ["state_id"], name: "index_elections_on_state_id"
   end
 
   create_table "electoral_contests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -2769,7 +2771,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_100000) do
     t.string "logo_source_url"
     t.string "logo_license"
     t.boolean "logo_non_free"
-    t.index ["jurisdiction", "identifier"], name: "index_political_parties_on_jurisdiction_and_identifier", unique: true
+    t.uuid "state_id"
+    t.index ["jurisdiction", "state_id", "identifier"], name: "index_political_parties_on_jurisdiction_state_identifier", unique: true, nulls_not_distinct: true
+    t.index ["state_id"], name: "index_political_parties_on_state_id"
   end
 
   create_table "region_identifiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -3093,6 +3097,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_100000) do
   add_foreign_key "elected_terms", "candidacies"
   add_foreign_key "elected_terms", "elections"
   add_foreign_key "elected_terms", "political_parties"
+  add_foreign_key "elections", "better_together_geography_states", column: "state_id"
   add_foreign_key "electoral_contests", "better_together_geography_regions", column: "region_id"
   add_foreign_key "electoral_contests", "elections"
   add_foreign_key "nlo_region_identifiers", "better_together_geography_regions", column: "region_id"
@@ -3100,6 +3105,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_100000) do
   add_foreign_key "noticed_notifications", "better_together_platforms", column: "platform_id"
   add_foreign_key "party_memberships", "better_together_people", column: "person_id"
   add_foreign_key "party_memberships", "political_parties"
+  add_foreign_key "political_parties", "better_together_geography_states", column: "state_id"
   add_foreign_key "region_identifiers", "better_together_geography_regions", column: "region_id"
   add_foreign_key "region_versions", "better_together_geography_regions", column: "region_id"
 end

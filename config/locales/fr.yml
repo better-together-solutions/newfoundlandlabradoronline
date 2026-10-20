@@ -133,14 +133,18 @@ fr:
     elections:
       index:
         districts: Circonscriptions
-        election: Élection générale de %{year}
         intro: Élections générales à la Chambre d’assemblée, avec les sièges remportés
           par parti.
+        kinds:
+          provincial: Élection générale provinciale de %{year}
         parties: Partis
         title: Élections
+        titles:
+          provincial: Élections provinciales
       show:
         all_elections: Toutes les élections
-        title: Élection générale de %{year}
+        kinds:
+          provincial: Élection générale provinciale de %{year}
     image_blocks:
       preview: 'Image : %{caption}'
     listing_map:
@@ -174,6 +178,9 @@ fr:
           one: "%{count} siège"
           other: "%{count} sièges"
         title: Partis politiques
+        titles:
+          provincial: Partis politiques provinciaux
+      logo_alt: Logo de %{name}
       show:
         all_parties: Tous les partis
         current: Députés actuels
@@ -183,6 +190,17 @@ fr:
         logo_non_free: Logo non libre, affiché au titre de l’utilisation équitable.
         logo_source: Source
         none: Aucun député enregistré.
+    provinces:
+      show:
+        all_districts: Toutes les circonscriptions de cette province
+        all_elections: Toutes les élections de cette province
+        all_parties: Tous les partis de cette province
+        tabs:
+          districts: Circonscriptions
+          elections: Élections
+          parties: Partis politiques
+          regions: Autres régions
+          settlements: Localités
     settlement_events:
       empty: Aucun événement à venir à %{name} pour le moment.
       title: Événements à %{name}

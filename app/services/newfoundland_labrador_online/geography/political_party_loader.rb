@@ -26,8 +26,9 @@ module NewfoundlandLabradorOnline
       private
 
       def load_party(entry)
-        party = PoliticalParty.find_or_initialize_by(jurisdiction: entry.fetch('jurisdiction'),
-                                                     identifier: entry.fetch('key'))
+        jurisdiction, province = entry.fetch('jurisdiction').split('-', 2)
+        state = Province.state_for(province)
+        party = PoliticalParty.find_or_initialize_by(jurisdiction:, state:, identifier: entry.fetch('key'))
         bucket = party.new_record? ? @result.created : @result.updated
         party.update!(attributes_for(entry))
         attach_logo(party, entry['logo_file'])

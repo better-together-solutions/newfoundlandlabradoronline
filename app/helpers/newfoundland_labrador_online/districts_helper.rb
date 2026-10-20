@@ -3,6 +3,10 @@
 module NewfoundlandLabradorOnline
   # Map and popup helpers for the district pages.
   module DistrictsHelper
+    def district_path_for(district)
+      newfoundland_labrador_online_district_path(province_code(district), district, locale: I18n.locale)
+    end
+
     # The HTML under a district's popup title on the listing map: kind, area and the date its boundary took effect.
     def district_popup_body(district, kind:, term: nil)
       version = district.current_version
@@ -15,7 +19,7 @@ module NewfoundlandLabradorOnline
     # The district's coloured area on the listing map: its current member's party colour, and a popup like the pin's.
     def district_overlay(district, term, kind:)
       party = term&.party_on
-      path = newfoundland_labrador_online_district_path(district, locale: I18n.locale)
+      path = district_path_for(district)
       title = link_to(tag.strong(district.name), path, class: 'text-decoration-none')
       body = district_popup_body(district, kind:, term:)
       { color: party&.display_color || NewfoundlandLabradorOnline::PoliticalParty::FALLBACK_COLOR,

@@ -133,13 +133,17 @@ en:
     elections:
       index:
         districts: Districts
-        election: "%{year} general election"
         intro: General elections to the House of Assembly, with seats won by party.
+        kinds:
+          provincial: Provincial general election %{year}
         parties: Parties
         title: Elections
+        titles:
+          provincial: Provincial elections
       show:
         all_elections: All elections
-        title: "%{year} general election"
+        kinds:
+          provincial: Provincial general election %{year}
     image_blocks:
       preview: 'Image: %{caption}'
     listing_map:
@@ -173,6 +177,9 @@ en:
           one: "%{count} seat"
           other: "%{count} seats"
         title: Political parties
+        titles:
+          provincial: Provincial political parties
+      logo_alt: Logo of %{name}
       show:
         all_parties: All parties
         current: Current members
@@ -182,6 +189,17 @@ en:
         logo_non_free: Non-free logo, shown under fair use.
         logo_source: Source
         none: No members recorded.
+    provinces:
+      show:
+        all_districts: All districts of this province
+        all_elections: All elections of this province
+        all_parties: All parties of this province
+        tabs:
+          districts: Electoral districts
+          elections: Elections
+          parties: Political parties
+          regions: Other regions
+          settlements: Settlements
     settlement_events:
       empty: No upcoming events in %{name} yet.
       title: Events in %{name}

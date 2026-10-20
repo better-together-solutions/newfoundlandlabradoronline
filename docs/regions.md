@@ -30,7 +30,7 @@ The packet is built by management-tool `scripts/nl_regions_ingest.py` (`fetch-di
 
 ## Public district pages
 
-- `GET /:locale/g/districts/provincial` lists the districts; `GET /:locale/g/districts/provincial/:id` (for example `/en/g/districts/provincial/nl-ped-corner-brook`)
+- `GET /:locale/e/districts/provincial` lists the districts; `GET /:locale/e/districts/provincial/:id` (for example `/en/e/districts/provincial/nl-ped-corner-brook`)
   shows the current boundary on the shared map, facts and source, settlements whose point falls inside the boundary, the
   history of names and boundaries, and external identifiers. Both are public; policy is `ProvincialElectoralDistrictPolicy`.
 - Stable DOM ids are asserted in `spec/dom_contracts/district_page_spec.rb`.
@@ -73,7 +73,7 @@ Parties load first from `db/data/nl_regions/provincial_parties.json` (built by m
 ./bin/dc-run bin/rails nlo:regions:load_political_parties   # idempotent; run before load_provincial_elections
 ```
 
-- `political_parties` are scoped by `jurisdiction` (`provincial-nl`). Provincial and federal parties are separate
+- `political_parties` are scoped by `jurisdiction` (`provincial`) and `state_id`. Provincial and federal parties are separate
   entities even when they share a name: the provincial Liberals and NDP are not their federal counterparts. The
   association between them (same organisation, affiliated, or unrelated) is modelled with the federal electoral work.
 - The brand colour is derived from the logo (SVG fills or dominant saturated pixels), falling back to Wikipedia's
@@ -96,13 +96,13 @@ Parties load first from `db/data/nl_regions/provincial_parties.json` (built by m
 
 ## Parties, elections, cards and routes
 
-- District pages live under the geography prefix, one sub-path per district type: `/:locale/g/districts/provincial` and
-  `/:locale/g/districts/provincial/:id`. `/:locale/districts` and `/:locale/districts/:id` redirect (301). Federal and
+- All election-related pages live under `/e`; districts have one sub-path per district type: `/:locale/e/districts/provincial` (all provinces),
+  `/:locale/e/districts/provincial/:province` and `/:locale/e/districts/provincial/:province/:id`. The earlier `/districts`, `/g/districts/provincial`, `/parties` and `/elections` paths redirect (301) to the `nl` form. Federal and
   other provincial district types get their own sub-path later.
-- `GET /:locale/parties` lists parties with current seats; `GET /:locale/parties/:jurisdiction/:identifier` (for example
-  `/en/parties/provincial-nl/liberal`) shows the logo and licence, current members and former members, each with
+- `GET /:locale/e/parties` lists parties with current seats; `GET /:locale/e/parties/:jurisdiction/:province/:identifier` (for example
+  `/en/e/parties/provincial/nl/liberal`) shows the logo and licence, current members and former members, each with
   their districts linked back. Every party name on district, results and election pages links here.
-- `GET /:locale/elections` lists elections with seats by party; `GET /:locale/elections/:jurisdiction/:year` shows
+- `GET /:locale/e/elections` lists elections with seats by party; `GET /:locale/e/elections/:jurisdiction/:province/:year` shows
   every contest with linked districts and parties.
 - District cards (`districts/_card`) wrap CE's `shared/_card`: name, sitting member, party chip, and the cover image
   through `BetterTogether::Attachments::Images` (`attachable_cover_image` on `ProvincialElectoralDistrict`; the card image is
@@ -110,3 +110,12 @@ Parties load first from `db/data/nl_regions/provincial_parties.json` (built by m
 - Query budget: every page above runs under 70 queries regardless of row count (preloaded translations, memberships,
   attachments); `spec/dom_contracts/party_election_pages_spec.rb` guards it. The listing map's simplified outlines are
   cached for 12 hours and keyed on the spaces' `updated_at`; uncached they cost about 3 s on 40 districts.
+
+## Provinces
+
+`:province` is the lower-case province code (`nl`, `ns`, ...) and resolves to the geography `State` whose `iso_code` is
+`CA-<CODE>`; an unknown code is a 404. Districts (`region.state_id`), parties and elections (`state_id`, migration
+`20261020120000`) are associated with their province in the geography tables, and `BetterTogether::Geography::State`
+has `provincial_electoral_districts`, `political_parties` and `elections` (concern `NewfoundlandLabradorOnline::State`).
+The province page (host dashboard, `app/views/better_together/geography/states/show.html.erb`) has tabs for its
+districts, parties and elections, each linking to the public pages, beside the regions and settlements it showed before.

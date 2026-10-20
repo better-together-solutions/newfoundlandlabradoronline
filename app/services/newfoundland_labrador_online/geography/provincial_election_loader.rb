@@ -12,7 +12,7 @@ module NewfoundlandLabradorOnline
       DEFAULT_PATH = Rails.root.join('db/data/nl_regions/provincial_election_results.json')
       JURISDICTION = 'provincial'
       MEMBER_PREFIX = 'nl-mha-'
-      JURISDICTION_PARTIES = 'provincial-nl'
+      PROVINCE = 'nl'
       PARTY_KEYS = { 'liberal' => 'liberal', 'pc' => 'pc', 'ndp' => 'ndp', 'alliance' => 'nl-alliance',
                      'nl alliance' => 'nl-alliance', 'independent' => 'independent', 'ind.' => 'independent' }.freeze
       LABEL = /\s*\((?<label>[^)]*)\)\z/
@@ -43,12 +43,16 @@ module NewfoundlandLabradorOnline
         end
       end
 
+      def state
+        @state ||= Province.state_for(PROVINCE)
+      end
+
       def districts
-        @districts ||= ProvincialElectoralDistrict.all.index_by { |district| self.class.key(district.name) }
+        @districts ||= ProvincialElectoralDistrict.where(state:).index_by { |district| self.class.key(district.name) }
       end
 
       def load_election(entry)
-        election = Election.find_or_initialize_by(jurisdiction: JURISDICTION, held_on: entry.fetch('date'))
+        election = Election.find_or_initialize_by(jurisdiction: JURISDICTION, state:, held_on: entry.fetch('date'))
         election.update!(source_url: entry['source_url'], source_revid: entry['source_revid'],
                          source_sha256: entry['source_sha256'], license: entry['license'])
         @result.elections += 1
@@ -75,7 +79,7 @@ module NewfoundlandLabradorOnline
 
       def party_record(label)
         key = PARTY_KEYS[label.downcase]
-        key && PoliticalParty.find_by(jurisdiction: JURISDICTION_PARTIES, identifier: key)
+        key && PoliticalParty.find_by(jurisdiction: JURISDICTION, state:, identifier: key)
       end
 
       def load_candidacy(contest, candidate)

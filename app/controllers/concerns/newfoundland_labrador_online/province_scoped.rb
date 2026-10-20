@@ -1,0 +1,19 @@
+# frozen_string_literal: true
+
+module NewfoundlandLabradorOnline
+  # Resolves the :province URL segment to its geography State; an unknown code is a 404.
+  module ProvinceScoped
+    extend ActiveSupport::Concern
+
+    included do
+      before_action :set_province
+      helper NewfoundlandLabradorOnline::ProvincesHelper
+    end
+
+    private
+
+    def set_province
+      @province = NewfoundlandLabradorOnline::Province.state_for(params[:province]) if params[:province]
+    end
+  end
+end

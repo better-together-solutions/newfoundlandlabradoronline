@@ -2,7 +2,7 @@
 <% party = term&.party_on %>
 <%= render 'better_together/shared/card',
            entity: district,
-           link_target: newfoundland_labrador_online_district_path(district, locale: I18n.locale),
+           link_target: district_path_for(district),
            col_classes:,
            card_classes: 'hover-effect district-card' do %>
   <ul class="list-unstyled small mb-0 mt-2">

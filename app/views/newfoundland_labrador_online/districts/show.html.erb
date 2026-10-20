@@ -1,10 +1,10 @@
 <div class="container py-4" id="district-page">
   <nav aria-label="<%= t('.breadcrumb') %>">
-    <%= link_to t('.all_districts'), newfoundland_labrador_online_districts_path(locale: I18n.locale), class: 'btn btn-secondary btn-sm mb-3' %>
+    <%= link_to t('.all_districts'), newfoundland_labrador_online_scoped_districts_path(province_code(@district), locale: I18n.locale), class: 'btn btn-secondary btn-sm mb-3' %>
   </nav>
 
   <h1 id="district-name"><%= @district.name %></h1>
-  <p class="text-muted" id="district-kind"><%= t('.kind') %></p>
+  <p class="text-muted" id="district-kind"><%= t('.kind') %> · <span id="district-province"><%= @district.state.name %></span></p>
 
   <% current = @district.current_version %>
   <% located_map = district_map(@district) %>
@@ -33,7 +33,7 @@
                   <span class="d-inline-flex align-items-center gap-1" id="district-member-party">
                     <span class="d-inline-block rounded" style="width: 0.9rem; height: 0.9rem; background: <%= party.display_color %>"></span>
                     <%= link_to party.short_name, party_path_for(party) %>
-                    <% if party.logo.attached? %><%= image_tag url_for(party.logo), alt: '', height: 20 %><% end %>
+                    <%= party_logo_tag(party, height: 20) %>
                   </span>
                 <% end %>
               <% else %>
@@ -74,7 +74,8 @@
   <section class="card mt-4" id="district-members">
     <div class="card-body">
       <h2 class="h5 card-title"><%= t('.members') %></h2>
-      <table class="table table-sm mb-0">
+      <table class="table table-sm mb-0 district-results-table" style="table-layout: fixed">
+        <colgroup><col style="width: 40%"><col style="width: 30%"><col style="width: 15%"><col style="width: 15%"></colgroup>
         <thead>
           <tr>
             <th scope="col"><%= t('.member') %></th>
@@ -104,7 +105,8 @@
         <h3 class="h6 mt-3"><%= link_to t('.election_results', year: contest.election.year), election_path_for(contest.election) %>
           <% if contest.turnout %><small class="text-muted"><%= t('.turnout', value: contest.turnout) %></small><% end %>
         </h3>
-        <table class="table table-sm" id="<%= dom_id(contest) %>">
+        <table class="table table-sm district-results-table" style="table-layout: fixed" id="<%= dom_id(contest) %>">
+          <colgroup><col style="width: 40%"><col style="width: 30%"><col style="width: 15%"><col style="width: 15%"></colgroup>
           <thead>
             <tr>
               <th scope="col"><%= t('.candidate') %></th>

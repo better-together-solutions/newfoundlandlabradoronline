@@ -9,7 +9,8 @@ module NewfoundlandLabradorOnline
     # Run after the elections load.
     class PartyChangeLoader
       DEFAULT_PATH = Rails.root.join('db/data/nl_regions/provincial_party_changes.json')
-      JURISDICTION = 'provincial-nl'
+      JURISDICTION = 'provincial'
+      PROVINCE = 'nl'
       Result = Struct.new(:applied, :unchanged, :missing, :roster_mismatches, keyword_init: true)
 
       def initialize(path: DEFAULT_PATH)
@@ -77,7 +78,7 @@ module NewfoundlandLabradorOnline
       end
 
       def find_party(key)
-        key && PoliticalParty.find_by(jurisdiction: JURISDICTION, identifier: key)
+        key && PoliticalParty.find_by(jurisdiction: JURISDICTION, state: Province.state_for(PROVINCE), identifier: key)
       end
     end
   end

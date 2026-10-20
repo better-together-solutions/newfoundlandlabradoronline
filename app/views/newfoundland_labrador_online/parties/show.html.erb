@@ -1,10 +1,10 @@
 <div class="container py-4" id="party-page">
   <nav aria-label="<%= t('newfoundland_labrador_online.districts.show.breadcrumb') %>">
-    <%= link_to t('.all_parties'), newfoundland_labrador_online_parties_path(locale: I18n.locale) %>
+    <%= link_to t('.all_parties'), newfoundland_labrador_online_scoped_parties_path(@party.jurisdiction, province_code(@party), locale: I18n.locale) %>
   </nav>
   <div class="d-flex align-items-center gap-3 my-3">
     <% if @party.logo.attached? %>
-      <%= image_tag url_for(@party.logo), alt: '', height: 64, id: 'party-logo' %>
+      <%= party_logo_tag(@party, height: 64, id: 'party-logo') %>
     <% end %>
     <h1 id="party-name" class="mb-0"><%= @party.name %></h1>
     <span class="d-inline-block rounded" id="party-color" style="width: 1.5rem; height: 1.5rem; background: <%= @party.display_color %>" title="<%= @party.display_color %>"></span>

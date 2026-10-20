@@ -1,5 +1,5 @@
 <div class="container py-4" id="districts-index">
-  <h1 class="mb-2"><%= t('.title') %></h1>
+  <h1 class="mb-2"><%= t('.title') %><% if @province %> <small class="text-muted"><%= @province.name %></small><% end %></h1>
   <p class="text-muted"><%= t('.intro', count: @districts.size) %>
     <%= link_to t('.parties'), newfoundland_labrador_online_parties_path(locale: I18n.locale) %> ·
     <%= link_to t('.elections'), newfoundland_labrador_online_elections_path(locale: I18n.locale) %></p>
@@ -8,7 +8,7 @@
   <% kind = t('.kind') %>
   <% terms = @current_terms %>
   <%= render 'newfoundland_labrador_online/shared/listing_map',
-             map: listing_map(@districts, kind: 'districts', url_for: ->(district) { newfoundland_labrador_online_district_path(district, locale: I18n.locale) },
+             map: listing_map(@districts, kind: 'districts', url_for: ->(district) { district_path_for(district) },
                                           popup_body: ->(district) { district_popup_body(district, kind:, term: terms[district.id]) },
                                           overlay_for: ->(district) { district_overlay(district, terms[district.id], kind:) }),
              title: t('.title'), height: '700px' %>
@@ -20,7 +20,7 @@
         <li class="list-inline-item me-3 mb-2" id="<%= party ? dom_id(party, :legend) : 'legend_no_party' %>">
           <span class="d-inline-block align-middle rounded" style="width: 1rem; height: 1rem; background: <%= party&.display_color || NewfoundlandLabradorOnline::PoliticalParty::FALLBACK_COLOR %>"></span>
           <% if party&.logo&.attached? %>
-            <%= image_tag url_for(party.logo), alt: '', height: 24, class: 'align-middle' %>
+            <%= party_logo_tag(party, height: 24, class: 'align-middle') %>
           <% end %>
           <strong><%= party ? link_to(party.short_name, party_path_for(party)) : t('.no_party') %></strong>
           <span class="text-muted"><%= t('.seats', count:) %></span>

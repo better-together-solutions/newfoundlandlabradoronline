@@ -4,6 +4,8 @@ module NewfoundlandLabradorOnline
   # Public pages for provincial electoral districts: an index of all districts and a page per district with its
   # current boundary, history of names and boundaries, external identifiers and the settlements inside.
   class DistrictsController < ApplicationController
+    include NewfoundlandLabradorOnline::ProvinceScoped
+
     helper NewfoundlandLabradorOnline::DistrictsHelper
     helper NewfoundlandLabradorOnline::PartiesHelper
     helper NewfoundlandLabradorOnline::ElectionsHelper
@@ -12,15 +14,13 @@ module NewfoundlandLabradorOnline
 
     def index
       authorize NewfoundlandLabradorOnline::ProvincialElectoralDistrict
-      @districts = policy_scope(NewfoundlandLabradorOnline::ProvincialElectoralDistrict).with_translations
-                                                                                        .with_attached_cover_image
-                                                                                        .order(:identifier).to_a
+      @districts = province_districts.with_translations.with_attached_cover_image.order(:identifier).to_a
       preload_versions(@districts)
       load_current_members(@districts)
     end
 
     def show
-      @district = NewfoundlandLabradorOnline::ProvincialElectoralDistrict.friendly.find(params[:id])
+      @district = province_districts.includes(:state).friendly.find(params[:id])
       authorize @district
       @versions = @district.versions.without_boundary.chronological
       @identifiers = @district.identifiers.order(:scheme)
@@ -29,6 +29,11 @@ module NewfoundlandLabradorOnline
     end
 
     private
+
+    def province_districts
+      districts = policy_scope(NewfoundlandLabradorOnline::ProvincialElectoralDistrict)
+      @province ? districts.where(state: @province) : districts
+    end
 
     # Named parties come before independents and unaffiliated seats unless the latter hold more seats.
     def seat_rank(party)

@@ -9,6 +9,7 @@ module NewfoundlandLabradorOnline
     # (region, valid_from); a version's boundary is rewritten only when the packet's source checksum changed.
     class ProvincialDistrictLoader
       DEFAULT_PATH = Rails.root.join('db/data/nl_regions/provincial_electoral_districts_2015.geojson')
+      PROVINCE = 'nl'
       Result = Struct.new(:created, :updated, :unchanged, keyword_init: true)
 
       def initialize(path: DEFAULT_PATH)
@@ -45,13 +46,18 @@ module NewfoundlandLabradorOnline
 
       def find_or_create_district(name)
         identifier = ProvincialElectoralDistrict.identifier_for_name(name)
+        state = Province.state_for(PROVINCE)
         district = ProvincialElectoralDistrict.find_by(identifier:)
-        return district if district
+        return associate(district, state) if district
 
-        state = BetterTogether::Geography::State.find_by(iso_code: 'NL')
-        district = ProvincialElectoralDistrict.create!(identifier:, name:, state:, country: state&.country,
+        district = ProvincialElectoralDistrict.create!(identifier:, name:, state:, country: state.country,
                                                        privacy: 'public', protected: true)
         district.identifiers.create!(scheme: 'nlo_ped', value: identifier)
+        district
+      end
+
+      def associate(district, state)
+        district.update!(state:, country: state.country) unless district.state_id == state.id
         district
       end
 
