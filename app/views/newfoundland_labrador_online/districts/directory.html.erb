@@ -1,0 +1,19 @@
+<div class="container py-4" id="districts-directory">
+  <h1 class="mb-2"><%= @scope ? t(".titles.#{@scope}") : t('.title') %></h1>
+  <p class="text-muted"><%= t('.intro') %></p>
+
+  <% @by_province.each do |state, districts| %>
+    <% code = NewfoundlandLabradorOnline::Province.code_for(state) %>
+    <section class="mb-4" id="districts-<%= @scope || 'provincial' %>-<%= code %>">
+      <h2 class="h4 mt-3"><%= link_to "#{t('.titles.provincial')}: #{state.name}", newfoundland_labrador_online_scoped_districts_path(code, locale: I18n.locale) %>
+        <small class="text-muted"><%= t('.count', count: districts.size) %></small></h2>
+      <ul class="list-inline" id="districts-list-provincial-<%= code %>">
+        <% districts.each do |district| %>
+          <li class="list-inline-item me-3" id="<%= dom_id(district, :directory) %>"><%= link_to district.name, district_path_for(district) %></li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+  <p><%= link_to t('.parties'), province_index_path(:parties) %> ·
+     <%= link_to t('.elections'), province_index_path(:elections) %></p>
+</div>

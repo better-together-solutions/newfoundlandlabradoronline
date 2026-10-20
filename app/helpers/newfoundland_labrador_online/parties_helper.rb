@@ -26,6 +26,17 @@ module NewfoundlandLabradorOnline
       end
     end
 
+    # A member's avatar and name linked to their profile, like other person records (CE's mention partial).
+    def member_mention(person, **)
+      render('better_together/people/mention', person:, justify_content: 'start', flex_align_items: 'center', **)
+    end
+
+    # The candidate's name; an elected candidate is shown as their Person mention.
+    def candidate_name(candidacy)
+      person = candidacy.term&.person
+      person ? member_mention(person) : candidacy.candidate_name
+    end
+
     def district_link(region)
       link_to region.name, district_path_for(region)
     end

@@ -10,10 +10,10 @@ module NewfoundlandLabradorOnline
     helper NewfoundlandLabradorOnline::PartiesHelper
     helper NewfoundlandLabradorOnline::ElectionsHelper
 
-    PERSON_PRELOAD = [:string_translations, { party_memberships: :political_party }].freeze
-
     def index
       authorize NewfoundlandLabradorOnline::ProvincialElectoralDistrict
+      return directory unless @province
+
       @districts = province_districts.with_translations.with_attached_cover_image.order(:identifier).to_a
       preload_versions(@districts)
       load_current_members(@districts)
@@ -29,6 +29,14 @@ module NewfoundlandLabradorOnline
     end
 
     private
+
+    # Every province with districts, each linking to its own listing.
+    def directory
+      @scope = params[:jurisdiction]
+      districts = province_districts.includes(:state).with_translations.order(:identifier).to_a
+      @by_province = districts.group_by(&:state).sort_by { |state, _| state.name }
+      render :directory
+    end
 
     def province_districts
       districts = policy_scope(NewfoundlandLabradorOnline::ProvincialElectoralDistrict)
@@ -60,7 +68,8 @@ module NewfoundlandLabradorOnline
 
     def load_electoral_history(district)
       @terms = district.elected_terms.includes(:election, :political_party, person: PERSON_PRELOAD).latest_first
-      contests = district.contests.includes(:election, candidacies: :political_party)
+      contests = district.contests.includes(:election,
+                                            candidacies: [:political_party, { term: { person: PERSON_PRELOAD } }])
       @contests = contests.sort_by { |contest| contest.election.held_on }.reverse
     end
 

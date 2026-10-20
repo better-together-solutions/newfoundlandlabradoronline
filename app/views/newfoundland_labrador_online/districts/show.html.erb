@@ -28,7 +28,7 @@
             <dt class="col-sm-5"><%= t('.current_member') %></dt>
             <dd class="col-sm-7" id="district-member">
               <% if sitting %>
-                <%= sitting.person.name %>
+                <%= member_mention(sitting.person) %>
                 <% if party %>
                   <span class="d-inline-flex align-items-center gap-1" id="district-member-party">
                     <span class="d-inline-block rounded" style="width: 0.9rem; height: 0.9rem; background: <%= party.display_color %>"></span>
@@ -87,7 +87,7 @@
         <tbody>
           <% @terms.each do |term| %>
             <tr id="<%= dom_id(term) %>">
-              <td><%= term.person.name %></td>
+              <td><%= member_mention(term.person) %></td>
               <td><%= party_chip(term.political_party) if term.political_party %><%= term.party_name unless term.political_party %></td>
               <td><%= l(term.started_on, format: :long) %></td>
               <td><%= term.ended_on ? l(term.ended_on, format: :long) : t('.present') %></td>
@@ -118,7 +118,7 @@
           <tbody>
             <% contest.candidacies.each do |candidacy| %>
               <tr id="<%= dom_id(candidacy) %>" class="<%= 'fw-bold' if candidacy.elected %>">
-                <td><%= candidacy.candidate_name %> <% if candidacy.elected %><span class="badge text-bg-success"><%= t('.elected') %></span><% end %></td>
+                <td><%= candidate_name(candidacy) %> <% if candidacy.elected %><span class="badge text-bg-success"><%= t('.elected') %></span><% end %></td>
                 <td><% if candidacy.political_party %><%= link_to candidacy.party_name, party_path_for(candidacy.political_party) %><% else %><%= candidacy.party_name %><% end %></td>
                 <td class="text-end"><%= number_with_delimiter(candidacy.votes) %></td>
                 <td class="text-end"><%= number_with_precision(candidacy.vote_share, precision: 1) %>%</td>

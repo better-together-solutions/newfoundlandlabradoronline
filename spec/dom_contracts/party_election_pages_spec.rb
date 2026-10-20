@@ -26,7 +26,7 @@ RSpec.describe 'Party and election pages', type: :request do
   end
 
   it 'shows district cards with member and party', :aggregate_failures do
-    get "/#{locale}/e/districts/provincial"
+    get "/#{locale}/e/districts/provincial/nl"
 
     expect(response.body).to include('class="newfoundland_labrador_online_provincial_electoral_district',
                                      'district-card')
@@ -59,6 +59,32 @@ RSpec.describe 'Party and election pages', type: :request do
 
     get "/#{locale}/e/elections/provincial/nl"
     expect(response.body).to include('Provincial elections', 'Provincial general election 2019')
+  end
+
+  it 'links member names to their profiles with the mention partial', :aggregate_failures do
+    person = BetterTogether::Person.find_by!(identifier: 'nl-mha-jim-parsons')
+    paths = ["/#{locale}/e/districts/provincial/nl", "/#{locale}/e/districts/provincial/nl/nl-ped-corner-brook",
+             "/#{locale}/e/parties/provincial/nl/liberal", "/#{locale}/e/elections/provincial/nl/2025"]
+    paths.each do |path|
+      get path
+      expect(response.body).to include(%(id="#{ActionView::RecordIdentifier.dom_id(person, :mention)}"), person.slug)
+    end
+  end
+
+  it 'scopes the cross links to the province being viewed', :aggregate_failures do
+    get "/#{locale}/e/districts/provincial/nl"
+
+    expect(response.body).to include("/#{locale}/e/parties/provincial/nl\"", "/#{locale}/e/elections/provincial/nl\"")
+  end
+
+  it 'lists each province with data on the directory pages, linking to its listing', :aggregate_failures do
+    %w[districts districts/provincial].each do |path|
+      get "/#{locale}/e/#{path}"
+      expect(response.body).to include('id="districts-directory"', 'id="districts-list-provincial-nl"',
+                                       "/#{locale}/e/districts/provincial/nl\"")
+    end
+    get "/#{locale}/e/elections"
+    expect(response.body).to include('id="elections-provincial-nl"', "/#{locale}/e/elections/provincial/nl\"")
   end
 
   it 'resolves the province segment from the geography states', :aggregate_failures do
@@ -97,7 +123,8 @@ RSpec.describe 'Party and election pages', type: :request do
   end
 
   it 'keeps query counts independent of the number of pages rows', :aggregate_failures do
-    paths = ["/#{locale}/e/districts/provincial", "/#{locale}/e/parties", "/#{locale}/e/parties/provincial/nl/liberal",
+    paths = ["/#{locale}/e/districts/provincial/nl", "/#{locale}/e/districts/provincial", "/#{locale}/e/parties",
+             "/#{locale}/e/parties/provincial/nl/liberal",
              "/#{locale}/e/elections", "/#{locale}/e/elections/provincial/nl/2019"]
     paths.each { |path| get path } # warm caches
     counts = paths.to_h { |path| [path, query_count(path)] }

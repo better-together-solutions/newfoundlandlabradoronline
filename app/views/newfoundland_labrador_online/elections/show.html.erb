@@ -12,7 +12,7 @@
           <tbody>
             <% contest.candidacies.each do |candidacy| %>
               <tr id="<%= dom_id(candidacy) %>" class="<%= 'fw-bold' if candidacy.elected %>">
-                <td><%= candidacy.candidate_name %> <% if candidacy.elected %><span class="badge text-bg-success"><%= t('newfoundland_labrador_online.districts.show.elected') %></span><% end %></td>
+                <td><%= candidate_name(candidacy) %> <% if candidacy.elected %><span class="badge text-bg-success"><%= t('newfoundland_labrador_online.districts.show.elected') %></span><% end %></td>
                 <% party = @parties[candidacy.political_party_id] %>
                 <td><%= party ? link_to(candidacy.party_name, party_path_for(party)) : candidacy.party_name %></td>
                 <td class="text-end"><%= number_with_delimiter(candidacy.votes) %></td>

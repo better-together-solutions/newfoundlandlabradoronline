@@ -85,6 +85,17 @@ fr:
     title: Mon parcours
   newfoundland_labrador_online:
     districts:
+      directory:
+        count:
+          one: "%{count} circonscription"
+          other: "%{count} circonscriptions"
+        elections: Élections
+        intro: Circonscriptions électorales par province, chacune menant à la liste
+          et à la carte de la province.
+        parties: Partis politiques
+        title: Circonscriptions électorales
+        titles:
+          provincial: Circonscriptions électorales provinciales
       index:
         elections: Élections
         intro: "%{count} circonscriptions en vigueur depuis l’élection de 2015."

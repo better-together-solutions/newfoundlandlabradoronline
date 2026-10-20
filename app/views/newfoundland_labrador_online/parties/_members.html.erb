@@ -17,7 +17,7 @@
         <tbody>
           <% memberships.each do |membership| %>
             <tr id="<%= dom_id(membership) %>">
-              <td><%= membership.person.name %></td>
+              <td><%= member_mention(membership.person) %></td>
               <td><%= safe_join(terms_by_person.fetch(membership.person_id, []).map(&:region).uniq.map { |r| district_link(r) }, ', ') %></td>
               <td><%= l(membership.started_on, format: :long) %></td>
               <td><%= membership.ended_on ? l(membership.ended_on, format: :long) : t('newfoundland_labrador_online.districts.show.present') %></td>

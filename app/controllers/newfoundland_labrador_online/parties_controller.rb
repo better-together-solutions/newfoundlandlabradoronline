@@ -9,8 +9,6 @@ module NewfoundlandLabradorOnline
     helper NewfoundlandLabradorOnline::DistrictsHelper
     helper NewfoundlandLabradorOnline::PartiesHelper
 
-    PERSON_PRELOAD = [:string_translations, :slugs, { party_memberships: :political_party }].freeze
-
     def index
       authorize NewfoundlandLabradorOnline::PoliticalParty
       @scope = params[:jurisdiction]

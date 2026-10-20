@@ -25,7 +25,9 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
     scope 'e' do # rubocop:disable Metrics/BlockLength
       province = { province: /[a-z]{2}/ }
       districts = 'newfoundland_labrador_online/districts'
-      get 'districts/provincial', to: "#{districts}#index", as: :newfoundland_labrador_online_districts
+      get 'districts', to: "#{districts}#index", as: :newfoundland_labrador_online_districts
+      get 'districts/:jurisdiction', to: "#{districts}#index", as: :newfoundland_labrador_online_jurisdiction_districts,
+                                     constraints: { jurisdiction: /provincial/ }
       get 'districts/provincial/:province', to: "#{districts}#index",
                                             as: :newfoundland_labrador_online_scoped_districts, constraints: province
       get 'districts/provincial/:province/:id', to: "#{districts}#show", as: :newfoundland_labrador_online_district,

@@ -1,8 +1,8 @@
 <div class="container py-4" id="districts-index">
   <h1 class="mb-2"><%= t('.title') %><% if @province %> <small class="text-muted"><%= @province.name %></small><% end %></h1>
   <p class="text-muted"><%= t('.intro', count: @districts.size) %>
-    <%= link_to t('.parties'), newfoundland_labrador_online_parties_path(locale: I18n.locale) %> ·
-    <%= link_to t('.elections'), newfoundland_labrador_online_elections_path(locale: I18n.locale) %></p>
+    <%= link_to t('.parties'), province_index_path(:parties) %> ·
+    <%= link_to t('.elections'), province_index_path(:elections) %></p>
 
   <%# Resolved here: a lazy t('.kind') inside the lambda would look up under the map partial's scope. %>
   <% kind = t('.kind') %>

@@ -1,14 +1,15 @@
 %% render.orientation: landscape
 flowchart LR
   subgraph Request["Request"]
-    R1["GET /:locale/districts/:id"]
+    R1["GET /:locale/e/districts/provincial/:province/:id"]
   end
   subgraph Controller["Controller and policy"]
     C1["NewfoundlandLabradorOnline::DistrictsController#show"]
     P1["ProvincialElectoralDistrictPolicy (public read)"]
   end
   subgraph Models["Models"]
-    M1["ProvincialElectoralDistrict (STI of Geography::Region)"]
+    M0["Province.state_for(:province) (Geography::State, CA-NL)"]
+    M1["ProvincialElectoralDistrict (STI of Geography::Region, state_id)"]
     M2["RegionVersion (name, boundary, valid range, source)"]
     M3["RegionIdentifier (scheme, value)"]
     M4["DistrictMap (outline, viewport, no pins)"]
@@ -21,6 +22,8 @@ flowchart LR
     S1["ST_Covers(boundary, settlement point)"]
   end
   R1 --> C1 --> P1
+  C1 --> M0 --> M1
+  V1 --> MM["member mention partial (profile photo and link)"]
   C1 --> M1
   M1 --> M2
   M1 --> M3

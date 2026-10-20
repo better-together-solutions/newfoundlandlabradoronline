@@ -31,7 +31,7 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
   end
 
   it 'exposes the index identifiers', :aggregate_failures do
-    get "/#{locale}/e/districts/provincial"
+    get "/#{locale}/e/districts/provincial/nl"
 
     expect(response).to have_http_status(:ok)
     expect(response.body).to include('id="districts-index"', 'id="districts-list"', 'id="listing-map-section"')
@@ -40,7 +40,7 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
 
   context 'with the listing map' do
     let(:points) do
-      get "/#{locale}/e/districts/provincial"
+      get "/#{locale}/e/districts/provincial/nl"
       JSON.parse(CGI.unescapeHTML(response.body[/data-better_together--map-spaces-value="([^"]*)"/, 1]))
     end
     let(:popup) { points.first['popup_html'] }
@@ -64,7 +64,7 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
     before do
       NewfoundlandLabradorOnline::Geography::PoliticalPartyLoader.new.call
       load_elections
-      get "/#{locale}/e/districts/provincial"
+      get "/#{locale}/e/districts/provincial/nl"
     end
 
     it 'colours each district area and lists the parties in a legend', :aggregate_failures do

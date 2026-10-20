@@ -12,7 +12,7 @@ module NewfoundlandLabradorOnline
     def index
       authorize NewfoundlandLabradorOnline::Election
       @scope = params[:jurisdiction]
-      @elections = scoped_elections.latest_first.to_a
+      @elections = scoped_elections.includes(:state).latest_first.to_a
       @seat_counts = NewfoundlandLabradorOnline::ElectedTerm.where(election_id: @elections.map(&:id))
                                                             .group(:election_id, :party_name).count
     end
@@ -20,8 +20,11 @@ module NewfoundlandLabradorOnline
     def show
       @election = find_election
       authorize @election
-      @contests = @election.contests.includes(:candidacies, region: %i[string_translations slugs]).to_a
-                           .sort_by { |contest| contest.region.name }
+      @contests = @election.contests.includes({ candidacies: { term: { person: PERSON_PRELOAD } } },
+                                              region: %i[string_translations slugs]).to_a
+                           .sort_by do |contest|
+        contest.region.name
+      end
       @parties = parties_in(@contests)
     end
 

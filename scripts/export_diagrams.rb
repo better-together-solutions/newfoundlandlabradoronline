@@ -7,9 +7,11 @@
 
 # Diagram file name => the models drawn in it.
 DIAGRAMS = {
-  'nlo_regions_schema_erd' => %w[BetterTogether::Geography::Region NewfoundlandLabradorOnline::RegionVersion
+  'nlo_regions_schema_erd' => %w[BetterTogether::Geography::State BetterTogether::Geography::Region
+                                 NewfoundlandLabradorOnline::RegionVersion
                                  NewfoundlandLabradorOnline::RegionIdentifier],
-  'nlo_elections_schema_erd' => %w[BetterTogether::Geography::Region NewfoundlandLabradorOnline::Election
+  'nlo_elections_schema_erd' => %w[BetterTogether::Geography::State BetterTogether::Geography::Region
+                                   NewfoundlandLabradorOnline::Election
                                    NewfoundlandLabradorOnline::ElectoralContest NewfoundlandLabradorOnline::Candidacy
                                    NewfoundlandLabradorOnline::ElectedTerm NewfoundlandLabradorOnline::PoliticalParty
                                    NewfoundlandLabradorOnline::PartyMembership]

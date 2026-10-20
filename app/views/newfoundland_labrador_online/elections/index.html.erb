@@ -1,17 +1,25 @@
 <div class="container py-4" id="elections-index">
   <h1 class="mb-2"><%= @scope ? t(".titles.#{@scope}") : t('.title') %><% if @province %> <small class="text-muted"><%= @province.name %></small><% end %></h1>
   <p class="text-muted"><%= t('.intro') %></p>
-  <ul class="list-group" id="elections-list">
-    <% @elections.each do |election| %>
-      <li class="list-group-item" id="<%= dom_id(election) %>">
-        <h2 class="h5"><%= link_to t(".kinds.#{election.jurisdiction}", year: election.year), election_path_for(election) %>
-          <small class="text-muted"><%= l(election.held_on, format: :long) %></small></h2>
-        <p class="small mb-0">
-          <%= safe_join(@seat_counts.select { |(id, _), _| id == election.id }.sort_by { |_, n| -n }.map { |(_, name), n| "#{name} #{n}" }, ' · ') %>
-        </p>
-      </li>
-    <% end %>
-  </ul>
-  <p class="mt-3"><%= link_to t('.parties'), newfoundland_labrador_online_parties_path(locale: I18n.locale) %> ·
-     <%= link_to t('.districts'), newfoundland_labrador_online_districts_path(locale: I18n.locale) %></p>
+  <% @elections.group_by { |election| [election.jurisdiction, election.state] }.each do |(jurisdiction, state), elections| %>
+    <% code = province_code(elections.first) %>
+    <section id="elections-<%= jurisdiction %>-<%= code %>">
+      <% unless @province %>
+        <h2 class="h4 mt-3"><%= link_to "#{t(".titles.#{jurisdiction}")}: #{state.name}", newfoundland_labrador_online_scoped_elections_path(jurisdiction, code, locale: I18n.locale) %></h2>
+      <% end %>
+      <ul class="list-group" id="elections-list-<%= jurisdiction %>-<%= code %>">
+        <% elections.each do |election| %>
+          <li class="list-group-item" id="<%= dom_id(election) %>">
+            <h3 class="h5"><%= link_to t(".kinds.#{election.jurisdiction}", year: election.year), election_path_for(election) %>
+              <small class="text-muted"><%= l(election.held_on, format: :long) %></small></h3>
+            <p class="small mb-0">
+              <%= safe_join(@seat_counts.select { |(id, _), _| id == election.id }.sort_by { |_, n| -n }.map { |(_, name), n| "#{name} #{n}" }, ' · ') %>
+            </p>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+  <p class="mt-3"><%= link_to t('.parties'), province_index_path(:parties) %> ·
+     <%= link_to t('.districts'), province_index_path(:districts) %></p>
 </div>

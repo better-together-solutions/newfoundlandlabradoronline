@@ -27,6 +27,6 @@
       </div>
     </section>
   <% end %>
-  <p><%= link_to t('.elections'), newfoundland_labrador_online_elections_path(locale: I18n.locale) %> ·
-     <%= link_to t('.districts'), newfoundland_labrador_online_districts_path(locale: I18n.locale) %></p>
+  <p><%= link_to t('.elections'), province_index_path(:elections) %> ·
+     <%= link_to t('.districts'), province_index_path(:districts) %></p>
 </div>

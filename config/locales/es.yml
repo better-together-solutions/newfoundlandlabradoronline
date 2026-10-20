@@ -85,6 +85,17 @@ es:
     title: Mi Viaje
   newfoundland_labrador_online:
     districts:
+      directory:
+        count:
+          one: "%{count} distrito"
+          other: "%{count} distritos"
+        elections: Elecciones
+        intro: Distritos electorales por provincia, cada uno enlazado al listado y
+          mapa de su provincia.
+        parties: Partidos políticos
+        title: Distritos electorales
+        titles:
+          provincial: Distritos electorales provinciales
       index:
         elections: Elecciones
         intro: "%{count} distritos en vigor desde las elecciones de 2015."

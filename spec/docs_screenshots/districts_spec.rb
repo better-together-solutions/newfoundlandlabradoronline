@@ -30,7 +30,7 @@ RSpec.describe 'Documentation screenshots for electoral districts', :js, type: :
   end
 
   it 'captures the district index' do
-    visit "/#{locale}/e/districts/provincial"
+    visit "/#{locale}/e/districts/provincial/nl"
 
     callouts = [{ selector: '#listing-map-section', title: 'Districts coloured by party' },
                 { selector: '#districts-party-legend', title: 'Party legend with seat counts' },
@@ -69,8 +69,9 @@ RSpec.describe 'Documentation screenshots for electoral districts', :js, type: :
   it 'captures the elections index' do
     visit "/#{locale}/e/elections"
 
-    expect(captured('elections_index', [{ selector: '#elections-list', title: 'Elections with seats by party' }]))
-      .to all(be > 10_000)
+    callouts = [{ selector: '#elections-list-provincial-nl', title: 'Elections with seats by party' }]
+
+    expect(captured('elections_index', callouts)).to all(be > 10_000)
   end
 
   it 'captures an election page' do
@@ -78,5 +79,24 @@ RSpec.describe 'Documentation screenshots for electoral districts', :js, type: :
 
     expect(captured('election_show', [{ selector: '#election-name', title: 'Election and its contests' }]))
       .to all(be > 10_000)
+  end
+
+  it 'captures the districts directory' do
+    visit "/#{locale}/e/districts"
+
+    expect(captured('districts_directory', [{ selector: '#districts-list-provincial-nl', title: 'Province listing' }]))
+      .to all(be > 10_000)
+  end
+
+  it 'captures the states index' do
+    visit "/#{locale}/g/states"
+
+    expect(captured('states_index', [{ selector: 'body', title: 'States' }])).to all(be > 10_000)
+  end
+
+  it 'captures the province page' do
+    visit "/#{locale}/g/provinces/nl"
+
+    expect(captured('province_show', [{ selector: '#stateTabs', title: 'Province data tabs' }])).to all(be > 10_000)
   end
 end

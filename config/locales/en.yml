@@ -85,6 +85,17 @@ en:
     title: My Journey
   newfoundland_labrador_online:
     districts:
+      directory:
+        count:
+          one: "%{count} district"
+          other: "%{count} districts"
+        elections: Elections
+        intro: Electoral districts by province, each linking to that province's full
+          listing and map.
+        parties: Political parties
+        title: Electoral districts
+        titles:
+          provincial: Provincial electoral districts
       index:
         elections: Elections
         intro: "%{count} districts in force since the 2015 election."
