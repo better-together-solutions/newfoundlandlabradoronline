@@ -16,6 +16,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Allow Chromium's sandbox on the runner
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
       - name: Verify every diagram source renders and has committed exports
         run: |
           ./bin/render_diagrams --force
