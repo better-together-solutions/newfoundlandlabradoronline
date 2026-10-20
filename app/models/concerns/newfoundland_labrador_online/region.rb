@@ -14,6 +14,8 @@ module NewfoundlandLabradorOnline
                           inverse_of: :region, dependent: :destroy
       has_many :elected_terms, class_name: 'NewfoundlandLabradorOnline::ElectedTerm', foreign_key: :region_id,
                                inverse_of: :region, dependent: :destroy
+
+      include NewfoundlandLabradorOnline::PrivatePrimaryCommunity
     end
 
     class_methods do

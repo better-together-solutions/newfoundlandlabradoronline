@@ -13,4 +13,12 @@ RSpec.describe NewfoundlandLabradorOnline::Person do
 
     expect(person.community.privacy).to eq('private')
   end
+
+  it 'sets a community made public again back to private on the next save' do
+    person = BetterTogether::Person.create!(identifier: 'nl-mha-test-person', name: 'Test Person', locale: 'en')
+    person.community.update_columns(privacy: 'public')
+    person.update!(name: 'Renamed Person')
+
+    expect(person.community.reload.privacy).to eq('private')
+  end
 end
