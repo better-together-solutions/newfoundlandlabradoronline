@@ -14,6 +14,9 @@ Diagram: `docs/diagrams/source/nlo_civic_roles_model.mmd`.
 - Departments are Community subtypes. Community subtypes that need attributes get an associated detail record.
 - A constituency office belongs to mandates and is shared by consecutive mandates of the same holder and seat.
 - Electoral systems are modelled, parties are optional on elections, and coalition governments are supported minimally.
+- A child community may not be more public than its parent unless the association is `open`.
+- Organisations can be members of other organisations and sit on their boards through representatives (the NLFC case).
+- Communities have governing instruments (bylaws, acts) whose rules the system can consult.
 - Built in NLO first; CE backport list at the end.
 
 ## Principles
@@ -55,10 +58,10 @@ local midnight and shown as dates. Active status and the permission cache derive
 |---|---|
 | `membership_id` (FK, unique) | The holding |
 | `kind` | `elected`, `acclaimed`, `appointed`, `ex_officio` |
-| `seat_type`, `seat_id` (polymorphic, null) | A district, a department, a board seat, or none |
+| `seat_type`, `seat_id` (polymorphic, null) | A district, a department, a `CommunitySeat` (board seat, representing seat), or none |
 | `conferred_by_type`, `conferred_by_id` (polymorphic, null) | A `Candidacy` for an election; an appointment record or board vote otherwise |
 | `title` (null) | Free title, e.g. "Minister of Health and Community Services" |
-| `end_reason` (null) | `defeated`, `retired`, `resigned`, `died`, `term_ended`, `shuffled`, `dissolved` |
+| `end_reason` (null) | `defeated`, `retired`, `resigned`, `died`, `term_ended`, `shuffled`, `dissolved`, `replaced_by_member` |
 
 ### Community subtypes and their detail records
 
@@ -70,11 +73,12 @@ Each subtype is an STI class plus an optional detail record (`belongs_to :commun
 | `PartyCommunity` | `PartyDetail` | linked `PoliticalParty`, jurisdiction level |
 | `ExecutiveCommunity` (cabinet or ministry) | `ExecutiveDetail` | the `LegislativeSession`, `formed_on`, `ended_on`, head role (premier, mayor); parties via associations |
 | `DepartmentCommunity` | `DepartmentDetail` | parent department, `predecessor_id` (renames and mergers), mandate text |
-| `BoardCommunity`, `CommitteeCommunity` | `BoardDetail`, `CommitteeDetail` (later) | size, term length, electoral system, parent body |
+| `OrganizationCommunity` (co-op, federation, non-profit) | `OrganizationDetail` (later) | legal form, registry number, incorporated on, governing act |
+| `BoardCommunity`, `CommitteeCommunity` | `BoardDetail`, `CommitteeDetail` (later) | size, parent body; term length and electoral system come from governing rules |
 
 Generic role identifiers, so the community says which body: `legislature_member`, `legislature_speaker`,
 `legislature_deputy_speaker`, `official_opposition_leader`, `executive_head` (premier), `executive_member` (minister),
-`party_member`, `party_leader`, `department_head`, `director`, `chair`, `treasurer`.
+`party_member`, `party_leader`, `department_head`, `director`, `chair`, `treasurer`, `organisation_member`.
 
 ### Community associations (core design expansion)
 
@@ -87,8 +91,8 @@ hierarchy and peer links are needed, and they carry rules about who may join. On
 |---|---|
 | `source_community_id`, `target_community_id` (FK) | Direction follows the relation: for a hierarchy, source is the parent |
 | `relation` | Identifier from a code registry (below), e.g. `committee_of`, `drawn_from`, `governing_party`, `administers`, `affiliate` |
-| `kind` | `hierarchy` (parent to child) or `peer`; derived from the relation, stored for querying |
-| `role` (null) | Qualifier such as `lead`, `partner`, `supply_and_confidence` |
+| `kind` | `hierarchy` (parent to child), `peer`, or `membership` (an organisation belongs to another); derived from the relation, stored for querying |
+| `role` (null) | Qualifier such as `lead`, `partner`, `supply_and_confidence`, or a membership class (`full`, `associate`, `affiliate`) |
 | `participation` | Who may join the child side: `members_only`, `members_and_invited`, `open`, or `none` (informational link) |
 | `eligibility_group` (null) | Associations in one group are alternatives (any of); different groups must all be met |
 | `cascade_end` (bool) | Ending the person's membership in the associated community ends their membership here |
@@ -125,8 +129,81 @@ How the electoral design uses it:
 | Party caucus | `caucus_of` the party, `members_only` | Party members who are MHAs |
 | Coalition partners | `coalition_partner` peer link between parties, symmetric, time-boxed, `none` | Shown on both party pages |
 
-Interest groups participate through their representatives (Persons). A group acting as a member in its own right (an
-organisation community joining a committee) is a later extension of the same association.
+An organisation acting as a member in its own right, with people representing it, is covered in the next section.
+
+### Organisations as members, with representatives (the NLFC case)
+
+The Newfoundland and Labrador Federation of Co-operatives (NLFC) is a membership organisation whose members are co-ops
+and associated organisations. A co-op elects a representative to the NLFC board on its behalf, for a bylaw-set term.
+Modelled as:
+
+- **Organisation membership** is a `member_of` association (kind `membership`, role `full` or `associate`, time-boxed)
+  from the member community to the federation. It is not a Person membership, so it never confers personal permissions.
+  Joining still follows the federation's own access mode.
+- **Seats** are `CommunitySeat` records (`community_id` = the body, `name`, `kind`, `represents_community_id` null,
+  `position`). Kinds: `at_large`, `representing` (held on behalf of a member organisation), `officer`, `ex_officio`. A
+  `MembershipMandate.seat` points at one, as it does at a district. The representing seat says whom the holder speaks for.
+- **Representatives** are ordinary Person memberships in the federation's board community (role `director`), each with
+  a mandate: `kind` `elected`, `seat` = the representing seat, `conferred_by` = the candidacy in the federation's
+  election. The system requires the person to hold a current membership in the represented organisation (the same
+  eligibility check as `members_only`, applied through the seat).
+- **Nomination** by the member organisation is recorded as the candidacy's `nominated_by_community_id`. The electorate of
+  the federation election is the member organisations: `Election.electorate` is `persons` or `member_communities`, and
+  results are stored per candidacy as for any election.
+- **Terms** come from the federation's bylaws (a `term_length` rule, here three years), so the mandate's end defaults to
+  start plus the rule. A second consecutive term is a new membership and mandate; display groups them, and a
+  `term_limit` rule, if the bylaws set one, is checked when the next mandate is created.
+- **Replacing a representative** mid-term ends the mandate (`end_reason: replaced_by_member`) and starts a new one in the
+  same seat; the seat and the represented organisation stay constant.
+
+Example: a director sits on the federation board for a co-op. Records: the co-op's `member_of` association to the
+federation; a representing seat for that co-op; the person's co-op membership; their board membership with a mandate
+(elected, that seat, the AGM candidacy, three-year term); their second term is a second membership and mandate.
+
+The same shape covers ministers representing departments, union delegates on a committee, and party delegates.
+
+### Governing instruments and rules (bylaws and laws)
+
+Every body has rules that decide terms, quorums and who may vote. Two layers, so provenance is kept and the system can
+still consult values:
+
+`GoverningInstrument` (`governing_instruments`), the document:
+
+| Column | Purpose |
+|---|---|
+| `community_id` (FK, null) | The body it governs (a co-op for its bylaws, a legislature for its standing orders); null for statutes with no single body |
+| `kind` | `bylaw`, `constitution`, `act`, `regulation`, `policy`, `terms_of_reference` |
+| `title`, `citation` | e.g. "Co-operatives Act, SNL 2009 c. C-35.2" (citation to be verified at load) |
+| `jurisdiction_type`, `jurisdiction_id` (polymorphic) | The state, country or municipality whose law it is, for acts and regulations |
+| `enacted_by_community_id` (FK, null) | The legislature or the body that adopted it |
+| `authorized_by_id` (FK to instrument, null) | The higher instrument that gives it force (a bylaw under an Act; a regulation under an Act) |
+| `source_url`, `licence`, document attachment | Provenance, in the same style as region data sources |
+| `privacy` | Laws are public; a body's bylaws follow its community privacy |
+
+`InstrumentVersion` (`instrument_versions`): `instrument_id`, `version_label`, `adopted_on`, `in_force_from`,
+`in_force_to`, `supersedes_id`, text or attachment, `change_summary`. Amendments are new versions, so the rule in force on
+a date can always be found, the same approach as `RegionVersion`.
+
+`GoverningRule` (`governing_rules`), a structured value with its clause:
+
+| Column | Purpose |
+|---|---|
+| `instrument_version_id` (FK) | Where the rule comes from |
+| `subject_type`, `subject_id` (polymorphic, null) | A community, a seat, or an election it applies to; null means the whole body |
+| `rule_type` | From a registry: `term_length`, `term_limit`, `board_size`, `quorum`, `voting_threshold`, `electorate`, `electoral_system`, `eligibility`, `notice_period`, `fiscal_year_end` |
+| `params` (jsonb) | Values, e.g. `{ "years": 3 }` or `{ "consecutive_max": 2 }` |
+| `clause` | Citation inside the instrument, e.g. "By-law 4.2" |
+| `in_force_from`, `in_force_to` | Window, normally inherited from the version |
+
+Rules are entered by people with a clause citation, never inferred by software. Code asks `GoverningRule.for(subject,
+:term_length, on: date)`: a mandate's default end date, an election's default electoral system and electorate, a seat's
+eligibility and a committee's participation all read from rules when one exists and fall back to explicit values when not.
+Authority forms a chain (Act to bylaw, Act to regulation), shown as "authorized by" on the instrument page, and a bylaw
+that conflicts with its authorizing Act is flagged for review, not silently resolved.
+
+Where rules come from: a co-op's bylaws are adopted by its members (an `adopted` vote or resolution is the instrument's
+`enacted_by`), municipal bylaws by the council, provincial acts by the House of Assembly, federal acts by Parliament.
+Statutes can be ingested later from the official sources with their licences recorded.
 
 ### Legislature sessions and governments
 
@@ -200,21 +277,27 @@ Same shape as other `/e` kinds, plus the new bodies:
 ## Phases (a review gate after each)
 
 1. Foundation, simplified (this is the next build): membership dates and index swap, `MembershipMandate`, quiet
-   notifications, the community subtypes (legislature, party, executive, department, committee) with a
-   `LegislatureDetail` only, generic roles, and community associations with the eligibility rule. Specs, no UI.
-2. Elections reference model: electoral systems, election community and kind, contest seats, nullable party, sessions.
-3. Backfill `ElectedTerm`/`PartyMembership` into memberships and mandates, with parity report and constituency offices.
-4. Member pages and directory (DOM contracts, screenshots, diagrams).
-5. Cabinet and departments: executive communities, governing-party associations, ministers and portfolio history from
+   notifications, the community subtypes (legislature, party, executive, department, committee, organisation) with a
+   `LegislatureDetail` only, generic roles, `CommunitySeat`, and community associations (hierarchy, peer and
+   membership kinds) with the eligibility rule. Specs, no UI.
+2. Governing instruments and rules: instruments, versions, the rule registry and `GoverningRule.for`, wired to mandate
+   term lengths. Specs, no UI.
+3. Elections reference model: electoral systems, electorate, election community and kind, contest seats, nullable party,
+   nominations by organisations, sessions.
+4. Backfill `ElectedTerm`/`PartyMembership` into memberships and mandates, with parity report and constituency offices.
+5. Member pages and directory (DOM contracts, screenshots, diagrams).
+6. Cabinet and departments: executive communities, governing-party associations, ministers and portfolio history from
    the Assembly pages, government and department views, committees.
-6. By-elections, resignations, exact dates, photos and contact details; production rollout with a snapshot before the
+7. By-elections, resignations, exact dates, photos and contact details; production rollout with a snapshot before the
    first data-model deploy of this series.
 
 ## Risks and checks
 
 - Associations are new core behaviour: keep the eligibility rule additive to CE's access modes, and spec every
   participation mode, the any-of and all-of groups, cycle rejection and `cascade_end`.
-- A child may not be more public than its parent unless `participation` is `open` (proposed, to confirm).
+- Representation checks (the holder belongs to the represented organisation) and term-limit rules must fail closed with a
+  clear message, and be bypassable only by an explicit, logged override.
+- Rules are only as good as their entry: every rule needs a clause citation, and rule values are reviewed by a person.
 - The index swap changes a CE table from the host app: idempotent, reversible, first backport item.
 - `Joinable#default_member_role` looks up `resource_type: self.class.name`; Community subtypes need roles whose
   `resource_type` matches or an override. Check against the `belongs_to :role` scoping.
@@ -235,5 +318,8 @@ Same shape as other `/e` kinds, plus the new bodies:
 4. A generic `Mandate` detail record (seat, conferred by, kind, title, end reason).
 5. A convention for Community subtypes with detail records and the `default_member_role` lookup.
 6. Public membership and office-holder views on Person and Community.
-7. Elections generalised to any Community: electoral systems, contest seats, optional parties, sessions.
+7. Elections generalised to any Community: electoral systems, electorate (persons or member communities), contest
+   seats, optional parties, nominations by organisations, sessions.
+7a. `CommunitySeat` and organisation membership (`member_of`) with representatives.
+7b. `GoverningInstrument`, `InstrumentVersion` and `GoverningRule`, the rule registry and `GoverningRule.for`.
 8. Governments and executives (ministries as associations to parties) and departments, if reused beyond NLO.

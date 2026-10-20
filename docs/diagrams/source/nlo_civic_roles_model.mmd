@@ -17,6 +17,13 @@ erDiagram
   LEGISLATIVE_SESSION ||--o{ EXECUTIVE_DETAIL : "ministries"
   COMMUNITY ||--o{ COMMUNITY_ASSOCIATION : "source (parent)"
   COMMUNITY ||--o{ COMMUNITY_ASSOCIATION : "target (child or peer)"
+  COMMUNITY ||--o{ COMMUNITY_SEAT : "has seats"
+  COMMUNITY_SEAT }o--o| COMMUNITY : "represents"
+  MEMBERSHIP_MANDATE }o--o| COMMUNITY_SEAT : "holds"
+  COMMUNITY ||--o{ GOVERNING_INSTRUMENT : "governed by"
+  GOVERNING_INSTRUMENT ||--o{ INSTRUMENT_VERSION : amended
+  GOVERNING_INSTRUMENT }o--o| GOVERNING_INSTRUMENT : "authorized by"
+  INSTRUMENT_VERSION ||--o{ GOVERNING_RULE : states
   ELECTORAL_SYSTEM ||--o{ ELECTION : rules
   COMMUNITY ||--o{ ELECTION : "body elected"
   ELECTION ||--o{ ELECTORAL_CONTEST : has
@@ -45,6 +52,23 @@ erDiagram
     bool cascade_end
     date starts_on
     date ends_on
+  }
+  COMMUNITY_SEAT {
+    string name
+    string kind
+  }
+  GOVERNING_RULE {
+    string rule_type
+    jsonb params
+    string clause
+  }
+  INSTRUMENT_VERSION {
+    date in_force_from
+    date in_force_to
+  }
+  GOVERNING_INSTRUMENT {
+    string kind
+    string citation
   }
   ELECTORAL_SYSTEM {
     string identifier
