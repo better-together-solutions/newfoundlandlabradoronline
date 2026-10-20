@@ -1,6 +1,6 @@
 # Civic roles on CE memberships: design (NLO first)
 
-Status: DRAFT for review, nothing built. Scope: model people's roles in organisations as time-boxed memberships, first for
+Status: DRAFT. Phase 1 (foundation) built, see docs/civic-roles.md; later phases not built. Scope: model people's roles in organisations as time-boxed memberships, first for
 the House of Assembly, its parties and the cabinet, shaped so councils, boards, committees and departments reuse it.
 Diagram: `docs/diagrams/source/nlo_civic_roles_model.mmd`.
 

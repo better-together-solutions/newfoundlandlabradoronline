@@ -1,6 +1,6 @@
 # Civic roles, phase 1 build plan: foundation
 
-Status: PLAN for review, nothing built. Parent design: `docs/civic-roles-membership-design.md`. Goal: re-orient the model so
+Status: BUILT (phase 1 foundation), see docs/civic-roles.md. Parent design: `docs/civic-roles-membership-design.md`. Goal: re-orient the model so
 memberships are time-boxed, communities have subtypes and associations, and mandates and seats exist. No UI, no data
 loaded, no production deploy.
 

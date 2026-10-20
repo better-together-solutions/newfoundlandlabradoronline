@@ -10,6 +10,7 @@ ActiveSupport::Reloader.to_prepare do
   require_dependency 'better_together/geography/state'
   require_dependency 'better_together/geography/state_policy'
   require_dependency 'better_together/person'
+  require_dependency 'better_together/person_community_membership'
 
   BetterTogether::Post.include(NewfoundlandLabradorOnline::Post)
   # Regions: versioned boundaries and external identifiers (the typed subclasses live in app/models).
@@ -19,6 +20,9 @@ ActiveSupport::Reloader.to_prepare do
   BetterTogether::Geography::StatePolicy.prepend(NewfoundlandLabradorOnline::StatePolicy)
   # Elected members: a person's terms in district seats.
   BetterTogether::Person.include(NewfoundlandLabradorOnline::Person)
+  # Civic roles: time-boxed memberships and community associations (see docs/civic-roles-membership-design.md).
+  BetterTogether::PersonCommunityMembership.prepend(NewfoundlandLabradorOnline::MembershipTimeBox)
+  BetterTogether::Community.include(NewfoundlandLabradorOnline::Associable)
   # Locations: every record in LocatableModels gets the shared location interface.
   NewfoundlandLabradorOnline::LocatableModels.wire!
   BetterTogether::Content::VideoBlock.include(NewfoundlandLabradorOnline::VideoBlock)
