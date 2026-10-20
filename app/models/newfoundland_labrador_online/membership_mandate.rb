@@ -5,8 +5,9 @@ module NewfoundlandLabradorOnline
   # it ended. Dates live on the membership.
   class MembershipMandate < BetterTogether::ApplicationRecord
     self.table_name = 'membership_mandates'
-    KINDS = %w[elected acclaimed appointed ex_officio].freeze
-    END_REASONS = %w[defeated retired resigned died term_ended shuffled dissolved replaced_by_member].freeze
+    KINDS = %w[elected acclaimed appointed ex_officio member].freeze
+    END_REASONS = %w[defeated retired resigned died term_ended shuffled dissolved replaced_by_member
+                     floor_crossing].freeze
 
     belongs_to :membership, class_name: 'BetterTogether::PersonCommunityMembership', inverse_of: :mandate
     belongs_to :seat, polymorphic: true, optional: true
@@ -15,6 +16,7 @@ module NewfoundlandLabradorOnline
     validates :kind, inclusion: { in: KINDS }
     validates :end_reason, inclusion: { in: END_REASONS }, allow_nil: true
     validates :membership_id, uniqueness: true
+    validates :conferred_by_id, uniqueness: { scope: :conferred_by_type }, allow_nil: true
     validate :representative_belongs_to_represented_community
 
     private

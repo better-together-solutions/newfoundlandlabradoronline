@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_21_030000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_21_050000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -2724,6 +2724,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_21_030000) do
     t.uuid "conferred_by_id"
     t.string "title"
     t.string "end_reason", limit: 50
+    t.string "source_url"
+    t.string "start_reason", limit: 50
+    t.index ["conferred_by_type", "conferred_by_id"], name: "index_membership_mandates_on_candidacy", unique: true, where: "(conferred_by_id IS NOT NULL)"
     t.index ["conferred_by_type", "conferred_by_id"], name: "index_membership_mandates_on_conferred_by"
     t.index ["membership_id"], name: "index_membership_mandates_on_membership_id", unique: true
     t.index ["seat_type", "seat_id"], name: "index_membership_mandates_on_seat"
@@ -2841,6 +2844,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_21_030000) do
     t.string "logo_license"
     t.boolean "logo_non_free"
     t.uuid "state_id"
+    t.uuid "community_id"
+    t.index ["community_id"], name: "index_political_parties_on_community_id", unique: true
     t.index ["jurisdiction", "state_id", "identifier"], name: "index_political_parties_on_jurisdiction_state_identifier", unique: true, nulls_not_distinct: true
     t.index ["state_id"], name: "index_political_parties_on_state_id"
   end
@@ -3180,6 +3185,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_21_030000) do
   add_foreign_key "noticed_notifications", "better_together_platforms", column: "platform_id"
   add_foreign_key "party_memberships", "better_together_people", column: "person_id"
   add_foreign_key "party_memberships", "political_parties"
+  add_foreign_key "political_parties", "better_together_communities", column: "community_id"
   add_foreign_key "political_parties", "better_together_geography_states", column: "state_id"
   add_foreign_key "region_identifiers", "better_together_geography_regions", column: "region_id"
   add_foreign_key "region_versions", "better_together_geography_regions", column: "region_id"
