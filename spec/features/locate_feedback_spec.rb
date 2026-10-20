@@ -26,14 +26,14 @@ RSpec.describe 'Locate me feedback', :js, type: :feature do
   end
 
   # rubocop:disable-next RSpec/ExampleLength
-  it 'spins a globe while locating, then confirms and zooms in', :aggregate_failures do
+  it 'spins a globe while locating, then confirms', :aggregate_failures do
     visit "/#{I18n.default_locale}/e/districts/provincial/nl/nl-ped-corner-brook"
     stub_geolocation
     find('[data-geolocation-button]').click
 
     expect(page).to have_css('[data-geolocation-button] i.fa-spin')
     page.execute_script('window.resolveLocate()')
-    expect(page).to have_css('[data-geolocation-button] i.fa-check')
+    expect(page).to have_css('[data-geolocation-button] i.fa-circle-check')
     expect(page).to have_css('[data-geolocation-button].btn-success')
   end
 end

@@ -22,7 +22,7 @@
       <% overlay = [{ geometry: located_map.boundary, color: party&.display_color || NewfoundlandLabradorOnline::PoliticalParty::FALLBACK_COLOR,
                       popup: ERB::Util.html_escape(@district.name) }] %>
       <%= render 'better_together/shared/map', map: located_map, types: [], boundary: nil, cluster: false,
-                 extra_controllers: %w[party-overlay locate-feedback], attributes: { 'data-party-overlay-overlays-value' => overlay.to_json } %>
+                 extra_controllers: %w[party-overlay], attributes: { 'data-party-overlay-overlays-value' => overlay.to_json } %>
     </section>
   <% end %>
 

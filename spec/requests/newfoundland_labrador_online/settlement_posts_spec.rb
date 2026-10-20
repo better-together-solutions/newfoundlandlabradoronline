@@ -92,7 +92,7 @@ RSpec.describe 'Settlement posts' do
 
       get "/#{locale}/g/settlements/#{settlement.slug}"
 
-      expect(response.body).to include('data-controller="better_together--map locate-feedback"')
+      expect(response.body).to include('data-controller="better_together--map"')
     end
   end
 

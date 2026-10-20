@@ -9,9 +9,9 @@ gem 'asset_sync'
 gem 'aws-sdk-s3', require: false
 
 # Use the published version of better_together for production
-gem 'better_together', '~> 0.10',
+gem 'better_together', '~> 0.11.0',
     github: 'better-together-org/community-engine-rails',
-    ref: '929bb51a9492355c51f21e07857712b4df94d5b0'
+    ref: '1b1c9fc9e62a8aeca5972fdd6fb52c6dd5a17e8a'
 
 # Use the local development version of better_together
 # gem 'better_together', path: '/community-engine'
