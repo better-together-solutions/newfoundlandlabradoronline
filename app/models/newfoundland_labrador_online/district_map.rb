@@ -18,6 +18,10 @@ module NewfoundlandLabradorOnline
       []
     end
 
+    def layers
+      BetterTogether::Geography::MapLayer.resolve(:nl_electoral_boundaries)
+    end
+
     def spaces
       []
     end

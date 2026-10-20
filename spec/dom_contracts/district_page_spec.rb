@@ -124,6 +124,26 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
     page_ids.each { |id| expect(response.body).to include(%(id="#{id}")) }
   end
 
+  context 'with the boundary data credit' do
+    def layer_keys
+      raw = response.body[/data-better_together--map-layers-value="([^"]*)"/, 1]
+      raw && JSON.parse(CGI.unescapeHTML(raw)).pluck('key')
+    end
+
+    it 'credits the boundary authority on the district map', :aggregate_failures do
+      get "/#{locale}/e/districts/provincial/nl/nl-ped-corner-brook"
+
+      expect(layer_keys).to eq(['nl_electoral_boundaries'])
+      expect(CGI.unescapeHTML(response.body)).to include('Electoral Boundaries Commission')
+    end
+
+    it 'credits it on the districts listing map' do
+      get "/#{locale}/e/districts/provincial/nl"
+
+      expect(layer_keys).to eq(['nl_electoral_boundaries'])
+    end
+  end
+
   it 'draws the current boundary on the map' do
     get "/#{locale}/e/districts/provincial/nl/nl-ped-corner-brook"
 
