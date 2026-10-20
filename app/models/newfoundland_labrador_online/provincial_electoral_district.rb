@@ -9,6 +9,7 @@ module NewfoundlandLabradorOnline
     IDENTIFIER_PREFIX = 'nl-ped-'
 
     attachable_cover_image
+    include NewfoundlandLabradorOnline::DefaultCoverImage
 
     def self.identifier_for_name(name)
       "#{IDENTIFIER_PREFIX}#{name.parameterize}"

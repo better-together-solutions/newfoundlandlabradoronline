@@ -30,6 +30,42 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
     BetterTogether::Geography::GeospatialSpace.create!(geospatial: settlement, space:)
   end
 
+  def attach_generated_cover(name)
+    district = NewfoundlandLabradorOnline::ProvincialElectoralDistrict.find_by!(identifier: "nl-ped-#{name}")
+    jpeg = Vips::Image.black(40, 24).write_to_buffer('.jpg')
+    NewfoundlandLabradorOnline::Geography::DistrictCover.call(region: district, io: StringIO.new(jpeg),
+                                                              filename: "nl-ped-#{name}.jpg")
+  end
+
+  # rubocop:disable-next RSpec/ExampleLength
+  it 'keeps the generated map off the page while the interactive map shows, but on the card', :aggregate_failures do
+    attach_generated_cover('corner-brook')
+
+    get "/#{locale}/e/districts/provincial/nl/nl-ped-corner-brook"
+    expect(response.body).to include('id="district-map-section"')
+    expect(response.body).not_to include('id="district-cover"')
+
+    get "/#{locale}/e/districts/provincial/nl"
+    expect(response.body).to match(%r{<img[^>]*card-img-top[^>]*alt="Corner Brook"[^>]*rails/active_storage})
+  end
+
+  it 'shows an uploaded cover above the title', :aggregate_failures do
+    district = NewfoundlandLabradorOnline::ProvincialElectoralDistrict.find_by!(identifier: 'nl-ped-corner-brook')
+    jpeg = Vips::Image.black(40, 24).write_to_buffer('.jpg')
+    district.cover_image.attach(io: StringIO.new(jpeg), filename: 'custom.jpg', content_type: 'image/jpeg')
+
+    get "/#{locale}/e/districts/provincial/nl/nl-ped-corner-brook"
+    expect(response.body).to include('id="district-cover"', 'cover-image')
+  end
+
+  it 'has no cover area without a cover, and cards fall back to the default image', :aggregate_failures do
+    get "/#{locale}/e/districts/provincial/nl/nl-ped-corner-brook"
+    expect(response.body).not_to include('id="district-cover"')
+
+    get "/#{locale}/e/districts/provincial/nl"
+    expect(response.body).to include('card-img-top')
+  end
+
   it 'exposes the index identifiers', :aggregate_failures do
     get "/#{locale}/e/districts/provincial/nl"
 
@@ -86,6 +122,26 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
 
     expect(response).to have_http_status(:ok)
     page_ids.each { |id| expect(response.body).to include(%(id="#{id}")) }
+  end
+
+  context 'with the boundary data credit' do
+    def layer_keys
+      raw = response.body[/data-better_together--map-layers-value="([^"]*)"/, 1]
+      raw && JSON.parse(CGI.unescapeHTML(raw)).pluck('key')
+    end
+
+    it 'credits the boundary authority on the district map', :aggregate_failures do
+      get "/#{locale}/e/districts/provincial/nl/nl-ped-corner-brook"
+
+      expect(layer_keys).to eq(['nl_electoral_boundaries'])
+      expect(CGI.unescapeHTML(response.body)).to include('Electoral Boundaries Commission')
+    end
+
+    it 'credits it on the districts listing map' do
+      get "/#{locale}/e/districts/provincial/nl"
+
+      expect(layer_keys).to eq(['nl_electoral_boundaries'])
+    end
   end
 
   it 'draws the current boundary on the map' do

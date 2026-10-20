@@ -8,7 +8,8 @@
       <div class="card-body">
         <h2 class="h6 card-title"><%= district_link(contest.region) %>
           <% if contest.turnout %><small class="text-muted"><%= t('newfoundland_labrador_online.districts.show.turnout', value: contest.turnout) %></small><% end %></h2>
-        <table class="table table-sm mb-0">
+        <div class="table-responsive">
+<table class="table table-sm mb-0">
           <tbody>
             <% contest.candidacies.each do |candidacy| %>
               <tr id="<%= dom_id(candidacy) %>" class="<%= 'fw-bold' if candidacy.elected %>">
@@ -21,6 +22,7 @@
             <% end %>
           </tbody>
         </table>
+        </div>
       </div>
     </section>
   <% end %>

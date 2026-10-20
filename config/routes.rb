@@ -33,6 +33,9 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
       get 'districts/provincial/:province/:id', to: "#{districts}#show", as: :newfoundland_labrador_online_district,
                                                 constraints: province
 
+      get 'members/provincial/:province', to: 'newfoundland_labrador_online/legislatures#show',
+                                          as: :newfoundland_labrador_online_legislature, constraints: province
+
       parties = 'newfoundland_labrador_online/parties'
       get 'parties', to: "#{parties}#index", as: :newfoundland_labrador_online_parties
       get 'parties/:jurisdiction', to: "#{parties}#index", as: :newfoundland_labrador_online_jurisdiction_parties,
@@ -57,6 +60,12 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
 
     get 'locations/available', to: 'newfoundland_labrador_online/locations#available',
                                as: :newfoundland_labrador_online_available_locations
+  end
+
+  scope path: BetterTogether.route_scope_path do
+    scope 'api', defaults: { format: :json } do
+      put 'v1/geography_regions/:id/generated_cover', to: 'newfoundland_labrador_online/api/v1/district_covers#update'
+    end
   end
 
   root to: redirect("/#{I18n.default_locale}")

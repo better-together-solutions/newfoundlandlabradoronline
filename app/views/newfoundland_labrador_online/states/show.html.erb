@@ -1,22 +1,11 @@
 <% province = @state.province? %>
 <% code = NewfoundlandLabradorOnline::Province.code_for(@state) if province %>
 <% tabs = province ? %w[districts parties elections regions settlements] : %w[regions settlements] %>
-<% districts = @districts %>
-<% parties = @parties %>
-<% elections = @elections %>
-<div class="container" id="state-page">
-  <div class="card">
-    <div class="card-body">
-      <h3 class="card-title mb-3"><%= @state.name %></h3>
-      <dl class="row mb-0">
-        <dt class="col-md-3">Identifier</dt><dd class="col-md-9"><%= @state.identifier %></dd>
-        <dt class="col-md-3">ISO Code</dt><dd class="col-md-9"><%= @state.iso_code %></dd>
-        <dt class="col-md-3">Description</dt><dd class="col-md-9"><%= @state.description %></dd>
-        <dt class="col-md-3">Slug</dt><dd class="col-md-9"><%= @state.slug %></dd>
-        <dt class="col-md-3">Protected</dt><dd class="col-md-9"><%= @state.protected ? 'Yes' : 'No' %></dd>
-      </dl>
-    </div>
-  </div>
+<div class="container py-4" id="state-page">
+  <h1 id="state-name"><%= @state.name %></h1>
+  <% if @state.description.present? %>
+    <p class="lead text-muted" id="state-description"><%= @state.description %></p>
+  <% end %>
 
   <div class="mt-3">
     <ul class="nav nav-tabs" id="stateTabs" role="tablist">
@@ -29,44 +18,50 @@
     <div class="tab-content mt-3" id="stateTabsContent">
       <% if province %>
       <div class="tab-pane fade show active" id="districts" role="tabpanel" aria-labelledby="districts-tab">
-        <p><%= link_to t('newfoundland_labrador_online.states.show.all_districts'), newfoundland_labrador_online_scoped_districts_path(code, locale: I18n.locale) %></p>
-        <ul id="province-districts">
-          <% districts.each do |district| %>
-            <li><%= link_to district.name, newfoundland_labrador_online_district_path(code, district, locale: I18n.locale) %></li>
+        <p>
+          <%= link_to t('newfoundland_labrador_online.states.show.all_districts'), newfoundland_labrador_online_scoped_districts_path(code, locale: I18n.locale) %>
+          <% if NewfoundlandLabradorOnline::Civic::Provisioner.new.legislature_for(@state) %>
+            <span id="province-legislature-link"> · <%= link_to t('newfoundland_labrador_online.states.show.all_legislature'), newfoundland_labrador_online_legislature_path(code, locale: I18n.locale) %></span>
           <% end %>
-        </ul>
+        </p>
+        <div class="row" id="province-districts">
+          <% @districts.each do |district| %>
+            <%= render 'newfoundland_labrador_online/districts/card', district:, term: @current_terms[district.id] %>
+          <% end %>
+        </div>
       </div>
       <div class="tab-pane fade" id="parties" role="tabpanel" aria-labelledby="parties-tab">
         <p><%= link_to t('newfoundland_labrador_online.states.show.all_parties'), newfoundland_labrador_online_scoped_parties_path('provincial', code, locale: I18n.locale) %></p>
-        <ul id="province-parties">
-          <% parties.each do |party| %>
-            <li><%= link_to party.name, newfoundland_labrador_online_party_path(party.jurisdiction, code, party.identifier, locale: I18n.locale) %></li>
+        <div class="row" id="province-parties">
+          <% @parties.each do |party| %>
+            <%= render 'newfoundland_labrador_online/parties/card', party:, seats: @seats.fetch(party.id, 0) %>
           <% end %>
-        </ul>
+        </div>
       </div>
       <div class="tab-pane fade" id="elections" role="tabpanel" aria-labelledby="elections-tab">
         <p><%= link_to t('newfoundland_labrador_online.states.show.all_elections'), newfoundland_labrador_online_scoped_elections_path('provincial', code, locale: I18n.locale) %></p>
-        <ul id="province-elections">
-          <% elections.each do |election| %>
-            <li><%= link_to t("newfoundland_labrador_online.elections.index.kinds.#{election.jurisdiction}", year: election.year), newfoundland_labrador_online_election_path(election.jurisdiction, code, election.year, locale: I18n.locale) %>
-              <small class="text-muted"><%= l(election.held_on, format: :long) %></small></li>
+        <ul class="list-group" id="province-elections">
+          <% @elections.each do |election| %>
+            <%= render 'newfoundland_labrador_online/elections/item', election:, seat_counts: @seat_counts %>
           <% end %>
         </ul>
       </div>
       <% end %>
       <div class="tab-pane fade <%= 'show active' unless province %>" id="regions" role="tabpanel" aria-labelledby="regions-tab">
-        <ul>
-          <% @state.regions.where.not(type: 'NewfoundlandLabradorOnline::ProvincialElectoralDistrict').each do |region| %>
-            <li><%= link_to region.name, geography_region_path(region, locale: I18n.locale) %></li>
+        <div class="row" id="state-regions">
+          <% @regions.each do |region| %>
+            <%= render 'better_together/shared/card', entity: region, link_target: geography_region_path(region, locale: I18n.locale),
+                       col_classes: 'col-12 col-md-6 col-xl-4' %>
           <% end %>
-        </ul>
+        </div>
       </div>
       <div class="tab-pane fade" id="settlements" role="tabpanel" aria-labelledby="settlements-tab">
-        <ul>
-          <% @state.settlements.each do |settlement| %>
-            <li><%= link_to settlement.name, geography_settlement_path(settlement, locale: I18n.locale) %></li>
+        <div class="row" id="state-settlements">
+          <% @settlements.each do |settlement| %>
+            <%= render 'better_together/shared/card', entity: settlement, link_target: geography_settlement_path(settlement, locale: I18n.locale),
+                       col_classes: 'col-12 col-md-6 col-xl-4' %>
           <% end %>
-        </ul>
+        </div>
       </div>
     </div>
   </div>

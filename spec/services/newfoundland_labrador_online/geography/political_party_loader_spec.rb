@@ -32,37 +32,46 @@ RSpec.describe NewfoundlandLabradorOnline::Geography::PoliticalPartyLoader do
   end
 
   describe 'party affiliation over time' do
-    let(:district_path) { Rails.root.join('spec/fixtures/nl_regions/two_districts.geojson') }
-    let(:elections_path) { Rails.root.join('spec/fixtures/nl_regions/two_elections.json') }
     let(:corner_brook) { NewfoundlandLabradorOnline::ProvincialElectoralDistrict.find_by!(identifier: 'nl-ped-corner-brook') }
-    let(:term) { corner_brook.elected_terms.find_by!(ended_on: nil) }
+    let(:writer) { NewfoundlandLabradorOnline::Civic::Writer.new }
+    let(:crossing) { Date.new(2026, 9, 1) }
 
     before do
-      NewfoundlandLabradorOnline::Geography::ProvincialDistrictLoader.new(path: district_path).call
+      geography = NewfoundlandLabradorOnline::Geography
+      fixtures = Rails.root.join('spec/fixtures/nl_regions')
+      geography::ProvincialDistrictLoader.new(path: fixtures.join('two_districts.geojson')).call
       described_class.new.call
-      NewfoundlandLabradorOnline::Geography::ProvincialElectionLoader.new(path: elections_path).call
+      geography::ProvincialElectionLoader.new(path: fixtures.join('two_elections.json')).call
     end
 
-    it 'derives a membership from the elected party' do
-      expect(term.party_on).to eq(liberal)
-    end
+    def holding = NewfoundlandLabradorOnline::Civic::Roster.current_holdings(region_ids: [corner_brook.id]).first
 
     def pc = NewfoundlandLabradorOnline::PoliticalParty.find_by!(identifier: 'pc')
 
-    it 'follows a floor crossing recorded as a dated membership', :aggregate_failures do
-      crossing = Date.new(2026, 9, 1)
-      term.person.party_memberships.find_by!(ended_on: nil).update!(ended_on: crossing, end_reason: 'floor_crossing')
-      term.person.party_memberships.create!(political_party: pc, started_on: crossing, start_reason: 'floor_crossing')
+    def cross_floor
+      current = NewfoundlandLabradorOnline::Civic::Roster.party_membership_on(holding.person, Time.current)
+      writer.end_membership(current, on: crossing, reason: 'floor_crossing')
+      writer.join_party(person: holding.person, party: pc, from: crossing, start_reason: 'floor_crossing')
+    end
 
-      expect(term.party_on(crossing - 1)).to eq(liberal)
-      expect(term.party_on(crossing)).to eq(pc)
+    it 'gives every party a community' do
+      expect(liberal.community).to be_a(NewfoundlandLabradorOnline::PartyCommunity)
+    end
+
+    it 'derives a membership from the elected party' do
+      expect(holding.party_on).to eq(liberal)
+    end
+
+    it 'follows a floor crossing recorded as a dated membership', :aggregate_failures do
+      cross_floor
+
+      expect(holding.party_on(crossing - 1)).to eq(liberal)
+      expect(holding.party_on(crossing)).to eq(pc)
     end
 
     it 'rejects a membership that ends before it starts' do
-      membership = term.person.party_memberships.build(political_party: pc, started_on: Date.new(2026, 1, 2),
-                                                       ended_on: Date.new(2026, 1, 1))
-
-      expect(membership).not_to be_valid
+      expect { writer.join_party(person: holding.person, party: pc, from: crossing, to: crossing - 1) }
+        .to raise_error(ActiveRecord::RecordInvalid)
     end
   end
 end

@@ -10,6 +10,8 @@ module NewfoundlandLabradorOnline
                                inverse_of: :person, dependent: :destroy
       has_many :party_memberships, class_name: 'NewfoundlandLabradorOnline::PartyMembership', foreign_key: :person_id,
                                    inverse_of: :person, dependent: :destroy
+
+      include NewfoundlandLabradorOnline::PrivatePrimaryCommunity
     end
   end
 end

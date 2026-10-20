@@ -33,24 +33,19 @@ module NewfoundlandLabradorOnline
 
     # Sitting members per party id, resolved by dated membership so floor crossers count for their new party.
     def current_seats
-      terms = NewfoundlandLabradorOnline::ElectedTerm.current.includes(:political_party, person: PERSON_PRELOAD)
-      terms.to_a.group_by { |term| term.party_on&.id }.transform_values(&:size)
+      NewfoundlandLabradorOnline::Civic::Roster.current_seats_by_party_id
     end
 
     def load_members(party)
-      @memberships = party.memberships.includes(person: PERSON_PRELOAD).order(started_on: :desc).to_a
-      @terms_by_person = terms_for(@memberships.map(&:person_id))
+      roster = NewfoundlandLabradorOnline::Civic::Roster
+      @memberships = roster.party_holdings(party)
+      @terms_by_person = roster.holdings_by_person(@memberships.map(&:person_id).uniq)
       @current, @former = @memberships.partition { |m| m.ended_on.nil? && sitting?(m) }
+      prefetch_mention_visibility(@memberships.map(&:person))
     end
 
     def sitting?(membership)
-      @terms_by_person[membership.person_id]&.any? { |term| term.ended_on.nil? }
-    end
-
-    def terms_for(person_ids)
-      NewfoundlandLabradorOnline::ElectedTerm.where(person_id: person_ids)
-                                             .includes(:election, region: %i[string_translations slugs])
-                                             .latest_first.group_by(&:person_id)
+      @terms_by_person[membership.person_id]&.any?(&:current?)
     end
   end
 end
