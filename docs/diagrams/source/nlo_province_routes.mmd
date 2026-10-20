@@ -1,0 +1,31 @@
+%% render.orientation: landscape
+flowchart LR
+  subgraph Geo["/:locale/g (geography)"]
+    G1["/g/states and /g/states/:id (canonical)"]
+    G2["/g/provinces and /g/provinces/:id (alias for provinces)"]
+  end
+  subgraph Elect["/:locale/e (election-related)"]
+    D0["/e/districts (directory by province)"]
+    D1["/e/districts/provincial (directory)"]
+    D2["/e/districts/provincial/:province (map, cards)"]
+    D3["/e/districts/provincial/:province/:id"]
+    P0["/e/parties and /e/parties/provincial (directory)"]
+    P2["/e/parties/provincial/:province"]
+    P3["/e/parties/provincial/:province/:identifier"]
+    E0["/e/elections and /e/elections/provincial (directory)"]
+    E2["/e/elections/provincial/:province"]
+    E3["/e/elections/provincial/:province/:year"]
+  end
+  S["Geography::State (iso_code CA-:PROVINCE)"]
+  D0 --> D2
+  D1 --> D2
+  D2 --> D3
+  P0 --> P2 --> P3
+  E0 --> E2 --> E3
+  G1 --> S
+  G2 --> S
+  S --> D2
+  S --> P2
+  S --> E2
+  P3 -. "member mention (profile)" .-> D3
+  E3 -. "member mention (profile)" .-> D3

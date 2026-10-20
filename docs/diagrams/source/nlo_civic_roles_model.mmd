@@ -1,0 +1,78 @@
+%% render.orientation: landscape
+erDiagram
+  PERSON ||--o{ MEMBERSHIP : holds
+  COMMUNITY ||--o{ MEMBERSHIP : has
+  ROLE ||--o{ MEMBERSHIP : grants
+  MEMBERSHIP ||--o| MEMBERSHIP_MANDATE : "rests on"
+  MEMBERSHIP_MANDATE }o--o| CANDIDACY : "conferred by"
+  MEMBERSHIP_MANDATE }o--o| SEAT : "district, department or board seat"
+  MEMBERSHIP_MANDATE ||--o{ MANDATE_OFFICE : uses
+  CONSTITUENCY_OFFICE ||--o{ MANDATE_OFFICE : shared
+  COMMUNITY ||--o| LEGISLATURE_DETAIL : "legislature"
+  COMMUNITY ||--o| EXECUTIVE_DETAIL : "cabinet"
+  COMMUNITY ||--o| DEPARTMENT_DETAIL : "department"
+  COMMUNITY ||--o| PARTY_DETAIL : "party"
+  COMMUNITY ||--o| BOARD_DETAIL : "board or committee"
+  COMMUNITY ||--o{ LEGISLATIVE_SESSION : "legislature sessions"
+  LEGISLATIVE_SESSION ||--o{ EXECUTIVE_DETAIL : "ministries"
+  COMMUNITY ||--o{ COMMUNITY_ASSOCIATION : "source (parent)"
+  COMMUNITY ||--o{ COMMUNITY_ASSOCIATION : "target (child or peer)"
+  COMMUNITY ||--o{ COMMUNITY_SEAT : "has seats"
+  COMMUNITY_SEAT }o--o| COMMUNITY : "represents"
+  MEMBERSHIP_MANDATE }o--o| COMMUNITY_SEAT : "holds"
+  COMMUNITY ||--o{ GOVERNING_INSTRUMENT : "governed by"
+  GOVERNING_INSTRUMENT ||--o{ INSTRUMENT_VERSION : amended
+  GOVERNING_INSTRUMENT }o--o| GOVERNING_INSTRUMENT : "authorized by"
+  INSTRUMENT_VERSION ||--o{ GOVERNING_RULE : states
+  ELECTORAL_SYSTEM ||--o{ ELECTION : rules
+  COMMUNITY ||--o{ ELECTION : "body elected"
+  ELECTION ||--o{ ELECTORAL_CONTEST : has
+  ELECTORAL_CONTEST ||--o{ CANDIDACY : has
+  ELECTION ||--o| LEGISLATIVE_SESSION : forms
+  MEMBERSHIP {
+    datetime starts_at
+    datetime ends_at
+    string status
+  }
+  MEMBERSHIP_MANDATE {
+    string kind
+    string title
+    string end_reason
+  }
+  EXECUTIVE_DETAIL {
+    date formed_on
+    date ended_on
+  }
+  COMMUNITY_ASSOCIATION {
+    string relation
+    string kind
+    string role
+    string participation
+    string eligibility_group
+    bool cascade_end
+    date starts_on
+    date ends_on
+  }
+  COMMUNITY_SEAT {
+    string name
+    string kind
+  }
+  GOVERNING_RULE {
+    string rule_type
+    jsonb params
+    string clause
+  }
+  INSTRUMENT_VERSION {
+    date in_force_from
+    date in_force_to
+  }
+  GOVERNING_INSTRUMENT {
+    string kind
+    string citation
+  }
+  ELECTORAL_SYSTEM {
+    string identifier
+    string winner_rule
+    string ballot
+    bool parties_expected
+  }

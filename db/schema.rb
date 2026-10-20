@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_13_225435) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_20_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -2580,6 +2580,71 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_225435) do
     t.index ["platform_id"], name: "index_better_together_wizards_on_platform_id"
   end
 
+  create_table "candidacies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "electoral_contest_id", null: false
+    t.string "candidate_name", null: false
+    t.string "party_name", null: false
+    t.integer "votes", null: false
+    t.decimal "vote_share", precision: 5, scale: 2
+    t.boolean "elected", default: false, null: false
+    t.string "wikipedia_path"
+    t.uuid "political_party_id"
+    t.index ["electoral_contest_id", "candidate_name"], name: "index_candidacies_on_contest_and_name", unique: true
+    t.index ["electoral_contest_id"], name: "index_candidacies_on_electoral_contest_id"
+    t.index ["political_party_id"], name: "index_candidacies_on_political_party_id"
+  end
+
+  create_table "elected_terms", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "person_id", null: false
+    t.uuid "region_id", null: false
+    t.uuid "election_id", null: false
+    t.uuid "candidacy_id", null: false
+    t.string "office", limit: 50, default: "mha", null: false
+    t.string "party_name", null: false
+    t.date "started_on", null: false
+    t.date "ended_on"
+    t.string "end_reason", limit: 50
+    t.uuid "political_party_id"
+    t.index ["candidacy_id"], name: "index_elected_terms_on_candidacy_id", unique: true
+    t.index ["election_id"], name: "index_elected_terms_on_election_id"
+    t.index ["person_id"], name: "index_elected_terms_on_person_id"
+    t.index ["political_party_id"], name: "index_elected_terms_on_political_party_id"
+    t.index ["region_id", "election_id", "office"], name: "index_elected_terms_on_seat_and_election", unique: true
+    t.index ["region_id"], name: "index_elected_terms_on_region_id"
+  end
+
+  create_table "elections", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "jurisdiction", limit: 50, null: false
+    t.date "held_on", null: false
+    t.string "source_url"
+    t.integer "source_revid"
+    t.string "source_sha256", limit: 64
+    t.string "license"
+    t.uuid "state_id"
+    t.index ["jurisdiction", "state_id", "held_on"], name: "index_elections_on_jurisdiction_state_held_on", unique: true, nulls_not_distinct: true
+    t.index ["state_id"], name: "index_elections_on_state_id"
+  end
+
+  create_table "electoral_contests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "election_id", null: false
+    t.uuid "region_id", null: false
+    t.decimal "turnout", precision: 5, scale: 2
+    t.index ["election_id", "region_id"], name: "index_electoral_contests_on_election_id_and_region_id", unique: true
+    t.index ["region_id"], name: "index_electoral_contests_on_region_id"
+  end
+
   create_table "friendly_id_slugs", force: :cascade do |t|
     t.string "slug", null: false
     t.uuid "sluggable_id", null: false
@@ -2621,6 +2686,35 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_225435) do
     t.index ["translatable_id", "translatable_type", "locale", "key"], name: "index_mobility_text_translations_on_keys", unique: true
   end
 
+  create_table "nlo_region_identifiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "region_id", null: false
+    t.string "scheme", limit: 50, null: false
+    t.string "value", null: false
+    t.index ["region_id", "scheme"], name: "index_nlo_region_identifiers_on_region_and_scheme", unique: true
+    t.index ["region_id"], name: "index_nlo_region_identifiers_on_region_id"
+    t.index ["scheme", "value"], name: "index_nlo_region_identifiers_on_scheme_and_value", unique: true
+  end
+
+  create_table "nlo_region_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "region_id", null: false
+    t.string "name", null: false
+    t.date "valid_from", null: false
+    t.date "valid_to"
+    t.geography "boundary", limit: {srid: 4326, type: "multi_polygon", geographic: true}
+    t.string "authority", null: false
+    t.string "source_url"
+    t.string "source_sha256", limit: 64
+    t.string "license"
+    t.index ["boundary"], name: "index_nlo_region_versions_on_boundary", using: :gist
+    t.index ["region_id", "valid_from"], name: "index_nlo_region_versions_on_region_and_valid_from", unique: true
+  end
+
   create_table "noticed_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "type"
     t.string "record_type"
@@ -2645,6 +2739,71 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_225435) do
     t.index ["event_id"], name: "index_noticed_notifications_on_event_id"
     t.index ["platform_id"], name: "index_noticed_notifications_on_platform_id"
     t.index ["recipient_type", "recipient_id"], name: "index_noticed_notifications_on_recipient"
+  end
+
+  create_table "party_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "person_id", null: false
+    t.uuid "political_party_id", null: false
+    t.date "started_on", null: false
+    t.date "ended_on"
+    t.string "start_reason", limit: 50
+    t.string "end_reason", limit: 50
+    t.string "source_url"
+    t.index ["person_id", "political_party_id", "started_on"], name: "index_party_memberships_on_person_party_start", unique: true
+    t.index ["person_id"], name: "index_party_memberships_on_person_id"
+    t.index ["political_party_id"], name: "index_party_memberships_on_political_party_id"
+  end
+
+  create_table "political_parties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "jurisdiction", limit: 50, null: false
+    t.string "identifier", limit: 100, null: false
+    t.string "name", null: false
+    t.string "short_name", null: false
+    t.string "color", limit: 7
+    t.string "color_source"
+    t.string "wikipedia_page"
+    t.string "logo_source_url"
+    t.string "logo_license"
+    t.boolean "logo_non_free"
+    t.uuid "state_id"
+    t.index ["jurisdiction", "state_id", "identifier"], name: "index_political_parties_on_jurisdiction_state_identifier", unique: true, nulls_not_distinct: true
+    t.index ["state_id"], name: "index_political_parties_on_state_id"
+  end
+
+  create_table "region_identifiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "region_id", null: false
+    t.string "scheme", limit: 50, null: false
+    t.string "value", null: false
+    t.index ["region_id", "scheme"], name: "index_region_identifiers_on_region_and_scheme", unique: true
+    t.index ["region_id"], name: "index_region_identifiers_on_region_id"
+    t.index ["scheme", "value"], name: "index_region_identifiers_on_scheme_and_value", unique: true
+  end
+
+  create_table "region_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "region_id", null: false
+    t.string "name", null: false
+    t.date "valid_from", null: false
+    t.date "valid_to"
+    t.geography "boundary", limit: {srid: 4326, type: "multi_polygon", geographic: true}
+    t.string "authority", null: false
+    t.string "source_url"
+    t.string "source_sha256", limit: 64
+    t.string "license"
+    t.decimal "area_km2", precision: 12, scale: 2
+    t.index ["boundary"], name: "index_region_versions_on_boundary", using: :gist
+    t.index ["region_id", "valid_from"], name: "index_region_versions_on_region_and_valid_from", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -2931,5 +3090,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_225435) do
   add_foreign_key "better_together_wizard_steps", "better_together_wizard_step_definitions", column: "wizard_step_definition_id"
   add_foreign_key "better_together_wizard_steps", "better_together_wizards", column: "wizard_id"
   add_foreign_key "better_together_wizards", "better_together_platforms", column: "platform_id"
+  add_foreign_key "candidacies", "electoral_contests"
+  add_foreign_key "candidacies", "political_parties"
+  add_foreign_key "elected_terms", "better_together_geography_regions", column: "region_id"
+  add_foreign_key "elected_terms", "better_together_people", column: "person_id"
+  add_foreign_key "elected_terms", "candidacies"
+  add_foreign_key "elected_terms", "elections"
+  add_foreign_key "elected_terms", "political_parties"
+  add_foreign_key "elections", "better_together_geography_states", column: "state_id"
+  add_foreign_key "electoral_contests", "better_together_geography_regions", column: "region_id"
+  add_foreign_key "electoral_contests", "elections"
+  add_foreign_key "nlo_region_identifiers", "better_together_geography_regions", column: "region_id"
+  add_foreign_key "nlo_region_versions", "better_together_geography_regions", column: "region_id"
   add_foreign_key "noticed_notifications", "better_together_platforms", column: "platform_id"
+  add_foreign_key "party_memberships", "better_together_people", column: "person_id"
+  add_foreign_key "party_memberships", "political_parties"
+  add_foreign_key "political_parties", "better_together_geography_states", column: "state_id"
+  add_foreign_key "region_identifiers", "better_together_geography_regions", column: "region_id"
+  add_foreign_key "region_versions", "better_together_geography_regions", column: "region_id"
 end

@@ -1,0 +1,16 @@
+<div class="container my-3" id="states-index">
+  <h1><%= params[:provinces] ? t('.provinces') : t('.title') %></h1>
+  <table class="table">
+    <thead>
+      <tr><th><%= t('.name') %></th><th><%= t('.code') %></th></tr>
+    </thead>
+    <tbody id="states-list">
+      <% @states.each do |state| %>
+        <tr id="<%= dom_id(state) %>">
+          <td><%= link_to state.name, state_page_path(state) %></td>
+          <td><%= state.iso_code %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

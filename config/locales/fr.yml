@@ -84,8 +84,82 @@ fr:
   journeys:
     title: Mon parcours
   newfoundland_labrador_online:
+    districts:
+      directory:
+        count:
+          one: "%{count} circonscription"
+          other: "%{count} circonscriptions"
+        elections: Élections
+        intro: Circonscriptions électorales par province, chacune menant à la liste
+          et à la carte de la province.
+        parties: Partis politiques
+        title: Circonscriptions électorales
+        titles:
+          provincial: Circonscriptions électorales provinciales
+      index:
+        elections: Élections
+        intro: "%{count} circonscriptions en vigueur depuis l’élection de 2015."
+        kind: Circonscription électorale provinciale
+        legend: Sièges par parti
+        legend_note: Chaque circonscription est colorée selon le parti de son député
+          actuel. Les licences des logos sont consignées avec chaque parti.
+        no_party: Aucun parti enregistré
+        parties: Partis politiques
+        seats:
+          one: "%{count} siège"
+          other: "%{count} sièges"
+        title: Circonscriptions électorales provinciales
+      show:
+        all_districts: Toutes les circonscriptions
+        area: Superficie
+        area_km2: "%{value} km²"
+        authority: Autorité
+        breadcrumb: Fil d’Ariane
+        candidate: Candidature
+        current_member: Député ou députée à la Chambre d’assemblée
+        elected: Élu
+        election_results: Élections de %{year}
+        facts: Faits
+        history: Noms et limites au fil du temps
+        identifiers: Identifiants
+        in_force_since: En vigueur depuis
+        kind: Circonscription électorale provinciale
+        licence: Licence
+        map_label: Carte de %{name}
+        member: Député
+        members: Députés à la Chambre d’assemblée
+        no_member: Aucun député n’est encore enregistré pour cette circonscription.
+        no_settlements: Aucune localité n’est encore enregistrée dans cette circonscription.
+        party: Parti
+        present: Aujourd’hui
+        results: Résultats électoraux
+        settlements: Localités incluses
+        share: Part
+        turnout: Participation %{value} %
+        unknown: Inconnu
+        valid_from: Du
+        valid_to: Au
+        version_name: Nom
+        votes: Voix
+    elections:
+      index:
+        districts: Circonscriptions
+        intro: Élections générales à la Chambre d’assemblée, avec les sièges remportés
+          par parti.
+        kinds:
+          provincial: Élection générale provinciale de %{year}
+        parties: Partis
+        title: Élections
+        titles:
+          provincial: Élections provinciales
+      show:
+        all_elections: Toutes les élections
+        kinds:
+          provincial: Élection générale provinciale de %{year}
     image_blocks:
       preview: 'Image : %{caption}'
+    listing_map:
+      label: 'Carte : %{title}'
     live_images:
       alt: Dernière image de la caméra sur %{name}
       title: "%{name} en direct"
@@ -105,6 +179,28 @@ fr:
         new_named_with_query: 'Créer %{model} : « %{q} »'
         tab: Lieu
         use_typed_name: Utiliser « %{q} » comme nom de lieu personnalisé
+    parties:
+      index:
+        districts: Circonscriptions
+        elections: Élections
+        intro: Partis qui ont détenu ou disputé des sièges à la Chambre d’assemblée,
+          avec leurs sièges actuels.
+        seats:
+          one: "%{count} siège"
+          other: "%{count} sièges"
+        title: Partis politiques
+        titles:
+          provincial: Partis politiques provinciaux
+      logo_alt: Logo de %{name}
+      show:
+        all_parties: Tous les partis
+        current: Députés actuels
+        districts: Circonscriptions
+        former: Anciens députés
+        logo_licence: 'Licence du logo : %{license}.'
+        logo_non_free: Logo non libre, affiché au titre de l’utilisation équitable.
+        logo_source: Source
+        none: Aucun député enregistré.
     settlement_events:
       empty: Aucun événement à venir à %{name} pour le moment.
       title: Événements à %{name}
@@ -114,6 +210,23 @@ fr:
       loading: Chargement des publications...
       located_in: Situé à
       title: Publications à %{name}
+    states:
+      index:
+        code: Code
+        name: Province
+        provinces: Provinces
+        title: Provinces
+      show:
+        all_districts: Toutes les circonscriptions de cette province
+        all_elections: Toutes les élections de cette province
+        all_parties: Tous les partis de cette province
+        manage: Gérer cette province
+        tabs:
+          districts: Circonscriptions
+          elections: Élections
+          parties: Partis politiques
+          regions: Autres régions
+          settlements: Localités
     video_blocks:
       preview: 'Vidéo : %{url}'
   time:

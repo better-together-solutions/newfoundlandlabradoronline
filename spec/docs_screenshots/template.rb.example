@@ -1,0 +1,27 @@
+# frozen_string_literal: true
+
+# Copy to spec/docs_screenshots/<feature>_spec.rb, replace the placeholders, and delete this comment.
+#
+#   ./bin/dc-run env RUN_DOCS_SCREENSHOTS=1 bundle exec rspec spec/docs_screenshots/<feature>_spec.rb
+#
+# Output: docs/screenshots/{desktop,mobile}/<slug>.png and <slug>_annotated.png
+require 'rails_helper'
+
+RSpec.describe 'Documentation screenshots for <feature>', :js, type: :feature do
+  include RequestSpecHelper
+
+  before do
+    skip 'set RUN_DOCS_SCREENSHOTS=1 to capture documentation screenshots' unless ENV['RUN_DOCS_SCREENSHOTS']
+
+    configure_host_platform.update!(privacy: 'public')
+    # create the records the page needs
+  end
+
+  it 'captures <page>' do
+    visit "/#{I18n.default_locale}/<path>"
+    callouts = [{ selector: '#stable-dom-id', title: 'What this shows' }]
+
+    sizes = DocsScreenshots.capture(page, '<slug>', callouts:).map { |path| File.size(path) }
+    expect(sizes).to all(be > 10_000)
+  end
+end

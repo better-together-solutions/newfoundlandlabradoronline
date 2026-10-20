@@ -1,0 +1,168 @@
+<div class="container py-4" id="district-page">
+  <nav aria-label="<%= t('.breadcrumb') %>">
+    <%= link_to t('.all_districts'), newfoundland_labrador_online_scoped_districts_path(province_code(@district), locale: I18n.locale), class: 'btn btn-secondary btn-sm mb-3' %>
+  </nav>
+
+  <h1 id="district-name"><%= @district.name %></h1>
+  <p class="text-muted" id="district-kind"><%= t('.kind') %> · <span id="district-province"><%= link_to @district.state.name, state_page_path(@district.state) %></span></p>
+
+  <% current = @district.current_version %>
+  <% located_map = district_map(@district) %>
+  <% sitting = @terms.find { |term| term.ended_on.nil? } %>
+  <% party = sitting&.party_on %>
+  <% if current&.boundary %>
+    <section class="mb-4" id="district-map-section" aria-label="<%= t('.map_label', name: @district.name) %>">
+      <% overlay = [{ geometry: located_map.boundary, color: party&.display_color || NewfoundlandLabradorOnline::PoliticalParty::FALLBACK_COLOR,
+                      popup: ERB::Util.html_escape(@district.name) }] %>
+      <%= render 'better_together/shared/map', map: located_map, types: [], boundary: nil, cluster: false,
+                 extra_controllers: ['party-overlay'], attributes: { 'data-party-overlay-overlays-value' => overlay.to_json } %>
+    </section>
+  <% end %>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <section class="card h-100" id="district-facts">
+        <div class="card-body">
+          <h2 class="h5 card-title"><%= t('.facts') %></h2>
+          <dl class="row mb-0">
+            <dt class="col-sm-5"><%= t('.current_member') %></dt>
+            <dd class="col-sm-7" id="district-member">
+              <% if sitting %>
+                <%= member_mention(sitting.person) %>
+                <% if party %>
+                  <span class="d-inline-flex align-items-center gap-1" id="district-member-party">
+                    <span class="d-inline-block rounded" style="width: 0.9rem; height: 0.9rem; background: <%= party.display_color %>"></span>
+                    <%= link_to party.short_name, party_path_for(party) %>
+                    <%= party_logo_tag(party, height: 20) %>
+                  </span>
+                <% end %>
+              <% else %>
+                <%= t('.no_member') %>
+              <% end %>
+            </dd>
+            <dt class="col-sm-5"><%= t('.area') %></dt>
+            <dd class="col-sm-7" id="district-area"><%= current ? t('.area_km2', value: number_with_delimiter(current.area_km2.round)) : t('.unknown') %></dd>
+            <dt class="col-sm-5"><%= t('.in_force_since') %></dt>
+            <dd class="col-sm-7" id="district-since"><%= current ? l(current.valid_from, format: :long) : t('.unknown') %></dd>
+            <dt class="col-sm-5"><%= t('.authority') %></dt>
+            <dd class="col-sm-7" id="district-authority"><%= current&.authority || t('.unknown') %></dd>
+            <dt class="col-sm-5"><%= t('.licence') %></dt>
+            <dd class="col-sm-7" id="district-licence"><%= current&.license || t('.unknown') %></dd>
+          </dl>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-lg-6">
+      <section class="card h-100" id="district-settlements">
+        <div class="card-body">
+          <h2 class="h5 card-title"><%= t('.settlements') %></h2>
+          <% if @settlements.any? %>
+            <ul class="mb-0">
+              <% @settlements.each do |settlement| %>
+                <li><%= link_to settlement.name, geography_settlement_path(settlement, locale: I18n.locale) %></li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="text-muted mb-0"><%= t('.no_settlements') %></p>
+          <% end %>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <section class="card mt-4" id="district-members">
+    <div class="card-body">
+      <h2 class="h5 card-title"><%= t('.members') %></h2>
+      <table class="table table-sm mb-0 district-results-table" style="table-layout: fixed">
+        <colgroup><col style="width: 40%"><col style="width: 30%"><col style="width: 15%"><col style="width: 15%"></colgroup>
+        <thead>
+          <tr>
+            <th scope="col"><%= t('.member') %></th>
+            <th scope="col"><%= t('.party') %></th>
+            <th scope="col"><%= t('.valid_from') %></th>
+            <th scope="col"><%= t('.valid_to') %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @terms.each do |term| %>
+            <tr id="<%= dom_id(term) %>">
+              <td><%= member_mention(term.person) %></td>
+              <td><%= party_chip(term.political_party) if term.political_party %><%= term.party_name unless term.political_party %></td>
+              <td><%= l(term.started_on, format: :long) %></td>
+              <td><%= term.ended_on ? l(term.ended_on, format: :long) : t('.present') %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card mt-4" id="district-results">
+    <div class="card-body">
+      <h2 class="h5 card-title"><%= t('.results') %></h2>
+      <% @contests.each do |contest| %>
+        <h3 class="h6 mt-3"><%= link_to t('.election_results', year: contest.election.year), election_path_for(contest.election) %>
+          <% if contest.turnout %><small class="text-muted"><%= t('.turnout', value: contest.turnout) %></small><% end %>
+        </h3>
+        <table class="table table-sm district-results-table" style="table-layout: fixed" id="<%= dom_id(contest) %>">
+          <colgroup><col style="width: 40%"><col style="width: 30%"><col style="width: 15%"><col style="width: 15%"></colgroup>
+          <thead>
+            <tr>
+              <th scope="col"><%= t('.candidate') %></th>
+              <th scope="col"><%= t('.party') %></th>
+              <th scope="col" class="text-end"><%= t('.votes') %></th>
+              <th scope="col" class="text-end"><%= t('.share') %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% contest.candidacies.each do |candidacy| %>
+              <tr id="<%= dom_id(candidacy) %>" class="<%= 'fw-bold' if candidacy.elected %>">
+                <td><%= candidate_name(candidacy) %> <% if candidacy.elected %><span class="badge text-bg-success"><%= t('.elected') %></span><% end %></td>
+                <td><% if candidacy.political_party %><%= link_to candidacy.party_name, party_path_for(candidacy.political_party) %><% else %><%= candidacy.party_name %><% end %></td>
+                <td class="text-end"><%= number_with_delimiter(candidacy.votes) %></td>
+                <td class="text-end"><%= number_with_precision(candidacy.vote_share, precision: 1) %>%</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="card mt-4" id="district-history">
+    <div class="card-body">
+      <h2 class="h5 card-title"><%= t('.history') %></h2>
+      <table class="table table-sm mb-0">
+        <thead>
+          <tr>
+            <th scope="col"><%= t('.version_name') %></th>
+            <th scope="col"><%= t('.valid_from') %></th>
+            <th scope="col"><%= t('.valid_to') %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @versions.each do |version| %>
+            <tr id="<%= dom_id(version) %>">
+              <td><%= version.name %></td>
+              <td><%= l(version.valid_from, format: :long) %></td>
+              <td><%= version.valid_to ? l(version.valid_to, format: :long) : t('.present') %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card mt-4" id="district-identifiers">
+    <div class="card-body">
+      <h2 class="h5 card-title"><%= t('.identifiers') %></h2>
+      <dl class="row mb-0">
+        <% @identifiers.each do |identifier| %>
+          <dt class="col-sm-4"><%= identifier.scheme %></dt>
+          <dd class="col-sm-8"><code><%= identifier.value %></code></dd>
+        <% end %>
+      </dl>
+    </div>
+  </section>
+</div>

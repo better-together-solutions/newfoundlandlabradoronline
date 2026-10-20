@@ -84,8 +84,81 @@ en:
   journeys:
     title: My Journey
   newfoundland_labrador_online:
+    districts:
+      directory:
+        count:
+          one: "%{count} district"
+          other: "%{count} districts"
+        elections: Elections
+        intro: Electoral districts by province, each linking to that province's full
+          listing and map.
+        parties: Political parties
+        title: Electoral districts
+        titles:
+          provincial: Provincial electoral districts
+      index:
+        elections: Elections
+        intro: "%{count} districts in force since the 2015 election."
+        kind: Provincial electoral district
+        legend: Seats by party
+        legend_note: Each district is coloured by its sitting member’s party. Logo
+          licences are recorded with each party.
+        no_party: No party recorded
+        parties: Political parties
+        seats:
+          one: "%{count} seat"
+          other: "%{count} seats"
+        title: Provincial electoral districts
+      show:
+        all_districts: All districts
+        area: Area
+        area_km2: "%{value} km²"
+        authority: Authority
+        breadcrumb: Breadcrumb
+        candidate: Candidate
+        current_member: Member of the House of Assembly
+        elected: Elected
+        election_results: "%{year} election"
+        facts: Facts
+        history: Names and boundaries over time
+        identifiers: Identifiers
+        in_force_since: In force since
+        kind: Provincial electoral district
+        licence: Licence
+        map_label: Map of %{name}
+        member: Member
+        members: Members of the House of Assembly
+        no_member: No member is recorded for this district yet.
+        no_settlements: No settlements are recorded inside this district yet.
+        party: Party
+        present: Present
+        results: Election results
+        settlements: Settlements inside
+        share: Share
+        turnout: Turnout %{value}%
+        unknown: Unknown
+        valid_from: From
+        valid_to: To
+        version_name: Name
+        votes: Votes
+    elections:
+      index:
+        districts: Districts
+        intro: General elections to the House of Assembly, with seats won by party.
+        kinds:
+          provincial: Provincial general election %{year}
+        parties: Parties
+        title: Elections
+        titles:
+          provincial: Provincial elections
+      show:
+        all_elections: All elections
+        kinds:
+          provincial: Provincial general election %{year}
     image_blocks:
       preview: 'Image: %{caption}'
+    listing_map:
+      label: Map of %{title}
     live_images:
       alt: Latest camera image over %{name}
       title: "%{name} right now"
@@ -105,6 +178,28 @@ en:
         new_named_with_query: 'Create new %{model}: "%{q}"'
         tab: Location
         use_typed_name: Use "%{q}" as a custom location name
+    parties:
+      index:
+        districts: Districts
+        elections: Elections
+        intro: Parties that have held or contested seats in the House of Assembly,
+          with their current seats.
+        seats:
+          one: "%{count} seat"
+          other: "%{count} seats"
+        title: Political parties
+        titles:
+          provincial: Provincial political parties
+      logo_alt: Logo of %{name}
+      show:
+        all_parties: All parties
+        current: Current members
+        districts: Districts
+        former: Former members
+        logo_licence: 'Logo licence: %{license}.'
+        logo_non_free: Non-free logo, shown under fair use.
+        logo_source: Source
+        none: No members recorded.
     settlement_events:
       empty: No upcoming events in %{name} yet.
       title: Events in %{name}
@@ -114,6 +209,23 @@ en:
       loading: Loading posts...
       located_in: Located in
       title: Posts in %{name}
+    states:
+      index:
+        code: Code
+        name: Province
+        provinces: Provinces
+        title: Provinces
+      show:
+        all_districts: All districts of this province
+        all_elections: All elections of this province
+        all_parties: All parties of this province
+        manage: Manage this province
+        tabs:
+          districts: Electoral districts
+          elections: Elections
+          parties: Political parties
+          regions: Other regions
+          settlements: Settlements
     video_blocks:
       preview: 'Video: %{url}'
   time:
