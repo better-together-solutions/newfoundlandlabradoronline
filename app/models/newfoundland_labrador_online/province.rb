@@ -9,6 +9,11 @@ module NewfoundlandLabradorOnline
       BetterTogether::Geography::State.find_by!(iso_code: "CA-#{code.to_s.upcase}")
     end
 
+    # By province code (nl), else by the state's slug or id.
+    def find_state(param)
+      param.to_s.match?(/\A[a-z]{2}\z/) ? state_for(param) : BetterTogether::Geography::State.friendly.find(param)
+    end
+
     def code_for(state)
       state.iso_code.delete_prefix('CA-').downcase
     end

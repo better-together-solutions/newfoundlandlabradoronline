@@ -18,6 +18,6 @@ RSpec.describe NewfoundlandLabradorOnline::Geography::DistrictsNavigationItem do
     item = described_class.new.call
 
     expect(BetterTogether::NavigationItem.where(identifier: 'districts').count).to eq(1)
-    expect(item).to have_attributes(url: '/e/districts/provincial', privacy: 'public', title_fr: 'Circonscriptions')
+    expect(item).to have_attributes(url: '/e/districts/provincial/nl', privacy: 'public', title_fr: 'Circonscriptions')
   end
 end

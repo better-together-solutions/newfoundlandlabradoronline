@@ -8,6 +8,7 @@ ActiveSupport::Reloader.to_prepare do
   require_dependency 'better_together/event'
   require_dependency 'better_together/geography/region'
   require_dependency 'better_together/geography/state'
+  require_dependency 'better_together/geography/state_policy'
   require_dependency 'better_together/person'
 
   BetterTogether::Post.include(NewfoundlandLabradorOnline::Post)
@@ -15,6 +16,7 @@ ActiveSupport::Reloader.to_prepare do
   BetterTogether::Geography::Region.include(NewfoundlandLabradorOnline::Region)
   # Provinces: the districts, parties and elections scoped to them.
   BetterTogether::Geography::State.include(NewfoundlandLabradorOnline::State)
+  BetterTogether::Geography::StatePolicy.prepend(NewfoundlandLabradorOnline::StatePolicy)
   # Elected members: a person's terms in district seats.
   BetterTogether::Person.include(NewfoundlandLabradorOnline::Person)
   # Locations: every record in LocatableModels gets the shared location interface.

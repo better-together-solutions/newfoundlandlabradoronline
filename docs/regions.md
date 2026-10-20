@@ -97,7 +97,7 @@ Parties load first from `db/data/nl_regions/provincial_parties.json` (built by m
 ## Parties, elections, cards and routes
 
 - All election-related pages live under `/e`; districts have one sub-path per district type: `/:locale/e/districts/provincial` (all provinces),
-  `/:locale/e/districts/provincial/:province` and `/:locale/e/districts/provincial/:province/:id`. The earlier `/districts`, `/g/districts/provincial`, `/parties` and `/elections` paths redirect (301) to the `nl` form. Federal and
+  `/:locale/e/districts/provincial/:province` and `/:locale/e/districts/provincial/:province/:id`.  Federal and
   other provincial district types get their own sub-path later.
 - `GET /:locale/e/parties` lists parties with current seats; `GET /:locale/e/parties/:jurisdiction/:province/:identifier` (for example
   `/en/e/parties/provincial/nl/liberal`) shows the logo and licence, current members and former members, each with
@@ -111,11 +111,16 @@ Parties load first from `db/data/nl_regions/provincial_parties.json` (built by m
   attachments); `spec/dom_contracts/party_election_pages_spec.rb` guards it. The listing map's simplified outlines are
   cached for 12 hours and keyed on the spaces' `updated_at`; uncached they cost about 3 s on 40 districts.
 
-## Provinces
+## States and provinces
 
 `:province` is the lower-case province code (`nl`, `ns`, ...) and resolves to the geography `State` whose `iso_code` is
 `CA-<CODE>`; an unknown code is a 404. Districts (`region.state_id`), parties and elections (`state_id`, migration
 `20261020120000`) are associated with their province in the geography tables, and `BetterTogether::Geography::State`
-has `provincial_electoral_districts`, `political_parties` and `elections` (concern `NewfoundlandLabradorOnline::State`).
-The province page (host dashboard, `app/views/better_together/geography/states/show.html.erb`) has tabs for its
-districts, parties and elections, each linking to the public pages, beside the regions and settlements it showed before.
+has `provincial_electoral_districts`, `political_parties`, `elections` and `province?` (concern
+`NewfoundlandLabradorOnline::State`).
+
+Public state pages follow the settlement pattern under `/g`: `/:locale/g/states` and `/:locale/g/states/:id` (slug or
+province code) are canonical for any state; `/:locale/g/provinces` and `/:locale/g/provinces/:id` are the alias used for
+states that identify as provinces (the ten `CA-` provinces) and 404 for others. A province page has tabs for its
+districts, parties and elections beside its regions and settlements. `StatePolicy` is prepended so index and show are
+public, and update/destroy need `manage_platform` (as for settlements).

@@ -4,7 +4,7 @@
   </nav>
 
   <h1 id="district-name"><%= @district.name %></h1>
-  <p class="text-muted" id="district-kind"><%= t('.kind') %> · <span id="district-province"><%= @district.state.name %></span></p>
+  <p class="text-muted" id="district-kind"><%= t('.kind') %> · <span id="district-province"><%= link_to @district.state.name, state_page_path(@district.state) %></span></p>
 
   <% current = @district.current_version %>
   <% located_map = district_map(@district) %>

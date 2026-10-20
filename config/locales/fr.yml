@@ -190,17 +190,6 @@ fr:
         logo_non_free: Logo non libre, affiché au titre de l’utilisation équitable.
         logo_source: Source
         none: Aucun député enregistré.
-    provinces:
-      show:
-        all_districts: Toutes les circonscriptions de cette province
-        all_elections: Toutes les élections de cette province
-        all_parties: Tous les partis de cette province
-        tabs:
-          districts: Circonscriptions
-          elections: Élections
-          parties: Partis politiques
-          regions: Autres régions
-          settlements: Localités
     settlement_events:
       empty: Aucun événement à venir à %{name} pour le moment.
       title: Événements à %{name}
@@ -210,6 +199,23 @@ fr:
       loading: Chargement des publications...
       located_in: Situé à
       title: Publications à %{name}
+    states:
+      index:
+        code: Code
+        name: Province
+        provinces: Provinces
+        title: Provinces
+      show:
+        all_districts: Toutes les circonscriptions de cette province
+        all_elections: Toutes les élections de cette province
+        all_parties: Tous les partis de cette province
+        manage: Gérer cette province
+        tabs:
+          districts: Circonscriptions
+          elections: Élections
+          parties: Partis politiques
+          regions: Autres régions
+          settlements: Localités
     video_blocks:
       preview: 'Vidéo : %{url}'
   time:

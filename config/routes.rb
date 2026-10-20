@@ -13,6 +13,15 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
 
     # Election-related pages are grouped under /e. Each level (provincial) nests the province code (nl, ns, ...), which
     # is looked up in the geography states; the level's own path lists every province.
+    # States are public like settlements, each page linking to the data scoped to it. /g/provinces is an alias used for
+    # states that identify as provinces (State#province?); /g/states is the canonical default for any state.
+    states = 'newfoundland_labrador_online/states'
+    get 'g/states', to: "#{states}#index", as: :newfoundland_labrador_online_states
+    get 'g/states/:id', to: "#{states}#show", as: :newfoundland_labrador_online_state
+    get 'g/provinces', to: "#{states}#index", defaults: { provinces: true }, as: :newfoundland_labrador_online_provinces
+    get 'g/provinces/:id', to: "#{states}#show", defaults: { provinces: true },
+                           as: :newfoundland_labrador_online_province
+
     scope 'e' do # rubocop:disable Metrics/BlockLength
       province = { province: /[a-z]{2}/ }
       districts = 'newfoundland_labrador_online/districts'
@@ -44,19 +53,6 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
                                                                     **province }
     end
 
-    # Earlier public paths redirect to /e; they only ever served Newfoundland and Labrador.
-    # rubocop:disable Style/FormatStringToken
-    get 'districts', to: redirect('/%{locale}/e/districts/provincial')
-    get 'districts/:id', to: redirect('/%{locale}/e/districts/provincial/nl/%{id}')
-    get 'g/districts/provincial', to: redirect('/%{locale}/e/districts/provincial')
-    get 'g/districts/provincial/:id', to: redirect('/%{locale}/e/districts/provincial/nl/%{id}')
-    get 'parties', to: redirect('/%{locale}/e/parties')
-    get 'parties/:jurisdiction', to: redirect('/%{locale}/e/parties/%{jurisdiction}')
-    get 'parties/:jurisdiction/:id', to: redirect('/%{locale}/e/parties/%{jurisdiction}/nl/%{id}')
-    get 'elections', to: redirect('/%{locale}/e/elections')
-    get 'elections/:jurisdiction', to: redirect('/%{locale}/e/elections/%{jurisdiction}')
-    get 'elections/:jurisdiction/:year', to: redirect('/%{locale}/e/elections/%{jurisdiction}/nl/%{year}')
-    # rubocop:enable Style/FormatStringToken
     get 'locations/available', to: 'newfoundland_labrador_online/locations#available',
                                as: :newfoundland_labrador_online_available_locations
   end

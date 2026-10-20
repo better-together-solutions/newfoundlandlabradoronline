@@ -25,17 +25,6 @@ RSpec.describe 'Party and election pages', type: :request do
     count
   end
 
-  it 'redirects the old districts paths', :aggregate_failures do
-    get "/#{locale}/districts"
-    expect(response).to redirect_to("/#{locale}/e/districts/provincial")
-    get "/#{locale}/g/districts/provincial/nl-ped-corner-brook"
-    expect(response).to redirect_to("/#{locale}/e/districts/provincial/nl/nl-ped-corner-brook")
-    get "/#{locale}/parties/provincial/liberal"
-    expect(response).to redirect_to("/#{locale}/e/parties/provincial/nl/liberal")
-    get "/#{locale}/elections/provincial/2019"
-    expect(response).to redirect_to("/#{locale}/e/elections/provincial/nl/2019")
-  end
-
   it 'shows district cards with member and party', :aggregate_failures do
     get "/#{locale}/e/districts/provincial"
 

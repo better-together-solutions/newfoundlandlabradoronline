@@ -190,17 +190,6 @@ es:
         logo_non_free: Logotipo no libre, mostrado como uso legítimo.
         logo_source: Fuente
         none: No hay miembros registrados.
-    provinces:
-      show:
-        all_districts: Todos los distritos de esta provincia
-        all_elections: Todas las elecciones de esta provincia
-        all_parties: Todos los partidos de esta provincia
-        tabs:
-          districts: Distritos electorales
-          elections: Elecciones
-          parties: Partidos políticos
-          regions: Otras regiones
-          settlements: Localidades
     settlement_events:
       empty: Aún no hay eventos próximos en %{name}.
       title: Eventos en %{name}
@@ -210,6 +199,23 @@ es:
       loading: Cargando publicaciones...
       located_in: Ubicado en
       title: Publicaciones en %{name}
+    states:
+      index:
+        code: Código
+        name: Provincia
+        provinces: Provincias
+        title: Provincias
+      show:
+        all_districts: Todos los distritos de esta provincia
+        all_elections: Todas las elecciones de esta provincia
+        all_parties: Todos los partidos de esta provincia
+        manage: Administrar esta provincia
+        tabs:
+          districts: Distritos electorales
+          elections: Elecciones
+          parties: Partidos políticos
+          regions: Otras regiones
+          settlements: Localidades
     video_blocks:
       preview: 'Video: %{url}'
   time:

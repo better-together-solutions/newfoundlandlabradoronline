@@ -189,17 +189,6 @@ en:
         logo_non_free: Non-free logo, shown under fair use.
         logo_source: Source
         none: No members recorded.
-    provinces:
-      show:
-        all_districts: All districts of this province
-        all_elections: All elections of this province
-        all_parties: All parties of this province
-        tabs:
-          districts: Electoral districts
-          elections: Elections
-          parties: Political parties
-          regions: Other regions
-          settlements: Settlements
     settlement_events:
       empty: No upcoming events in %{name} yet.
       title: Events in %{name}
@@ -209,6 +198,23 @@ en:
       loading: Loading posts...
       located_in: Located in
       title: Posts in %{name}
+    states:
+      index:
+        code: Code
+        name: Province
+        provinces: Provinces
+        title: Provinces
+      show:
+        all_districts: All districts of this province
+        all_elections: All elections of this province
+        all_parties: All parties of this province
+        manage: Manage this province
+        tabs:
+          districts: Electoral districts
+          elections: Elections
+          parties: Political parties
+          regions: Other regions
+          settlements: Settlements
     video_blocks:
       preview: 'Video: %{url}'
   time:
