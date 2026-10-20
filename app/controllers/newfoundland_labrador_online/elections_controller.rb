@@ -25,6 +25,7 @@ module NewfoundlandLabradorOnline
         contest.region.name
       end
       @parties = parties_in(@contests)
+      prefetch_mention_visibility(@contests.flat_map { |c| c.candidacies.map(&:member) })
     end
 
     private

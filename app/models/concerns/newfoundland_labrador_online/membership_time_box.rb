@@ -6,8 +6,6 @@ module NewfoundlandLabradorOnline
   module MembershipTimeBox
     extend ActiveSupport::Concern
 
-    TIME_ZONE = 'America/St_Johns'
-
     # Window queries; .active narrows the CE status scope to memberships whose window includes now.
     module ActiveWindow
       def active
@@ -52,13 +50,6 @@ module NewfoundlandLabradorOnline
       validate :holdings_do_not_overlap
       validate :community_associations_allow_membership, on: :create
       after_commit :schedule_window_cache_expiry, :end_dependent_memberships
-    end
-
-    class_methods do
-      # Calendar dates are stored as local midnight in Newfoundland time.
-      def local_midnight(date)
-        ActiveSupport::TimeZone[TIME_ZONE].local(date.year, date.month, date.day)
-      end
     end
 
     def current?(at: Time.current)

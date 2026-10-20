@@ -19,11 +19,13 @@ module NewfoundlandLabradorOnline
       end
 
       def call
-        packet = JSON.parse(File.read(@path))
-        @source_url = packet['source_url']
-        ActiveRecord::Base.transaction { packet.fetch('party_changes').each { |change| apply(change) } }
-        packet.fetch('roster').each { |entry| check_roster(entry) }
-        @result
+        Civic.in_platform_zone do
+          packet = JSON.parse(File.read(@path))
+          @source_url = packet['source_url']
+          ActiveRecord::Base.transaction { packet.fetch('party_changes').each { |change| apply(change) } }
+          packet.fetch('roster').each { |entry| check_roster(entry) }
+          @result
+        end
       end
 
       private

@@ -18,7 +18,8 @@
         <% if holdings.empty? %>
           <p class="text-muted mb-0"><%= t('.none') %></p>
         <% else %>
-          <table class="table table-sm mb-0">
+          <div class="table-responsive">
+<table class="table table-sm mb-0">
             <thead>
               <tr>
                 <th scope="col"><%= t('.district') %></th>
@@ -41,6 +42,7 @@
               <% end %>
             </tbody>
           </table>
+          </div>
         <% end %>
       </div>
     </section>

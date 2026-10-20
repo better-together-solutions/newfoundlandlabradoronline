@@ -14,6 +14,13 @@ module NewfoundlandLabradorOnline
 
       def call(write: false)
         @result = Result.new(terms: 0, party_memberships: 0, created: 0, errors: [])
+        Civic.in_platform_zone { convert_all(write) }
+        @result
+      end
+
+      private
+
+      def convert_all(write)
         ActiveRecord::Base.transaction do
           Provisioner.call
           @writer = Writer.new
@@ -21,10 +28,7 @@ module NewfoundlandLabradorOnline
           PartyMembership.includes(:political_party, :person).find_each { |row| convert_party(row) }
           raise ActiveRecord::Rollback unless write
         end
-        @result
       end
-
-      private
 
       def convert_term(term)
         guard(term) do

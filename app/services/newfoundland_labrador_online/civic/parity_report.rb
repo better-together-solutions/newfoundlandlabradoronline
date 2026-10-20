@@ -10,7 +10,7 @@ module NewfoundlandLabradorOnline
       end
 
       def call
-        checks.flat_map { |name| send(name) }
+        Civic.in_platform_zone { checks.flat_map { |name| send(name) } }
       end
 
       private

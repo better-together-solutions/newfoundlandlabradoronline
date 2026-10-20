@@ -41,6 +41,7 @@ module NewfoundlandLabradorOnline
       @memberships = roster.party_holdings(party)
       @terms_by_person = roster.holdings_by_person(@memberships.map(&:person_id).uniq)
       @current, @former = @memberships.partition { |m| m.ended_on.nil? && sitting?(m) }
+      prefetch_mention_visibility(@memberships.map(&:person))
     end
 
     def sitting?(membership)

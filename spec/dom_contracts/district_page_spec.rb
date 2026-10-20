@@ -37,22 +37,33 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
                                                               filename: "nl-ped-#{name}.jpg")
   end
 
-  it 'shows the cover above the title and as the card image once one is attached', :aggregate_failures do
+  # rubocop:disable-next RSpec/ExampleLength
+  it 'keeps the generated map off the page while the interactive map shows, but on the card', :aggregate_failures do
     attach_generated_cover('corner-brook')
 
     get "/#{locale}/e/districts/provincial/nl/nl-ped-corner-brook"
-    expect(response.body).to include('id="district-cover"', 'cover-image')
+    expect(response.body).to include('id="district-map-section"')
+    expect(response.body).not_to include('id="district-cover"')
 
     get "/#{locale}/e/districts/provincial/nl"
-    expect(response.body).to match(/district-card.*?card-img-top/m)
+    expect(response.body).to match(%r{<img[^>]*card-img-top[^>]*alt="Corner Brook"[^>]*rails/active_storage})
   end
 
-  it 'leaves the cover area and card image out until a cover is attached', :aggregate_failures do
+  it 'shows an uploaded cover above the title', :aggregate_failures do
+    district = NewfoundlandLabradorOnline::ProvincialElectoralDistrict.find_by!(identifier: 'nl-ped-corner-brook')
+    jpeg = Vips::Image.black(40, 24).write_to_buffer('.jpg')
+    district.cover_image.attach(io: StringIO.new(jpeg), filename: 'custom.jpg', content_type: 'image/jpeg')
+
+    get "/#{locale}/e/districts/provincial/nl/nl-ped-corner-brook"
+    expect(response.body).to include('id="district-cover"', 'cover-image')
+  end
+
+  it 'has no cover area without a cover, and cards fall back to the default image', :aggregate_failures do
     get "/#{locale}/e/districts/provincial/nl/nl-ped-corner-brook"
     expect(response.body).not_to include('id="district-cover"')
 
     get "/#{locale}/e/districts/provincial/nl"
-    expect(response.body).not_to include('card-img-top')
+    expect(response.body).to include('card-img-top')
   end
 
   it 'exposes the index identifiers', :aggregate_failures do

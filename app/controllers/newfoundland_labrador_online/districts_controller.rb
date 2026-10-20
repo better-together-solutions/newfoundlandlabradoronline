@@ -17,6 +17,7 @@ module NewfoundlandLabradorOnline
       @districts = province_districts.with_translations.with_attached_cover_image.order(:identifier).to_a
       preload_versions(@districts)
       load_current_members(@districts)
+      prefetch_mention_visibility(@current_terms.values.map(&:person))
     end
 
     def show
@@ -26,6 +27,7 @@ module NewfoundlandLabradorOnline
       @identifiers = @district.identifiers.order(:scheme)
       @settlements = settlements_inside(@district)
       load_electoral_history(@district)
+      prefetch_mention_visibility(history_people)
     end
 
     private
@@ -70,6 +72,10 @@ module NewfoundlandLabradorOnline
       elected = { mandate: { membership: { member: PERSON_PRELOAD } } }
       contests = district.contests.includes(:election, candidacies: [:political_party, elected])
       @contests = contests.sort_by { |contest| contest.election.held_on }.reverse
+    end
+
+    def history_people
+      @terms.flat_map { |run| [run.person] } + @contests.flat_map { |contest| contest.candidacies.map(&:member) }
     end
 
     def settlements_inside(district)

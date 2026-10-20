@@ -73,11 +73,22 @@ RSpec.describe NewfoundlandLabradorOnline::MembershipTimeBox do
     expect(BetterTogether::PersonCommunityMembership.upcoming).to include(future)
   end
 
-  it 'converts calendar dates to local midnight in Newfoundland' do
-    stamp = BetterTogether::PersonCommunityMembership.local_midnight(Date.new(2025, 10, 14))
+  it 'stores instants in UTC and converts calendar dates in the current zone', :aggregate_failures do
+    stamp = Time.use_zone('America/St_Johns') { NewfoundlandLabradorOnline::Civic.local_midnight(Date.new(2025, 10, 14)) }
+    membership = join(person, community, starts_at: stamp)
 
     expect(stamp.time_zone.name).to eq('America/St_Johns')
-    expect([stamp.hour, stamp.min]).to eq([0, 0])
+    expect(membership.reload.read_attribute_before_type_cast(:starts_at).to_s).to include('2025-10-14 02:30:00')
+    expect(Time.use_zone('America/St_Johns') { NewfoundlandLabradorOnline::Civic.local_date(membership.starts_at) })
+      .to eq(Date.new(2025, 10, 14))
+    expect(Time.use_zone('America/Halifax') { NewfoundlandLabradorOnline::Civic.local_date(membership.starts_at) })
+      .to eq(Date.new(2025, 10, 13))
+  end
+
+  it 'runs loaders under the platform time zone' do
+    BetterTogether::Platform.find_by(host: true).update_columns(time_zone: 'America/Halifax')
+
+    expect(NewfoundlandLabradorOnline::Civic.in_platform_zone { Time.zone.name }).to eq('America/Halifax')
   end
 
   describe 'notifications' do

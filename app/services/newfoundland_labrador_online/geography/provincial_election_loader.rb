@@ -34,7 +34,7 @@ module NewfoundlandLabradorOnline
 
       def call
         packet = JSON.parse(File.read(@path)).fetch('elections')
-        load_all(packet)
+        Civic.in_platform_zone { load_all(packet) }
         @result
       end
 

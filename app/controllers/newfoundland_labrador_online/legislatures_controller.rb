@@ -16,8 +16,14 @@ module NewfoundlandLabradorOnline
       roster = NewfoundlandLabradorOnline::Civic::Roster
       @members = roster.legislature_holdings(@legislature)
       @former = roster.legislature_holdings(@legislature, current: false)
-      counts = @members.group_by(&:party_on).transform_values(&:size)
-      @seats = counts.sort_by { |party, n| [-n, party&.short_name.to_s] }
+      prefetch_mention_visibility((@members + @former).map(&:person))
+      @seats = seats_by_party(@members)
+    end
+
+    private
+
+    def seats_by_party(members)
+      members.group_by(&:party_on).transform_values(&:size).sort_by { |party, n| [-n, party&.short_name.to_s] }
     end
   end
 end

@@ -8,6 +8,8 @@ module NewfoundlandLabradorOnline
     # What a page that shows members (avatar, name, party) needs from each Person.
     PERSON_PRELOAD = [:string_translations, :slugs, { profile_image_attachment: :blob }].freeze
 
+    include NewfoundlandLabradorOnline::MentionPrefetch
+
     included do
       before_action :set_province
       helper NewfoundlandLabradorOnline::ProvincesHelper
