@@ -30,6 +30,23 @@ RSpec.describe NewfoundlandLabradorOnline::MembershipTimeBox do
     expect(community.person_community_memberships.held_on(t0 + 5.years)).to contain_exactly(second)
   end
 
+  it 'accepts a subtype role only on that subtype, and generic roles anywhere', :aggregate_failures do
+    NewfoundlandLabradorOnline::Civic::RoleSeeder.call
+    leader = BetterTogether::Role.find_by!(identifier: 'party_leader')
+    party = civic_community(NewfoundlandLabradorOnline::PartyCommunity)
+    legislature = civic_community(NewfoundlandLabradorOnline::LegislatureCommunity)
+
+    expect(join(person, party, role: leader)).to be_persisted
+    expect(join(person, legislature)).to be_persisted
+
+    wrong = BetterTogether::PersonCommunityMembership.new(member: person, joinable: legislature, role: leader,
+                                                          status: 'active')
+    expect(wrong).not_to be_valid
+    expect(wrong.errors[:role_id]).to be_present
+    expect(BetterTogether::PersonCommunityMembership.new(member: person, joinable: community, role: leader,
+                                                         status: 'active')).not_to be_valid
+  end
+
   it 'rejects overlapping holdings of one role' do
     join(person, community, starts_at: t0, ends_at: t0 + 4.years)
     overlap = BetterTogether::PersonCommunityMembership.new(member: person, joinable: community, role:,

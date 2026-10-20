@@ -18,7 +18,7 @@ module NewfoundlandLabradorOnline
     end
 
     def role(identifier)
-      BetterTogether::Role.find_by!(identifier:, resource_type: RoleSeeder::RESOURCE_TYPE)
+      BetterTogether::Role.find_by!(identifier:)
     end
   end
 end

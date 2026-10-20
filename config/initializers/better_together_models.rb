@@ -36,3 +36,8 @@ ActiveSupport::Reloader.to_prepare do
   )
   ActionText::ContentHelper.scrubber = NewfoundlandLabradorOnline::VideoBlockScrubber.new
 end
+
+# Roles and permissions may be scoped to one Community subtype instead of every community.
+ActiveSupport::Reloader.to_prepare do
+  NewfoundlandLabradorOnline::SubtypeResourceTypes.wire!
+end

@@ -7,7 +7,7 @@ module CivicHelpers
                     privacy: 'private', host: false, protected: false }.merge(attrs))
   end
 
-  def civic_role(identifier = 'chair')
+  def civic_role(identifier = 'civic_office')
     BetterTogether::Role.find_by(identifier:, resource_type: 'BetterTogether::Community') ||
       create(:better_together_role, :community_role, identifier:)
   end

@@ -40,6 +40,10 @@ module NewfoundlandLabradorOnline
         skip_callback(:validate, validator)
       end
 
+      # CE scopes the role to the community resource type; subtype roles carry the subtype name instead.
+      belongs_to :role, -> { where(resource_type: SubtypeResourceTypes.allowed) }, optional: true
+      validate :role_fits_community
+
       scope :current, -> { held_on(Time.current) }
       scope :former, -> { where.not(ends_at: nil).where(arel_table[:ends_at].lteq(Time.current)) }
       scope :upcoming, -> { where(arel_table[:starts_at].gt(Time.current)) }
@@ -67,6 +71,13 @@ module NewfoundlandLabradorOnline
       return unless starts_at && ends_at && ends_at <= starts_at
 
       errors.add(:ends_at, :after_start, message: 'must be after the start')
+    end
+
+    def role_fits_community
+      return if role.nil? || joinable.nil? || role.resource_type == 'BetterTogether::Community'
+      return if role.resource_type == joinable.class.name
+
+      errors.add(:role_id, :invalid, message: 'is not available for this type of community')
     end
 
     def holdings_do_not_overlap

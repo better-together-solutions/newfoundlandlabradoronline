@@ -84,6 +84,13 @@ fr:
   journeys:
     title: Mon parcours
   newfoundland_labrador_online:
+    community_subtypes:
+      committee_community: Rôles de comité
+      department_community: Rôles de département
+      executive_community: Rôles de l'exécutif
+      legislature_community: Rôles de la législature
+      organization_community: Rôles d'organisation
+      party_community: Rôles de parti
     districts:
       directory:
         count:

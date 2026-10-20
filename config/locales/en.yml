@@ -84,6 +84,13 @@ en:
   journeys:
     title: My Journey
   newfoundland_labrador_online:
+    community_subtypes:
+      committee_community: Committee roles
+      department_community: Department roles
+      executive_community: Executive roles
+      legislature_community: Legislature roles
+      organization_community: Organization roles
+      party_community: Party roles
     districts:
       directory:
         count:

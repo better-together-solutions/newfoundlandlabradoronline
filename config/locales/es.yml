@@ -84,6 +84,13 @@ es:
   journeys:
     title: Mi Viaje
   newfoundland_labrador_online:
+    community_subtypes:
+      committee_community: Roles de comité
+      department_community: Roles de departamento
+      executive_community: Roles del ejecutivo
+      legislature_community: Roles de legislatura
+      organization_community: Roles de organización
+      party_community: Roles de partido
     districts:
       directory:
         count:

@@ -299,8 +299,12 @@ Same shape as other `/e` kinds, plus the new bodies:
   clear message, and be bypassable only by an explicit, logged override.
 - Rules are only as good as their entry: every rule needs a clause citation, and rule values are reviewed by a person.
 - The index swap changes a CE table from the host app: idempotent, reversible, first backport item.
-- `Joinable#default_member_role` looks up `resource_type: self.class.name`; Community subtypes need roles whose
-  `resource_type` matches or an override. Check against the `belongs_to :role` scoping.
+- Roles and permissions that only make sense for one Community subtype carry that subtype's class name as their
+  `resource_type` (for example `NewfoundlandLabradorOnline::PartyCommunity`), so CE's pickers, which match the type
+  exactly, never offer them for ordinary communities. `SubtypeResourceTypes` extends CE's resource type allowlist for
+  Role and ResourcePermission, `MembershipTimeBox` re-scopes the membership role and rejects a role that does not fit the
+  community (generic community roles stay valid everywhere, so `default_member_role` is unchanged). Any new scoped role or
+  permission follows the same rule.
 - Platform privacy ceiling on each new Community; verify on production.
 - Active status and the permission cache must stop counting a holding that ends, without a midnight write.
 - Notifications: the flag must cover every notify callback and destroy-time cleanup.
