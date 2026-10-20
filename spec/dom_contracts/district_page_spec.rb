@@ -30,6 +30,31 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
     BetterTogether::Geography::GeospatialSpace.create!(geospatial: settlement, space:)
   end
 
+  def attach_generated_cover(name)
+    district = NewfoundlandLabradorOnline::ProvincialElectoralDistrict.find_by!(identifier: "nl-ped-#{name}")
+    jpeg = Vips::Image.black(40, 24).write_to_buffer('.jpg')
+    NewfoundlandLabradorOnline::Geography::DistrictCover.call(region: district, io: StringIO.new(jpeg),
+                                                              filename: "nl-ped-#{name}.jpg")
+  end
+
+  it 'shows the cover above the title and as the card image once one is attached', :aggregate_failures do
+    attach_generated_cover('corner-brook')
+
+    get "/#{locale}/e/districts/provincial/nl/nl-ped-corner-brook"
+    expect(response.body).to include('id="district-cover"', 'cover-image')
+
+    get "/#{locale}/e/districts/provincial/nl"
+    expect(response.body).to match(/district-card.*?card-img-top/m)
+  end
+
+  it 'leaves the cover area and card image out until a cover is attached', :aggregate_failures do
+    get "/#{locale}/e/districts/provincial/nl/nl-ped-corner-brook"
+    expect(response.body).not_to include('id="district-cover"')
+
+    get "/#{locale}/e/districts/provincial/nl"
+    expect(response.body).not_to include('card-img-top')
+  end
+
   it 'exposes the index identifiers', :aggregate_failures do
     get "/#{locale}/e/districts/provincial/nl"
 

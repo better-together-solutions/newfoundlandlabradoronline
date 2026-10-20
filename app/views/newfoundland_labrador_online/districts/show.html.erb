@@ -3,6 +3,12 @@
     <%= link_to t('.all_districts'), newfoundland_labrador_online_scoped_districts_path(province_code(@district), locale: I18n.locale), class: 'btn btn-secondary btn-sm mb-3' %>
   </nav>
 
+  <% if @district.cover_image.attached? %>
+    <div class="cover-image-container mb-3" id="district-cover">
+      <%= cover_image_tag(@district, alt: t('.map_label', name: @district.name)) %>
+    </div>
+  <% end %>
+
   <h1 id="district-name"><%= @district.name %></h1>
   <p class="text-muted" id="district-kind"><%= t('.kind') %> · <span id="district-province"><%= link_to @district.state.name, state_page_path(@district.state) %></span></p>
 

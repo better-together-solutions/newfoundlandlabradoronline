@@ -102,3 +102,27 @@ the CE image stack; confirm which) with a small tile fetcher:
 - Which image library does the NLO image support (vips vs mini_magick), and does CE expose a separate card image?
 - For huge, sparse districts, should we add an inset locator map of the province?
 - Should an editor-uploaded cover always win (proposed yes)?
+
+## Decisions (2026-10-20)
+
+- Boundary style matches the party-branded Leaflet overlay: party colour stroke, 0.45 fill.
+- Party comes from the latest provincial election: the elected candidacy's party in that district. Fallback colour `#6c757d` when none.
+- The generated cover is attached to the district's own `cover_image` (the attachment a manual upload uses, so an upload replaces it and the card image follows).
+- A second attachment, `default_cover_image`, keeps the generated image so it can be restored when a custom cover is cleared.
+- Image library: Pillow, as in the ship tracker scripts (`scripts/traffic_bay_map.py`).
+- Locator inset: province overview bottom-left, with district filled in party colour. Variants prototyped: `inset-map` (OSM tiles) and `inset-outline` (vector only). Prototype files are in `tmp/district-covers/v2/`.
+
+## Built (2026-10-20)
+
+Pipeline, run on bts-0 with the NLO app only touched at the two ends:
+
+1. `rake nlo:regions:cover_inputs OUT=tmp/district-covers/inputs.json` writes boundaries, credit and colour per district.
+   Colour is the sitting member's current party (Independent and vacant seats are grey), as on the live map.
+2. `scripts/district_cover_images.py --input inputs.json --out DIR [--only NAME ...]` (management-tool, Pillow) writes
+   one `nl-ped-<slug>.jpg` per district (1200x675, under 700 KB) plus `manifest.json`. OSM tiles are cached under
+   `tmp/district-cover-tiles` and fetched one per second with a named User-Agent; run it on a few districts at a time.
+3. `rake nlo:regions:attach_covers DIR=... [WRITE=1]` (dry run without WRITE) attaches each JPEG to the district's
+   district as `default_cover_image`, and as `cover_image` unless someone uploaded their own.
+
+Clearing the cover on a district restores the stored default (`NewfoundlandLabradorOnline::DefaultCoverImage`).
+The district page shows the cover above the title (like the settlement page) and the district cards use it as their card image.
