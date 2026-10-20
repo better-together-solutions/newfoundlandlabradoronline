@@ -49,6 +49,15 @@ RSpec.describe 'Documentation screenshots for electoral districts', :js, type: :
     expect(captured('district_show', callouts)).to all(be > 10_000)
   end
 
+  it 'captures the legislature page' do
+    visit "/#{locale}/e/members/provincial/nl"
+    callouts = [{ selector: '#legislature-seats', title: 'Sitting seats by party' },
+                { selector: '#legislature-members', title: 'Sitting members by district' },
+                { selector: '#legislature-former', title: 'Former members' }]
+
+    expect(captured('legislature_show', callouts)).to all(be > 10_000)
+  end
+
   it 'captures the party index' do
     visit "/#{locale}/e/parties/provincial/nl"
 

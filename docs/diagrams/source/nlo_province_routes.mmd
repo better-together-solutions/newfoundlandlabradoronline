@@ -15,6 +15,7 @@ flowchart LR
     E0["/e/elections and /e/elections/provincial (directory)"]
     E2["/e/elections/provincial/:province"]
     E3["/e/elections/provincial/:province/:year"]
+    L1["/e/members/provincial/:province (legislature)"]
   end
   S["Geography::State (iso_code CA-:PROVINCE)"]
   D0 --> D2
@@ -27,5 +28,7 @@ flowchart LR
   S --> D2
   S --> P2
   S --> E2
+  S --> L1
+  L1 --> D3
   P3 -. "member mention (profile)" .-> D3
   E3 -. "member mention (profile)" .-> D3

@@ -25,8 +25,7 @@ module NewfoundlandLabradorOnline
 
     # Parties that have ever had a member elected; others that only contested are not listed.
     scope :ever_seated, lambda {
-      where(id: NewfoundlandLabradorOnline::ElectedTerm.select(:political_party_id))
-        .or(where(id: NewfoundlandLabradorOnline::PartyMembership.select(:political_party_id)))
+      where(community_id: BetterTogether::PersonCommunityMembership.select(:joinable_id))
     }
 
     validates :jurisdiction, :identifier, :name, :short_name, presence: true

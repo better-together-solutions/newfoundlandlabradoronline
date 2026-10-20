@@ -39,14 +39,18 @@ module NewfoundlandLabradorOnline
         change_party(person, party, date, change)
       end
 
+      def writer
+        @writer ||= Civic::Writer.new
+      end
+
       def in_party?(person, party, date)
-        person.party_memberships.on(date).chronological.last&.political_party_id == party.id
+        Civic::Roster.party_membership_on(person, date)&.joinable_id == party.community_id
       end
 
       def change_party(person, party, date, change)
-        person.party_memberships.on(date).chronological.last&.update!(ended_on: date, end_reason: change['reason'])
-        person.party_memberships.find_or_initialize_by(political_party: party, started_on: date)
-              .update!(start_reason: change['reason'], source_url: @source_url)
+        previous = Civic::Roster.party_membership_on(person, date)
+        writer.end_membership(previous, on: date, reason: change['reason']) if previous
+        writer.join_party(person:, party:, from: date, start_reason: change['reason'], source_url: @source_url)
         @result.applied += 1
       end
 
@@ -59,7 +63,8 @@ module NewfoundlandLabradorOnline
       end
 
       def current_party_key(person)
-        person.party_memberships.current.chronological.last&.political_party&.identifier
+        membership = Civic::Roster.party_membership_on(person, Time.current)
+        membership && PoliticalParty.find_by(community_id: membership.joinable_id)&.identifier
       end
 
       # By name, else by the sitting member of the roster's district with the same surname ("James" vs "Jim").
@@ -73,8 +78,8 @@ module NewfoundlandLabradorOnline
 
         identifier = ProvincialElectoralDistrict.identifier_for_name(district)
         region = ProvincialElectoralDistrict.find_by(identifier:)
-        term = region.elected_terms.current.first if region
-        term.person if term && term.person.name.split.last == surname
+        holding = Civic::Roster.current_holdings(region_ids: [region.id]).first if region
+        holding.person if holding && holding.person.name.split.last == surname
       end
 
       def find_party(key)

@@ -1,0 +1,50 @@
+<div class="container py-4" id="legislature-page">
+  <h1 id="legislature-name"><%= @legislature.name %></h1>
+  <p class="text-muted"><%= t('.intro', count: @members.size, province: @province.name) %></p>
+
+  <section class="mb-4" id="legislature-seats" aria-label="<%= t('.seats') %>">
+    <h2 class="h5"><%= t('.seats') %></h2>
+    <ul class="list-inline mb-0">
+      <% @seats.each do |party, count| %>
+        <li class="list-inline-item"><%= party ? party_chip(party) : t('newfoundland_labrador_online.districts.index.no_party') %> <strong><%= count %></strong></li>
+      <% end %>
+    </ul>
+  </section>
+
+  <% { 'legislature-members' => [@members, t('.sitting')], 'legislature-former' => [@former, t('.former')] }.each do |id, (holdings, heading)| %>
+    <section class="card mt-4" id="<%= id %>">
+      <div class="card-body">
+        <h2 class="h5 card-title"><%= heading %></h2>
+        <% if holdings.empty? %>
+          <p class="text-muted mb-0"><%= t('.none') %></p>
+        <% else %>
+          <table class="table table-sm mb-0">
+            <thead>
+              <tr>
+                <th scope="col"><%= t('.district') %></th>
+                <th scope="col"><%= t('.member') %></th>
+                <th scope="col"><%= t('.party') %></th>
+                <th scope="col"><%= t('.from') %></th>
+                <th scope="col"><%= t('.to') %></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% holdings.each do |holding| %>
+                <% party = holding.party_on(holding.ended_on ? holding.ended_on - 1 : Time.zone.today) %>
+                <tr id="<%= dom_id(holding, :seat) %>">
+                  <td><%= district_link(holding.region) %></td>
+                  <td><%= member_mention(holding.person) %></td>
+                  <td><%= party ? party_chip(party) : holding.party_name %></td>
+                  <td><%= l(holding.started_on, format: :long) %></td>
+                  <td><%= holding.ended_on ? l(holding.ended_on, format: :long) : t('newfoundland_labrador_online.districts.show.present') %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <p class="mt-3"><%= link_to t('.districts'), newfoundland_labrador_online_scoped_districts_path(NewfoundlandLabradorOnline::Province.code_for(@province), locale: I18n.locale) %></p>
+</div>

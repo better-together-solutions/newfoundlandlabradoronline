@@ -7,6 +7,16 @@ module NewfoundlandLabradorOnline
       SEAT_TYPE = 'BetterTogether::Geography::Region'
       PERSON_PRELOAD = [:string_translations, :slugs, { profile_image_attachment: :blob }].freeze
 
+      # One person's unbroken stretch in a seat: latest term first, dates spanning all of them.
+      Run = Struct.new(:holdings) do
+        def latest = holdings.first
+        def person = latest.person
+        def political_party = latest.party_on
+        def started_on = holdings.last.started_on
+        def ended_on = latest.ended_on
+        def terms = holdings.size
+      end
+
       module_function
 
       # Sitting members of the legislatures, optionally limited to some districts.
@@ -14,9 +24,21 @@ module NewfoundlandLabradorOnline
         build(seat_memberships(region_ids).held_on(Time.current))
       end
 
+      # Sitting (current: true) or former members of one legislature, by district name.
+      def legislature_holdings(legislature, current: true)
+        scope = seat_memberships.where(joinable_id: legislature.id)
+        scope = current ? scope.held_on(Time.current) : scope.former
+        build(scope, order: :desc).sort_by { |holding| [holding.region.name, -holding.membership.starts_at.to_i] }
+      end
+
       # Every term in one district, latest first.
       def district_history(region)
         build(seat_memberships([region.id]), order: :desc)
+      end
+
+      # Consecutive terms of one person in a seat folded into one entry (holdings latest first).
+      def runs(holdings)
+        holdings.slice_when { |a, b| a.person_id != b.person_id }.map { |group| Run.new(group) }
       end
 
       # Terms of the given people grouped by person id, latest first.
@@ -41,6 +63,13 @@ module NewfoundlandLabradorOnline
 
         memberships = party_memberships(party.community_id).includes(:mandate, member: PERSON_PRELOAD)
         memberships.order(starts_at: :desc).map { |m| PartyHolding.new(membership: m, political_party: party) }
+      end
+
+      # The party membership a person holds on a date (a Date or Time), or nil.
+      def party_membership_on(person, date)
+        time = date.is_a?(Date) ? Civic.local_midnight(date) : date
+        party_memberships(PartyCommunity.select(:id)).where(member_id: person.id).held_on(time)
+                                                     .order(:starts_at).last
       end
 
       def seat_memberships(region_ids = nil)

@@ -25,12 +25,23 @@ module NewfoundlandLabradorOnline
                                                             jurisdiction_id: state.id })
       end
 
+      def legislature!(state)
+        legislature_for(state) || create_legislature(state || Province.state_for('nl'))
+      end
+
+      def provision_party(party)
+        return party.community if party.community
+
+        identifier = ['party', party.jurisdiction, party.state && Province.code_for(party.state), party.identifier]
+        party.update!(community: PartyCommunity.create!(community_attributes(identifier.compact.join('-'),
+                                                                             party.name)))
+        party.community
+      end
+
       private
 
       def provision_legislatures
-        provinces.filter_map do |state|
-          legislature_for(state) || create_legislature(state)
-        end
+        provinces.map { |state| legislature!(state) }
       end
 
       def provinces
@@ -51,12 +62,7 @@ module NewfoundlandLabradorOnline
       end
 
       def provision_parties
-        PoliticalParty.where(community_id: nil).find_each.map do |party|
-          identifier = ['party', party.jurisdiction, party.state && Province.code_for(party.state), party.identifier]
-          party.update!(community: PartyCommunity.create!(community_attributes(identifier.compact.join('-'),
-                                                                               party.name)))
-          party
-        end
+        PoliticalParty.where(community_id: nil).find_each.map { |party| provision_party(party) && party }
       end
 
       def community_attributes(identifier, name)

@@ -85,12 +85,12 @@
           </tr>
         </thead>
         <tbody>
-          <% @terms.each do |term| %>
-            <tr id="<%= dom_id(term) %>">
-              <td><%= member_mention(term.person) %></td>
-              <td><%= party_chip(term.political_party) if term.political_party %><%= term.party_name unless term.political_party %></td>
-              <td><%= l(term.started_on, format: :long) %></td>
-              <td><%= term.ended_on ? l(term.ended_on, format: :long) : t('.present') %></td>
+          <% NewfoundlandLabradorOnline::Civic::Roster.runs(@terms).each do |run| %>
+            <tr id="<%= dom_id(run.latest) %>">
+              <td><%= member_mention(run.person) %><% if run.terms > 1 %> <span class="text-muted small"><%= t('.terms_count', count: run.terms) %></span><% end %></td>
+              <td><%= party_chip(run.political_party) if run.political_party %><%= run.latest.party_name unless run.political_party %></td>
+              <td><%= l(run.started_on, format: :long) %></td>
+              <td><%= run.ended_on ? l(run.ended_on, format: :long) : t('.present') %></td>
             </tr>
           <% end %>
         </tbody>

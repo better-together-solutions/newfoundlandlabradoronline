@@ -1,0 +1,13 @@
+%% render.orientation: landscape
+flowchart LR
+  R["release: db:migrate"] --> M1["schema: time-boxed memberships, mandates, seats, associations, legislature detail"]
+  M1 --> M2["prepare: party community link, mandate source and start reason"]
+  M2 --> B["BackfillCivicRoles"]
+  B --> P["Provisioner: roles, legislature community, party communities"]
+  P --> C["Backfill: terms and party memberships to dated memberships with mandates"]
+  C --> V{"ParityReport clean?"}
+  V -- "yes" --> OK["release succeeds, containers swap, pages read Civic::Roster"]
+  V -- "no or errors" --> F["release fails, old containers keep serving"]
+  T1[("elected_terms")] -. "read once" .-> C
+  T2[("party_memberships")] -. "read once" .-> C
+  OK -. "later, confirmed" .-> D["cleanup migration drops legacy tables"]

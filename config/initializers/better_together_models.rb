@@ -20,9 +20,10 @@ ActiveSupport::Reloader.to_prepare do
   BetterTogether::Geography::StatePolicy.prepend(NewfoundlandLabradorOnline::StatePolicy)
   # Elected members: a person's terms in district seats.
   BetterTogether::Person.include(NewfoundlandLabradorOnline::Person)
-  # Civic roles: time-boxed memberships and community associations (see docs/civic-roles-membership-design.md).
+  # Civic roles (docs/civic-roles-membership-design.md): time-boxed memberships and community associations.
   BetterTogether::PersonCommunityMembership.prepend(NewfoundlandLabradorOnline::MembershipTimeBox)
   BetterTogether::Community.include(NewfoundlandLabradorOnline::Associable)
+  BetterTogether::CommunityPolicy::Scope.prepend(NewfoundlandLabradorOnline::CommunityPolicyScope)
   # Locations: every record in LocatableModels gets the shared location interface.
   NewfoundlandLabradorOnline::LocatableModels.wire!
   BetterTogether::Content::VideoBlock.include(NewfoundlandLabradorOnline::VideoBlock)

@@ -6,6 +6,13 @@ module NewfoundlandLabradorOnline
   module CommunitySubtype
     extend ActiveSupport::Concern
 
+    # CE's invitation-token authorization finds a policy by class name, so each subtype gets a named one.
+    included do
+      policy = Class.new(BetterTogether::CommunityPolicy)
+      NewfoundlandLabradorOnline.const_set("#{name.demodulize}Policy", policy) unless
+        NewfoundlandLabradorOnline.const_defined?("#{name.demodulize}Policy", false)
+    end
+
     class_methods do
       def model_name
         BetterTogether::Community.model_name

@@ -135,6 +135,9 @@ es:
         results: Resultados electorales
         settlements: Localidades dentro
         share: Porcentaje
+        terms_count:
+          one: "%{count} mandato"
+          other: "%{count} mandatos"
         turnout: Participación %{value}%
         unknown: Desconocido
         valid_from: Desde
@@ -158,6 +161,21 @@ es:
           provincial: Elecciones generales provinciales de %{year}
     image_blocks:
       preview: 'Imagen: %{caption}'
+    legislatures:
+      show:
+        district: Distrito
+        districts: Distritos electorales de esta provincia
+        former: Antiguos miembros
+        from: Desde
+        intro:
+          one: "%{count} miembro en ejercicio de la legislatura de %{province}."
+          other: "%{count} miembros en ejercicio de la legislatura de %{province}."
+        member: Miembro
+        none: Aún no hay miembros registrados.
+        party: Partido
+        seats: Escaños por partido
+        sitting: Miembros en ejercicio
+        to: Hasta
     listing_map:
       label: 'Mapa: %{title}'
     live_images:
@@ -219,6 +237,7 @@ es:
       show:
         all_districts: Todos los distritos de esta provincia
         all_elections: Todas las elecciones de esta provincia
+        all_legislature: Miembros de la legislatura
         all_parties: Todos los partidos de esta provincia
         manage: Administrar esta provincia
         tabs:

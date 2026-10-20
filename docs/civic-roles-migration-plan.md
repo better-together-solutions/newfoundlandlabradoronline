@@ -1,6 +1,6 @@
 # Civic roles: migrating the deployed model, data and UI
 
-Status: PLAN for review, nothing built. Replaces design phases 2 and 3 for now (instruments and rules, and the election
+Status: BUILT on PR #215 as a single deploy (see "Deploy sequence"). Replaces design phases 2 and 3 for now (instruments and rules, and the election
 reference model, are deferred until needed). Builds on phase 1 (PR #215). Design: `docs/civic-roles-membership-design.md`.
 
 ## Goal
@@ -76,16 +76,22 @@ membership reasons and sources); a mandate kind `member` for party membership. A
 - Contact and notification side effects: backfill sends nothing (verified by spec).
 - Query counts on every listing page stay within the existing budgets.
 
-## Deploy sequence (gated by tests and the parity report, not by waiting periods)
+## Deploy sequence (single deploy, gated by tests and the parity report)
 
-1. DB snapshot (first data-model deploy of the series, with restore command), then deploy A: phase 1 plus steps 1 to 5. Reads
-   are still the old tables. Run `nlo:civic:seed_roles`, `provision`, `backfill`, `parity` in production. Each is a
-   `dokku run` write, so each needs your explicit go-ahead (T3). Parity must be clean.
-2. Deploy B: read switch and new UI (steps 6 to 9), after verifying every page in production against the screenshots.
-3. Deploy C: retire the old tables (step 10) once pages have been checked on B and you confirm.
-Each deploy follows the ce-deployment skill: T3 approval, serialised on bts-5, stale `.upcoming` container check, page checks.
-Rollback: deploy A is additive (revert the code, tables stay unused); B reverts by redeploying A's commit; C is the only
-step needing the snapshot.
+One deploy carries phase 1, the data migration and the read switch.
+
+1. DB snapshot first (first data-model deploy of the series), with the restore command recorded.
+2. Deploy. The release step runs `db:migrate`, which applies the schema changes, then `BackfillCivicRoles`: it seeds the
+   roles, provisions the legislature and party communities, converts every elected term and party membership, and runs
+   the parity report. Any conversion error or parity difference raises, the release fails and the old containers keep
+   serving, so the deploy is atomic from the site's point of view.
+3. The code reads only the new model. The old `elected_terms` and `party_memberships` tables stay in the database,
+   untouched, until a later cleanup migration (deploy C) drops them after the pages have been verified.
+4. Post-deploy checks: every district, party, election, province and legislature page returns 200 with members, photos
+   and links; the civic communities are absent from the CE communities index; no stale `.upcoming` containers.
+
+Rollback: redeploy the previous commit (the old tables are intact and still hold the data). The snapshot is only needed
+for the cleanup migration that drops the old tables, which is separate and needs its own confirmation.
 
 ## Order of work and checkpoints (review gate after each)
 
@@ -109,4 +115,4 @@ step needing the snapshot.
 1. Branch: continue on `feat/civic-roles-foundation` (PR #215) so one PR carries migration plus UI, or stack new branches per checkpoint. I recommend continuing on #215, as the phase 1 code is unused without this work.
 2. Legislature page: build it now (recommended, it is the visible payoff of the legislature community), or defer.
 3. Old tables: drop in deploy C (recommended) or keep read-only for an extended period.
-4. Hide the new communities from the general CE communities index and search until you want them listed (recommended pending the privacy check), or list them.
+4. DECIDED: the new communities are hidden from the CE communities index and pickers (`CommunityPolicy::Scope` prepend); they stay reachable by URL.

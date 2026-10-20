@@ -30,6 +30,9 @@
       <% if province %>
       <div class="tab-pane fade show active" id="districts" role="tabpanel" aria-labelledby="districts-tab">
         <p><%= link_to t('newfoundland_labrador_online.states.show.all_districts'), newfoundland_labrador_online_scoped_districts_path(code, locale: I18n.locale) %></p>
+        <% if NewfoundlandLabradorOnline::Civic::Provisioner.new.legislature_for(@state) %>
+          <p id="province-legislature-link"><%= link_to t('newfoundland_labrador_online.states.show.all_legislature'), newfoundland_labrador_online_legislature_path(code, locale: I18n.locale) %></p>
+        <% end %>
         <ul id="province-districts">
           <% districts.each do |district| %>
             <li><%= link_to district.name, newfoundland_labrador_online_district_path(code, district, locale: I18n.locale) %></li>

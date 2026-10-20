@@ -6,8 +6,7 @@ module NewfoundlandLabradorOnline
     extend ActiveSupport::Concern
 
     # What a page that shows members (avatar, name, party) needs from each Person.
-    PERSON_PRELOAD = [:string_translations, :slugs, { profile_image_attachment: :blob },
-                      { party_memberships: :political_party }].freeze
+    PERSON_PRELOAD = [:string_translations, :slugs, { profile_image_attachment: :blob }].freeze
 
     included do
       before_action :set_province

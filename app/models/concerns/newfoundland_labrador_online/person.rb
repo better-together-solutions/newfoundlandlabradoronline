@@ -10,6 +10,16 @@ module NewfoundlandLabradorOnline
                                inverse_of: :person, dependent: :destroy
       has_many :party_memberships, class_name: 'NewfoundlandLabradorOnline::PartyMembership', foreign_key: :person_id,
                                    inverse_of: :person, dependent: :destroy
+
+      after_create :hide_primary_community
+    end
+
+    private
+
+    # A person's own community stays out of the public communities list. It is created at the profile's privacy
+    # (the ceiling check needs that), then set private directly; the profile keeps its own privacy.
+    def hide_primary_community
+      community&.update_columns(privacy: 'private')
     end
   end
 end

@@ -135,6 +135,9 @@ en:
         results: Election results
         settlements: Settlements inside
         share: Share
+        terms_count:
+          one: "%{count} term"
+          other: "%{count} terms"
         turnout: Turnout %{value}%
         unknown: Unknown
         valid_from: From
@@ -157,6 +160,21 @@ en:
           provincial: Provincial general election %{year}
     image_blocks:
       preview: 'Image: %{caption}'
+    legislatures:
+      show:
+        district: District
+        districts: Electoral districts of this province
+        former: Former members
+        from: From
+        intro:
+          one: "%{count} sitting member of the legislature of %{province}."
+          other: "%{count} sitting members of the legislature of %{province}."
+        member: Member
+        none: No members are recorded yet.
+        party: Party
+        seats: Seats by party
+        sitting: Sitting members
+        to: To
     listing_map:
       label: Map of %{title}
     live_images:
@@ -218,6 +236,7 @@ en:
       show:
         all_districts: All districts of this province
         all_elections: All elections of this province
+        all_legislature: Members of the legislature
         all_parties: All parties of this province
         manage: Manage this province
         tabs:

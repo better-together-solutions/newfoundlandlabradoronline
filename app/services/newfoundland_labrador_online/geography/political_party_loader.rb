@@ -32,6 +32,7 @@ module NewfoundlandLabradorOnline
         bucket = party.new_record? ? @result.created : @result.updated
         party.update!(attributes_for(entry))
         attach_logo(party, entry['logo_file'])
+        Civic::Provisioner.new.provision_party(party)
         bucket << party.identifier
       end
 

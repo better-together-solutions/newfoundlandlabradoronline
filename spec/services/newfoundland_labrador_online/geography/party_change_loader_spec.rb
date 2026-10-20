@@ -12,6 +12,15 @@ RSpec.describe NewfoundlandLabradorOnline::Geography::PartyChangeLoader do
   end
   let(:person) { BetterTogether::Person.find_by!(identifier: 'nl-mha-jim-parsons') }
 
+  def party_rows
+    party = NewfoundlandLabradorOnline::PoliticalParty
+    parties = party.where.not(community_id: nil).index_by(&:community_id)
+    memberships = BetterTogether::PersonCommunityMembership.where(member: person, joinable_id: parties.keys)
+    memberships.order(:starts_at).map do |m|
+      NewfoundlandLabradorOnline::Civic::PartyHolding.new(membership: m, political_party: parties[m.joinable_id])
+    end
+  end
+
   before do
     configure_host_platform
     districts = NewfoundlandLabradorOnline::Geography::ProvincialDistrictLoader
@@ -24,9 +33,8 @@ RSpec.describe NewfoundlandLabradorOnline::Geography::PartyChangeLoader do
     result = described_class.new(path:).call
 
     expect(result.applied).to eq(1)
-    expect(person.party_memberships.chronological.map { |m| [m.political_party.identifier, m.started_on.to_s] })
-      .to eq([%w[liberal 2025-10-14], %w[independent 2026-09-14]])
-    expect(person.party_memberships.chronological.first.end_reason).to eq('floor_crossing')
+    expect(party_rows.map { |m| [m.political_party.identifier, m.started_on.to_s, m.end_reason] })
+      .to eq([%w[liberal 2025-10-14 floor_crossing], ['independent', '2026-09-14', nil]])
   end
 
   it 'is idempotent and survives an elections reload', :aggregate_failures do
@@ -34,7 +42,7 @@ RSpec.describe NewfoundlandLabradorOnline::Geography::PartyChangeLoader do
     elections.call
 
     expect(described_class.new(path:).call.unchanged).to eq(1)
-    expect(person.party_memberships.count).to eq(2)
+    expect(party_rows.size).to eq(2)
   end
 
   it 'reports roster entries that disagree with the loaded memberships' do

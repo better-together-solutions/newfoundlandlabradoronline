@@ -5,6 +5,12 @@ module NewfoundlandLabradorOnline
     # One member's term in a district seat, read from a legislature membership and its mandate. It answers the same
     # questions the pages asked of an elected term: who, where, when, under which party.
     class Holding
+      def self.model_name
+        ActiveModel::Name.new(self, nil, 'NewfoundlandLabradorOnline::ElectedTerm')
+      end
+
+      delegate :model_name, to: :class
+
       attr_reader :membership, :mandate, :region, :candidacy, :party_rows
 
       def initialize(membership:, region:, candidacy:, party_rows: [])
@@ -26,6 +32,8 @@ module NewfoundlandLabradorOnline
       def current? = ended_on.nil?
       def region_id = region.id
       def to_param = membership.id
+      def to_key = [membership.id]
+      def to_model = self
 
       # The party the member sat for on a date: the dated party membership, else the party run under.
       def party_on(date = Time.zone.today)
