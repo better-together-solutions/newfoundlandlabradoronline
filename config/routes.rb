@@ -62,6 +62,12 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
                                as: :newfoundland_labrador_online_available_locations
   end
 
+  scope path: BetterTogether.route_scope_path do
+    scope 'api', defaults: { format: :json } do
+      put 'v1/geography_regions/:id/generated_cover', to: 'newfoundland_labrador_online/api/v1/district_covers#update'
+    end
+  end
+
   root to: redirect("/#{I18n.default_locale}")
   mount BetterTogether::Engine => '/'
 end
