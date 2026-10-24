@@ -41,3 +41,9 @@ end
 ActiveSupport::Reloader.to_prepare do
   NewfoundlandLabradorOnline::SubtypeResourceTypes.wire!
 end
+
+# API input: community logo and cover images; event cover image and hosting community.
+ActiveSupport::Reloader.to_prepare do
+  BetterTogether::Community.include(NewfoundlandLabradorOnline::CommunityImages)
+  BetterTogether::Event.include(NewfoundlandLabradorOnline::EventImages, NewfoundlandLabradorOnline::EventHosting)
+end

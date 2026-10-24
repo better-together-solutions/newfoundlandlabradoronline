@@ -3,20 +3,27 @@
 module NewfoundlandLabradorOnline
   # API attribute for locatable records (see LocatableModels): `settlement_identifier` reads and sets the
   # settlement the record is located at; null clears it. An unknown identifier is rejected, never created.
+  # `address_spec` (write-only) locates the record at a street address instead (see LocationInterface#address_spec).
   module LocatableResource
+    FIELDS = %i[settlement_identifier address_spec].freeze
+
     def self.prepended(base)
-      base.attributes :settlement_identifier
+      base.attributes :settlement_identifier, :address_spec
       base.singleton_class.prepend(ClassMethods)
     end
 
-    # Adds the attribute to the create and update field lists of the resource it is prepended to.
+    def fetchable_fields
+      super - %i[address_spec]
+    end
+
+    # Adds the attributes to the create and update field lists of the resource it is prepended to.
     module ClassMethods
       def creatable_fields(context)
-        (super + [:settlement_identifier]).uniq
+        (super + FIELDS).uniq
       end
 
       def updatable_fields(context)
-        (super + [:settlement_identifier]).uniq
+        (super + FIELDS).uniq
       end
     end
   end
