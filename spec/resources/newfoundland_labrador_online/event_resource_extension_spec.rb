@@ -6,7 +6,7 @@ RSpec.describe NewfoundlandLabradorOnline::EventResourceExtension do
   let(:resource) { BetterTogether::Api::V1::EventResource }
 
   it 'accepts the host and cover image fields on create and update', :aggregate_failures do
-    %i[host_community_id cover_image_data cover_image_filename].each do |field|
+    %i[hosts cover_image_data cover_image_filename].each do |field|
       expect(resource.creatable_fields({})).to include(field)
       expect(resource.updatable_fields({})).to include(field)
     end
@@ -18,33 +18,35 @@ RSpec.describe NewfoundlandLabradorOnline::EventResourceExtension do
     expect(fields).not_to include(:cover_image_data, :cover_image_filename)
   end
 
-  describe 'naming a host community' do
+  describe 'naming hosts' do
     let(:community) { create(:better_together_community) }
     let(:person) { create(:better_together_person) }
     let(:user) { instance_double(BetterTogether::User, person:) }
+    let(:specs) { [{ host_type: community.class.name, host_id: community.id }] }
 
-    def assign(id)
+    def assign(value)
       instance = resource.new(BetterTogether::Event.new, { current_user: user })
-      instance.host_community_id = id
+      instance.hosts = value
       instance
     end
 
-    it 'allows a community the person can host for' do
-      allow(person).to receive_messages(valid_event_host_ids: [community.id], permitted_to?: false)
+    it 'allows hosts the person can host for, as a list or JSON', :aggregate_failures do
+      allow(person).to receive_messages(valid_event_host_ids: [community.id, person.id], permitted_to?: false)
 
-      expect(assign(community.id)._model.host_community_id).to eq(community.id)
+      expect(assign(specs)._model.hosts).to eq(specs)
+      expect(assign(specs.to_json)._model.hosts).to eq(specs)
     end
 
-    it 'allows a platform manager to name any community' do
+    it 'allows a platform manager to name any host' do
       allow(person).to receive_messages(valid_event_host_ids: [], permitted_to?: true)
 
-      expect(assign(community.id)._model.host_community_id).to eq(community.id)
+      expect(assign(specs)._model.hosts).to eq(specs)
     end
 
-    it 'refuses a community the person cannot host for' do
+    it 'refuses a host the person cannot host for' do
       allow(person).to receive_messages(valid_event_host_ids: [], permitted_to?: false)
 
-      expect { assign(community.id) }.to raise_error(JSONAPI::Exceptions::InvalidFieldValue)
+      expect { assign(specs) }.to raise_error(JSONAPI::Exceptions::InvalidFieldValue)
     end
   end
 end

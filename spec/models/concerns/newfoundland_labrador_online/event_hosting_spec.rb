@@ -12,41 +12,51 @@ RSpec.describe NewfoundlandLabradorOnline::EventHosting do
   let(:other) { create(:better_together_community) }
   let(:event) { build(:better_together_event, creator:, event_hosts: []) }
 
+  def spec(*hosts)
+    hosts.map { |host| { host_type: host.class.name, host_id: host.id } }
+  end
+
   it 'hosts the event by the community and not by the creator', :aggregate_failures do
-    event.host_community_id = community.id
+    event.hosts = spec(community)
     event.save!
 
     expect(event.event_hosts.map(&:host)).to eq([community])
-    expect(event.host_community_id).to eq(community.id)
+    expect(event.hosts).to eq(spec(community))
   end
 
-  it 'still defaults to the creator when no host is given', :aggregate_failures do
+  it 'supports several hosts of different types, from a JSON string', :aggregate_failures do
+    event.hosts = spec(community, creator).to_json
+    event.save!
+
+    expect(event.reload.event_hosts.map(&:host)).to contain_exactly(community, creator)
+  end
+
+  it 'still defaults to the creator when no hosts are given' do
     event.save!
 
     expect(event.event_hosts.map(&:host)).to eq([creator])
   end
 
-  it 'changes the host on update', :aggregate_failures do
-    event.host_community_id = community.id
-    event.save!
+  it 'replaces the hosts on update, keeping the ones that stay', :aggregate_failures do
+    event.update!(hosts: spec(community, other))
+    kept = event.event_hosts.find { |h| h.host == community }.id
 
-    event.update!(host_community_id: other.id)
+    event.update!(hosts: spec(community, creator))
 
-    expect(event.reload.event_hosts.map(&:host)).to eq([other])
-    expect(BetterTogether::EventHost.where(event_id: event.id).count).to eq(1)
+    expect(event.reload.event_hosts.map(&:host)).to contain_exactly(community, creator)
+    expect(event.event_hosts.map(&:id)).to include(kept)
   end
 
-  it 'leaves the host alone when the same community is set again', :aggregate_failures do
-    event.host_community_id = community.id
-    event.save!
+  [
+    [{ host_type: 'BetterTogether::Community', host_id: 'missing' }],
+    [{ host_type: 'BetterTogether::Event', host_id: 'any' }],
+    []
+  ].each do |bad|
+    it "rejects the host list #{bad.inspect}", :aggregate_failures do
+      event.hosts = bad
 
-    expect { event.update!(host_community_id: community.id) }.not_to(change { event.reload.event_hosts.pluck(:id) })
-  end
-
-  it 'rejects an unknown community', :aggregate_failures do
-    event.host_community_id = SecureRandom.uuid
-
-    expect(event).not_to be_valid
-    expect(event.errors[:host_community_id]).to be_present
+      expect(event).not_to be_valid
+      expect(event.errors[:hosts]).to be_present
+    end
   end
 end

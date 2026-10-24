@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 module NewfoundlandLabradorOnline
-  # Host-side API additions for BetterTogether::Api::V1::EventResource: the hosting community and the cover image.
-  # Only people who may host for the community (or platform managers) can name it as host.
+  # Host-side API additions for BetterTogether::Api::V1::EventResource: the hosts (see EventHosting) and the cover
+  # image. As in the event form, a host must be the person or a community they belong to; platform managers may
+  # name any host.
   module EventResourceExtension
-    EXTRA_FIELDS = %i[host_community_id cover_image_data cover_image_filename].freeze
+    EXTRA_FIELDS = %i[hosts cover_image_data cover_image_filename].freeze
 
     def self.prepended(base)
       base.attributes(*EXTRA_FIELDS)
@@ -26,20 +27,28 @@ module NewfoundlandLabradorOnline
       super - %i[cover_image_data cover_image_filename]
     end
 
-    def host_community_id=(value)
-      raise JSONAPI::Exceptions::InvalidFieldValue.new(:host_community_id, value) unless may_host?(value)
+    def hosts=(value)
+      raise JSONAPI::Exceptions::InvalidFieldValue.new(:hosts, value) unless may_host?(value)
 
-      @model.host_community_id = value
+      @model.hosts = value
     end
 
     private
 
-    def may_host?(community_id)
+    def may_host?(value)
       person = context[:current_user]&.person
       return false unless person
-      return true if community_id.blank? || person.permitted_to?('manage_platform')
+      return true if person.permitted_to?('manage_platform')
 
-      person.valid_event_host_ids.include?(community_id.to_s)
+      allowed = person.valid_event_host_ids.map(&:to_s)
+      parsed_host_ids(value).all? { |id| allowed.include?(id) }
+    end
+
+    def parsed_host_ids(value)
+      value = JSON.parse(value) if value.is_a?(String)
+      Array(value).map { |spec| spec.to_h.with_indifferent_access[:host_id].to_s }
+    rescue JSON::ParserError
+      []
     end
   end
 end
