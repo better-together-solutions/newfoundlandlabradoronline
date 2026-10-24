@@ -23,6 +23,14 @@ RSpec.describe NewfoundlandLabradorOnline::LocationInterface, '#address_spec=' d
     expect(address).to have_attributes(line1: '5 Park Street', city_name: 'Corner Brook', privacy: 'public')
   end
 
+  it 'names the place when the spec carries a name', :aggregate_failures do
+    community.address_spec = JSON.parse(spec_json).merge('name' => 'Rotary Arts Centre').to_json
+    community.save!
+
+    expect(community.reload.location.name).to eq('Rotary Arts Centre')
+    expect(community.location.location).to have_attributes(line1: '5 Park Street')
+  end
+
   it 'reuses an existing address for the next record', :aggregate_failures do
     community.update!(address_spec: spec_json)
     event = create(:better_together_event, address_spec: spec_json)

@@ -9,7 +9,7 @@ module NewfoundlandLabradorOnline
     extend ActiveSupport::Concern
 
     SETTLEMENT = 'BetterTogether::Geography::Settlement'
-    ADDRESS_FIELDS = %w[line1 line2 city_name state_province_name postal_code country_name].freeze
+    ADDRESS_FIELDS = %w[name line1 line2 city_name state_province_name postal_code country_name].freeze
     ADDRESS_MATCH_FIELDS = %w[line1 city_name postal_code country_name].freeze
 
     included do
@@ -129,7 +129,9 @@ module NewfoundlandLabradorOnline
       attrs = parse_address_spec(spec)
       return @address_spec_error = 'must be an address with line1' if attrs['line1'].blank?
 
-      (location || build_location).location = address_for(attrs)
+      name = attrs.delete('name') # CE's views show a location only when it has a name
+      place = location || build_location
+      place.assign_attributes(location: address_for(attrs), name: name.presence || place.name)
     end
 
     def parse_address_spec(spec)
@@ -138,9 +140,8 @@ module NewfoundlandLabradorOnline
     end
 
     def address_for(attrs)
-      klass = BetterTogether::Address
-      klass.find_by(attrs.slice(*ADDRESS_MATCH_FIELDS)) ||
-        klass.new(attrs.merge('physical' => true, 'postal' => false, 'privacy' => 'public'))
+      BetterTogether::Address.find_by(attrs.slice(*ADDRESS_MATCH_FIELDS)) ||
+        BetterTogether::Address.new(attrs.merge('physical' => true, 'postal' => false, 'privacy' => 'public'))
     end
 
     private :clear_location, :settlement_identifier_must_exist, :address_spec_must_be_valid, :parse_address_spec,
