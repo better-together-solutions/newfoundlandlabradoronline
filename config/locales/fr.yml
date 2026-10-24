@@ -84,6 +84,8 @@ fr:
   journeys:
     title: Mon parcours
   newfoundland_labrador_online:
+    community_map:
+      label: Carte de %{name}
     community_subtypes:
       committee_community: Rôles de comité
       department_community: Rôles de département
@@ -227,7 +229,7 @@ fr:
         logo_source: Source
         none: Aucun député enregistré.
     settlement_events:
-      empty: Aucun événement à venir à %{name} pour le moment.
+      loading: Chargement des événements...
       title: Événements à %{name}
     settlement_map:
       label: Carte de %{name}

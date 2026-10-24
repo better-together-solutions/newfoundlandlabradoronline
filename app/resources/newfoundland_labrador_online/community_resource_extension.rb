@@ -2,10 +2,11 @@
 
 module NewfoundlandLabradorOnline
   # Host-side API additions for BetterTogether::Api::V1::CommunityResource: write-only base64 logo, cover and
-  # profile images (CE returns their URLs).
+  # profile images (CE returns their URLs), and the write-only contact_spec (see ContactSpec).
   module CommunityResourceExtension
     EXTRA_FIELDS = %i[
       logo_data logo_filename cover_image_data cover_image_filename profile_image_data profile_image_filename
+      contact_spec
     ].freeze
 
     def self.prepended(base)

@@ -84,6 +84,8 @@ en:
   journeys:
     title: My Journey
   newfoundland_labrador_online:
+    community_map:
+      label: Map of %{name}
     community_subtypes:
       committee_community: Committee roles
       department_community: Department roles
@@ -226,7 +228,7 @@ en:
         logo_source: Source
         none: No members recorded.
     settlement_events:
-      empty: No upcoming events in %{name} yet.
+      loading: Loading events...
       title: Events in %{name}
     settlement_map:
       label: Map of %{name}

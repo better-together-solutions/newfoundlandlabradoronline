@@ -84,6 +84,8 @@ es:
   journeys:
     title: Mi Viaje
   newfoundland_labrador_online:
+    community_map:
+      label: Mapa de %{name}
     community_subtypes:
       committee_community: Roles de comité
       department_community: Roles de departamento
@@ -227,7 +229,7 @@ es:
         logo_source: Fuente
         none: No hay miembros registrados.
     settlement_events:
-      empty: Aún no hay eventos próximos en %{name}.
+      loading: Cargando eventos...
       title: Eventos en %{name}
     settlement_map:
       label: Mapa de %{name}

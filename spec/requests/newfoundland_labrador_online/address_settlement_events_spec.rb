@@ -36,7 +36,7 @@ RSpec.describe 'Address located events on the settlement page' do
   end
 
   it 'lists the event under the settlement it sits in' do
-    get "/#{locale}/g/settlements/#{settlement.slug}"
+    get "/#{locale}/events", params: { settlement: settlement.identifier }
 
     expect(response.body).to include('At the Arts Centre')
   end

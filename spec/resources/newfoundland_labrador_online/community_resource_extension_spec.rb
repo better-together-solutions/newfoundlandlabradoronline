@@ -5,15 +5,16 @@ require 'rails_helper'
 RSpec.describe NewfoundlandLabradorOnline::CommunityResourceExtension do
   let(:resource) { BetterTogether::Api::V1::CommunityResource }
   let(:fields) do
-    %i[logo_data logo_filename cover_image_data cover_image_filename profile_image_data profile_image_filename]
+    %i[logo_data logo_filename cover_image_data cover_image_filename profile_image_data profile_image_filename
+       contact_spec]
   end
 
-  it 'accepts the image fields on create and update', :aggregate_failures do
+  it 'accepts the image and contact fields on create and update', :aggregate_failures do
     expect(resource.creatable_fields({})).to include(*fields)
     expect(resource.updatable_fields({})).to include(*fields)
   end
 
-  it 'never returns the write-only image fields', :aggregate_failures do
+  it 'never returns the write-only fields', :aggregate_failures do
     expect(resource.new(BetterTogether::Community.new, {}).fetchable_fields).not_to include(*fields)
   end
 

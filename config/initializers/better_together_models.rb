@@ -47,3 +47,9 @@ ActiveSupport::Reloader.to_prepare do
   BetterTogether::Community.include(NewfoundlandLabradorOnline::CommunityImages)
   BetterTogether::Event.include(NewfoundlandLabradorOnline::EventImages, NewfoundlandLabradorOnline::EventHosting)
 end
+
+# A community's contact details, written as one JSON string (see ContactSpec).
+ActiveSupport::Reloader.to_prepare do
+  BetterTogether::Community.include(NewfoundlandLabradorOnline::ContactSpec)
+  BetterTogether::Community.prepend(NewfoundlandLabradorOnline::LocatedMapPoints)
+end
