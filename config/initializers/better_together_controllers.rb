@@ -7,6 +7,8 @@ Rails.application.config.to_prepare do
   # Likewise the events index (settlement page Events tab).
   require_dependency 'better_together/events_controller'
   BetterTogether::EventsController.prepend(NewfoundlandLabradorOnline::SettlementEvents)
+  # Cancelling or deleting an event series asks what happens to its sessions.
+  BetterTogether::EventsController.prepend(BetterTogether::EventSeriesActions)
 
   # Attached video blocks render through CE's CSP-aware iframe_embed_state helper. Action Text
   # renders attachments in whichever controller's view context is current (API responses

@@ -1,0 +1,24 @@
+<%# locals: (event:) %>
+<%# On a session page: the series it belongs to and the series' other dates. Both names are shown only when they differ. %>
+<% series = event.parent_series %>
+<% if series && policy(series).show? %>
+  <% others = series.sessions.reject { |other| other == event || !policy(other).show? }.sort_by { |other| other.starts_at || Time.zone.at(0) } %>
+  <div class="event-series-banner alert alert-light border mt-3 mb-0" id="<%= dom_id(event, :series_banner) %>">
+    <div>
+      <i class="fas fa-layer-group me-2" aria-hidden="true"></i>
+      <%= link_to (series.name == event.name ? t('better_together.events.series.part_of_run', count: series.sessions.size) : t('better_together.events.series.part_of', name: series.name)),
+                  event_path(series), class: 'fw-semibold' %>
+    </div>
+    <% if others.any? %>
+      <div class="small text-muted mt-2"><%= t('better_together.events.series.other_dates') %></div>
+      <ul class="list-unstyled mb-0 small">
+        <% others.each do |other| %>
+          <li>
+            <%= link_to display_event_time(other), event_path(other) %>
+            <% unless other.status_confirmed? %><%= event_status_badge(other) %><% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+<% end %>
