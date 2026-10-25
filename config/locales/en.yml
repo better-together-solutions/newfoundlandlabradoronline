@@ -251,6 +251,8 @@ en:
         logo_non_free: Non-free logo, shown under fair use.
         logo_source: Source
         none: No members recorded.
+    posts_filters:
+      toggle_filters: Filters
     settlement_events:
       loading: Loading events...
       title: Events in %{name}

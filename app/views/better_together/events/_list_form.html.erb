@@ -4,10 +4,15 @@
     <h2 class="h5"><%= t('.filters') %></h2>
   </div>
   <div class="panel-body">
-    <%= form_with url: (@settlement ? events_path(settlement: @settlement.identifier) : events_path), method: :get, class: 'events-filter-sidebar', local: true,
-                  data: (@settlement ? { turbo_frame: 'settlement-events' } : {}) do |f| %>
+    <% filter_path = events_path(**{ settlement: @settlement&.identifier, community_id: @scoped_community&.slug }.compact) %>
+    <% frame_id = @settlement ? 'settlement-events' : ('community-events' if @scoped_community) %>
+    <%= form_with url: filter_path, method: :get, class: 'events-filter-sidebar', local: true,
+                  data: (frame_id ? { turbo_frame: frame_id } : {}) do |f| %>
       <% if @settlement %>
         <%= f.hidden_field :settlement, value: @settlement.identifier %>
+      <% end %>
+      <% if @scoped_community %>
+        <%= f.hidden_field :community_id, value: @scoped_community.slug %>
       <% end %>
       <div class="mb-3">
         <%= f.label :q, t('.search_label'), class: 'form-label' %>
@@ -82,7 +87,8 @@
 
       <div class="clearfix">
         <% if params[:q].present? || params[:status].present? || params[:order_by].present? || params[:per_page].present? || params[:category_ids].present? || params[:past].present? || params[:recurring].present? %>
-          <%= link_to t('.clear_filters'), (@settlement ? events_path(settlement: @settlement.identifier) : events_path), class: 'btn btn-outline-secondary', id: 'events-clear-filters' %>
+          <%= link_to t('.clear_filters'), filter_path, class: 'btn btn-outline-secondary', id: 'events-clear-filters',
+                      data: (frame_id ? { turbo_frame: frame_id } : {}) %>
         <% end %>
         <%= f.submit t('.search_button'), class: 'btn btn-primary float-end', id: 'events-search-submit' %>
       </div>

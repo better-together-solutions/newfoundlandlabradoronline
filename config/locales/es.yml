@@ -252,6 +252,8 @@ es:
         logo_non_free: Logotipo no libre, mostrado como uso legítimo.
         logo_source: Fuente
         none: No hay miembros registrados.
+    posts_filters:
+      toggle_filters: Filtros
     settlement_events:
       loading: Cargando eventos...
       title: Eventos en %{name}

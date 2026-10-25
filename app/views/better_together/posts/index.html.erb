@@ -1,11 +1,12 @@
-<%# Copied from community-engine-rails 929bb51a9492 (app/views/better_together/posts/index.html.erb). Changes: the settlement-scoped title and the turbo-frame wrapper (settlement page Posts tab); re-diff when the CE pin moves. -%>
+<%# Copied from community-engine-rails 929bb51a9492 (app/views/better_together/posts/index.html.erb). Changes: the settlement-scoped title, the turbo-frame wrapper (settlement and community page Posts tabs) and the collapsible filter sidebar like the events index; re-diff when the CE pin moves. -%>
 <% heading = @settlement ? t('newfoundland_labrador_online.settlement_posts.title', name: @settlement.name) : resource_class.model_name.human.pluralize %>
 <% content_for :page_title do %>
   <%= heading %>
 <% end %>
 
 <%# With ?settlement= the whole list sits in a turbo-frame so the settlement page can embed it; links leave the frame. %>
-<%= content_tag(@settlement ? :'turbo-frame' : :div, id: ('settlement-posts' if @settlement), target: ('_top' if @settlement)) do %>
+<% frame_id = @settlement ? 'settlement-posts' : ('community-posts' if @scoped_community) %>
+<%= content_tag(frame_id ? :'turbo-frame' : :div, id: frame_id, target: ('_top' if frame_id)) do %>
 <div class="container my-3">
   <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h1 class="mb-0"><%= heading %></h1>
@@ -33,7 +34,14 @@
   <div class="row">
     <!-- Filter Sidebar -->
     <div class="col-lg-3 mb-4">
-      <%= render 'list_form' %>
+      <button id="posts-filter-toggle" class="btn btn-outline-secondary d-lg-none mb-2 sidebar-toggle" type="button"
+              data-bs-toggle="collapse" data-bs-target="#posts-filter-sidebar"
+              aria-expanded="false" aria-controls="posts-filter-sidebar">
+        <i class="fas fa-filter" aria-hidden="true"></i> <%= t('newfoundland_labrador_online.posts_filters.toggle_filters') %>
+      </button>
+      <div id="posts-filter-sidebar" class="collapse d-lg-block sidebar">
+        <%= render 'list_form' %>
+      </div>
     </div>
 
     <!-- Posts List -->

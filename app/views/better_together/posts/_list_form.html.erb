@@ -6,8 +6,9 @@
   <div class="panel-body">
     <% filter_path = params[:community_id].present? ? posts_path(community_id: params[:community_id]) : posts_path %>
     <% filter_path = posts_path(settlement: @settlement.identifier) if @settlement %>
+    <% frame_id = @settlement ? 'settlement-posts' : ('community-posts' if @scoped_community) %>
     <%= form_with url: filter_path, method: :get, class: 'posts-filter-sidebar', local: true,
-                  data: (@settlement ? { turbo_frame: 'settlement-posts' } : {}) do |f| %>
+                  data: (frame_id ? { turbo_frame: frame_id } : {}) do |f| %>
       <% if @settlement %>
         <%= f.hidden_field :settlement, value: @settlement.identifier %>
       <% end %>
@@ -96,7 +97,8 @@
 
       <div class="clearfix">
         <% if params[:q].present? || params[:privacy].present? || params[:order_by].present? || params[:per_page].present? || params[:category_ids].present? || params[:author_ids].present? %>
-          <%= link_to t('.clear_filters'), filter_path, class: 'btn btn-outline-secondary', id: 'posts-clear-filters' %>
+          <%= link_to t('.clear_filters'), filter_path, class: 'btn btn-outline-secondary', id: 'posts-clear-filters',
+                      data: (frame_id ? { turbo_frame: frame_id } : {}) %>
         <% end %>
         <%= f.submit t('.search_button'), class: 'btn btn-primary float-end', id: 'posts-search-submit' %>
       </div>

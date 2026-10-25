@@ -34,9 +34,9 @@ RSpec.describe 'Event series in lists' do
     expect(series_links.size).to eq(1)
   end
 
-  it 'lists the session and not the series on the hosting community page', :aggregate_failures do
+  it 'lists the session and not the series in the hosting community events tab', :aggregate_failures do
     BetterTogether::EventHost.create!(event: series, host: community)
-    get "/#{locale}/c/#{community.slug}"
+    get "/#{locale}/events", params: { community_id: community.slug }
 
     expect(response.body).to include("events/#{session.slug}")
     expect(series_links.size).to eq(1)

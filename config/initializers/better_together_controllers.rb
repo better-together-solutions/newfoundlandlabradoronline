@@ -7,6 +7,10 @@ Rails.application.config.to_prepare do
   # Likewise the events index (settlement page Events tab).
   require_dependency 'better_together/events_controller'
   BetterTogether::EventsController.prepend(NewfoundlandLabradorOnline::SettlementEvents)
+  # The community page Events and Posts tabs embed the indexes scoped to the community.
+  BetterTogether::EventsController.prepend(NewfoundlandLabradorOnline::CommunityEvents)
+  BetterTogether::EventsController.prepend(NewfoundlandLabradorOnline::CommunityScope)
+  BetterTogether::PostsController.prepend(NewfoundlandLabradorOnline::CommunityScope)
   # Cancelling or deleting an event series asks what happens to its sessions.
   BetterTogether::EventsController.prepend(BetterTogether::EventSeriesActions)
 

@@ -252,6 +252,8 @@ fr:
         logo_non_free: Logo non libre, affiché au titre de l’utilisation équitable.
         logo_source: Source
         none: Aucun député enregistré.
+    posts_filters:
+      toggle_filters: Filtres
     settlement_events:
       loading: Chargement des événements...
       title: Événements à %{name}
