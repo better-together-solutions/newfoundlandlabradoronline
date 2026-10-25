@@ -52,4 +52,5 @@ end
 ActiveSupport::Reloader.to_prepare do
   BetterTogether::Community.include(NewfoundlandLabradorOnline::ContactSpec)
   BetterTogether::Community.prepend(NewfoundlandLabradorOnline::LocatedMapPoints)
+  BetterTogether::Geography::LocatableLocation.prepend(NewfoundlandLabradorOnline::LocationDisplayName)
 end
