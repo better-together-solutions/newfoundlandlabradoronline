@@ -33,6 +33,26 @@ RSpec.describe 'Community tabs' do
                                      'id="community-posts"', "/#{locale}/posts?community_id=#{community.slug}")
   end
 
+  describe 'headings inside the frames' do
+    def headings(path, params)
+      get path, params: params
+      Nokogiri::HTML(response.body).css('turbo-frame#community-events h1, turbo-frame#community-events h2, ' \
+                                        'turbo-frame#community-posts h1, turbo-frame#community-posts h2')
+              .map(&:name).uniq
+    end
+
+    it 'uses h2 so the community page keeps its single h1', :aggregate_failures do
+      expect(headings("/#{locale}/events", community_id: community.slug)).to eq(['h2'])
+      expect(headings("/#{locale}/posts", community_id: community.slug)).to eq(['h2'])
+    end
+
+    it 'keeps the h1 on the unscoped index' do
+      get "/#{locale}/events"
+
+      expect(Nokogiri::HTML(response.body).css('h1').size).to eq(1)
+    end
+  end
+
   describe 'GET /events?community_id=' do
     before { get "/#{locale}/events", params: { community_id: community.slug } }
 
