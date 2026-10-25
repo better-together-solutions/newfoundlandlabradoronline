@@ -66,7 +66,6 @@
     <!-- Membership section -->
     <hr aria-hidden="true">
 
-    <%= render 'better_together/events/series_settlement', event: @event if @event.series? && (policy(@event).update? || policy(@event).destroy?) %>
 
     <%= render 'better_together/events/rsvp', event: @event, attendance: @current_attendance unless @event.series? %>
 
