@@ -1,4 +1,4 @@
-<%# Copied from community-engine-rails 929bb51a9492 (app/views/better_together/communities/show.html.erb). Changes: the live image card, and the located-in line, address and map in the About section; re-diff when the CE pin moves. -%>
+<%# Copied from community-engine-rails 929bb51a9492 (app/views/better_together/communities/show.html.erb). Changes: the logo in place of the profile image (or large in place of a missing cover); the live image card, and the located-in line, address and map in the About section; re-diff when the CE pin moves. -%>
 <% content_for :page_title do %>
   <%= @resource.name %> | <%= resource_class.model_name.human.pluralize %>
 <% end %>
@@ -7,15 +7,32 @@
 
 <div class="container-fluid mb-3 px-0">
 
-  <div class="profile-header position-relative">
+  <%# The logo (else the profile image) stands for the community: a tile in the profile image's place, or large in place of a missing cover. %>
+  <% mark_kind, mark = community_mark(@resource) %>
+  <% mark_only = mark.present? && !@resource.cover_image.attached? %>
+  <div class="profile-header position-relative" id="<%= dom_id(@resource, :profile_header) %>">
     <!-- Cover Image Section -->
     <div class="cover-image-container">
-      <%= cover_image_tag(@resource) %>
+      <% if mark_only %>
+        <div class="community-header-mark" id="<%= dom_id(@resource, :header_mark) %>">
+          <%= image_tag storage_proxy_url_for(mark), alt: @resource.name %>
+        </div>
+      <% else %>
+        <%= cover_image_tag(@resource) %>
+      <% end %>
     </div>
 
-    <div class="profile-image-wrapper">
-      <%= profile_image_tag(@resource) %>
-    </div>
+    <% unless mark_only %>
+      <div class="profile-image-wrapper">
+        <% if mark_kind == :logo %>
+          <span class="community-logo-tile" id="<%= dom_id(@resource, :logo_tile) %>">
+            <%= image_tag storage_proxy_url_for(mark), alt: @resource.name %>
+          </span>
+        <% else %>
+          <%= profile_image_tag(@resource) %>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 
   <!-- Profile Information Section -->

@@ -17,4 +17,5 @@ Rails.application.config.to_prepare do
   ActionView::Base.include(NewfoundlandLabradorOnline::LocationPickerHelper)
   ActionView::Base.include(NewfoundlandLabradorOnline::SettlementMapHelper)
   ActionView::Base.include(NewfoundlandLabradorOnline::ListingMapHelper)
+  ActionView::Base.include(NewfoundlandLabradorOnline::CommunityMarkHelper)
 end

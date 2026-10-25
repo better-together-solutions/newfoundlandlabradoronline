@@ -1,9 +1,5 @@
 <%# Copied from community-engine-rails 1b1c9fc9e62a (app/views/better_together/communities/_community.html.erb). Changes: the community's logo, else its profile image (never both), on its card: a tile over the cover's top-left corner, or large in place of the cover when it has none. Re-diff when the CE pin moves. -%>
-<% mark = if community.logo.attached?
-            community.optimized_logo
-          elsif community.profile_image.attached?
-            community.optimized_profile_image
-          end %>
+<% _kind, mark = community_mark(community) %>
 <% mark_only = mark.present? && !community.cover_image.attached? %>
 <%= render 'better_together/shared/card', entity: community, show_image: !mark_only,
                                           card_classes: "hover-effect community-card#{' community-card--mark-only' if mark_only}" do %>

@@ -42,4 +42,18 @@ RSpec.describe 'Documentation screenshots for community card marks', :js, type: 
 
     expect(captured(over_cover, in_place)).to all(be > 10_000)
   end
+
+  def capture_header(community, slug, selector)
+    visit "/#{locale}/c/#{community.slug}"
+    DocsScreenshots.capture(page, slug, callouts: [{ selector:, title: 'Logo' }])
+  end
+
+  it 'captures the community page header with a logo tile and with the mark in place of the cover' do
+    with_cover = community_with('Rotary Arts Centre', cover_image: cover, logo: picture)
+    no_cover = community_with('Corner Brook Folk Society', logo: picture)
+    shots = [capture_header(with_cover, 'community_show_logo', "#logo_tile_community_#{with_cover.id}"),
+             capture_header(no_cover, 'community_show_logo_no_cover', "#header_mark_community_#{no_cover.id}")]
+
+    expect(shots.flatten.map { |path| File.size(path) }).to all(be > 10_000)
+  end
 end

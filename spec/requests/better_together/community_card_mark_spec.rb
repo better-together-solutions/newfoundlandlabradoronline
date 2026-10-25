@@ -48,4 +48,33 @@ RSpec.describe 'Community card mark', type: :request do
     expect(response.body).to include('community-card--mark-only')
     expect(response.body).not_to include('community-card-mark--cover')
   end
+
+  describe 'community page header' do
+    def show_body(community)
+      get better_together.community_path(community, locale: I18n.default_locale)
+      response.body
+    end
+
+    it 'shows the logo tile in the profile image position', :aggregate_failures do
+      body = show_body(community_with(cover_image: cover, logo: picture, profile_image: picture))
+
+      expect(body).to include('community-logo-tile')
+      expect(body).not_to include('community-header-mark')
+    end
+
+    it 'keeps the round profile image when there is no logo', :aggregate_failures do
+      body = show_body(community_with(cover_image: cover, profile_image: picture))
+
+      expect(body).not_to include('community-logo-tile')
+      expect(body).to include('profile-image-wrapper')
+    end
+
+    it 'shows the mark large in place of a missing cover, without a second mark', :aggregate_failures do
+      body = show_body(community_with(logo: picture))
+
+      expect(body).to include('community-header-mark')
+      expect(body).not_to include('community-logo-tile')
+      expect(body).not_to include('profile-image-wrapper')
+    end
+  end
 end
