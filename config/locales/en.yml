@@ -51,6 +51,9 @@ en:
             cancelling or deleting it.
           open: Cancel or delete this series
           promote_sessions: Keep the dates as separate events
+        show_all_dates:
+          one: Show %{count} more date
+          other: Show %{count} more dates
     shared:
       map:
         buttons:

@@ -51,6 +51,9 @@ es:
             antes de cancelarla o eliminarla.
           open: Cancelar o eliminar esta serie
           promote_sessions: Conservar las fechas como eventos independientes
+        show_all_dates:
+          one: Mostrar %{count} fecha más
+          other: Mostrar %{count} fechas más
     shared:
       map:
         buttons:

@@ -51,6 +51,9 @@ fr:
             ces dates avant de l'annuler ou de la supprimer.
           open: Annuler ou supprimer cette série
           promote_sessions: Garder les dates comme événements distincts
+        show_all_dates:
+          one: Afficher %{count} date de plus
+          other: Afficher %{count} dates de plus
     shared:
       map:
         buttons:
