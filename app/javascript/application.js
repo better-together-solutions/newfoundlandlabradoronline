@@ -45,3 +45,13 @@ function initializeScrollProgressBar() {
 window.addEventListener('scroll', updateScrollProgressBar, { passive: true });
 window.addEventListener('load', initializeScrollProgressBar);
 document.addEventListener('turbo:load', initializeScrollProgressBar);
+
+// A URL hash naming a tab pane (/c/rac#events) selects the tab; the browser must not also scroll to the pane.
+function resetTabAnchorScroll() {
+  const id = decodeURIComponent(window.location.hash.slice(1));
+  const target = id && document.getElementById(id);
+  if (target && target.classList.contains("tab-pane")) window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+}
+
+window.addEventListener("load", resetTabAnchorScroll);
+document.addEventListener("turbo:load", resetTabAnchorScroll);
