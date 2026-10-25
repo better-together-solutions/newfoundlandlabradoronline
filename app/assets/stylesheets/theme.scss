@@ -372,3 +372,21 @@ a.active {
     max-height: 80px;
   }
 }
+
+// A community's logo as a small tile (event hosts, chips, the host picker): keeps its shape at --mark-size high.
+.community-mark-tile {
+  display: inline-flex;
+  flex-shrink: 0;
+  padding: 2px;
+  background: #fff;
+  border-radius: calc(var(--mark-size) * 0.2);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+
+  img {
+    display: block;
+    width: auto;
+    height: var(--mark-size);
+    max-width: calc(var(--mark-size) * 2.4);
+    object-fit: contain;
+  }
+}
