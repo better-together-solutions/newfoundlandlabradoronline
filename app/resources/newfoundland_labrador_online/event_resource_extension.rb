@@ -2,10 +2,11 @@
 
 module NewfoundlandLabradorOnline
   # Host-side API additions for BetterTogether::Api::V1::EventResource: the hosts (see EventHosting), the lifecycle
-  # status (events are drafts, hidden from the public lists, until confirmed) and the cover image. As in the event
+  # status (events are drafts, hidden from the public lists, until confirmed), the cover image and the blocks
+  # appended to the description (see EventBlockAttachments). As in the event
   # form, a host must be the person or a community they belong to; platform managers may name any host.
   module EventResourceExtension
-    EXTRA_FIELDS = %i[hosts status cover_image_data cover_image_filename].freeze
+    EXTRA_FIELDS = %i[hosts status cover_image_data cover_image_filename attachment_block_ids].freeze
 
     def self.prepended(base)
       base.attributes(*EXTRA_FIELDS)
@@ -24,7 +25,7 @@ module NewfoundlandLabradorOnline
     end
 
     def fetchable_fields
-      super - %i[cover_image_data cover_image_filename]
+      super - %i[cover_image_data cover_image_filename attachment_block_ids]
     end
 
     def hosts=(value)

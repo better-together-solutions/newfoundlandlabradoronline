@@ -6,7 +6,7 @@ RSpec.describe NewfoundlandLabradorOnline::EventResourceExtension do
   let(:resource) { BetterTogether::Api::V1::EventResource }
 
   it 'accepts the host and cover image fields on create and update', :aggregate_failures do
-    %i[hosts status cover_image_data cover_image_filename].each do |field|
+    %i[hosts status cover_image_data cover_image_filename attachment_block_ids].each do |field|
       expect(resource.creatable_fields({})).to include(field)
       expect(resource.updatable_fields({})).to include(field)
     end
@@ -15,7 +15,7 @@ RSpec.describe NewfoundlandLabradorOnline::EventResourceExtension do
   it 'never returns the write-only image fields' do
     fields = resource.new(BetterTogether::Event.new, {}).fetchable_fields
 
-    expect(fields).not_to include(:cover_image_data, :cover_image_filename)
+    expect(fields).not_to include(:cover_image_data, :cover_image_filename, :attachment_block_ids)
   end
 
   describe 'naming hosts' do
