@@ -1,4 +1,4 @@
-<%# Copied from community-engine-rails 929bb51a9492 (app/views/better_together/communities/show.html.erb). Changes: the Posts and Events tabs embed the scoped indexes in lazy turbo-frames; the logo in place of the profile image (or large in place of a missing cover); the live image card, and the located-in line and address in the About section, the map beside the tabs like the partner page, the description in a div (rich text); re-diff when the CE pin moves. -%>
+<%# Copied from community-engine-rails 929bb51a9492 (app/views/better_together/communities/show.html.erb). Changes: the Posts and Events tabs embed the scoped indexes in lazy turbo-frames; the logo in place of the profile image (or large in place of a missing cover); the live image card, and the located-in line and address in the About section, contact details in their own tab like the NNL partner page, the map beside the tabs like the partner page, the description in a div (rich text); re-diff when the CE pin moves. -%>
 <% content_for :page_title do %>
   <%= @resource.name %> | <%= resource_class.model_name.human.pluralize %>
 <% end %>
@@ -88,6 +88,9 @@
         <%# Initialize the active tab state with accessible attributes %>
         <%= content_tag :div, id: 'communityTabs', class: 'nav nav-tabs card-header-tabs', role: 'tablist', aria_label: t('better_together.communities.show.sections_aria') do %>
           <%= link_to t('globals.tabs.about'), '#about', class: 'nav-link active', id: 'about-tab', data: { bs_toggle: 'tab', bs_target: '#about', bs_parent: '#profileSections' }, role: 'tab', aria_controls: 'about', aria_selected: 'true', tabindex: '0' %>
+          <% if @resource.has_contact_details? %>
+            <%= link_to t('globals.tabs.contact'), '#contact', class: 'nav-link', id: 'contact-tab', data: { bs_toggle: 'tab', bs_target: '#contact', bs_parent: '#profileSections' }, role: 'tab', aria_controls: 'contact', aria_selected: 'false', tabindex: '-1' %>
+          <% end %>
           <% if policy(@resource).view_members? %>
             <%= link_to t('globals.tabs.members'), '#members', class: 'nav-link', id: 'members-tab', data: { bs_toggle: 'tab', bs_target: '#members', bs_parent: '#communitySections' }, role: 'tab', aria_controls: 'members', aria_selected: 'false', tabindex: '-1' %>
           <% end %>
@@ -131,11 +134,15 @@
             <% live_slug = NewfoundlandLabradorOnline::LiveImage.slug_for(@resource) %>
             <%= render 'newfoundland_labrador_online/live_images/card', slug: live_slug, title: @resource.name if live_slug %>
 
-            <%= render partial: 'better_together/contact_details/about_section', locals: { contactable: @resource } %>
-
             <%= share_buttons(shareable: @resource) if @resource.privacy_public? %>
           </div>
         </section>
+
+        <% if @resource.has_contact_details? %>
+          <div id="contact" class="collapse" aria-labelledby="contact-tab" aria-expanded="true" data-bs-parent="#communityTabs">
+            <%= render partial: 'better_together/contact_details/about_section', locals: { contactable: @resource, include_heading: false } %>
+          </div>
+        <% end %>
 
         <% if policy(@resource).view_members? %>
           <div id="members" class="collapse" aria-labelledby="members-tab" aria-expanded="true" data-bs-parent="#communityTabs">

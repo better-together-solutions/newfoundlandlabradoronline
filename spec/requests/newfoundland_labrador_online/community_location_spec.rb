@@ -40,6 +40,15 @@ RSpec.describe 'Community page location and contacts' do
     expect(response.body).to include('Box office', '709-630-0012', 'General enquiries')
   end
 
+  it 'puts the contact details in their own tab, not in About', :aggregate_failures do
+    fetch_page
+    doc = Nokogiri::HTML(response.body)
+
+    expect(doc.at_css('a#contact-tab[href="#contact"]')).to be_present
+    expect(doc.at_css('#contact').text).to include('Box office', '709-630-0012')
+    expect(doc.at_css('#about').text).not_to include('709-630-0012')
+  end
+
   it 'shows no map until the address has coordinates' do
     fetch_page
 
