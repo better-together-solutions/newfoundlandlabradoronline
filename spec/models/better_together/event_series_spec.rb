@@ -49,6 +49,37 @@ RSpec.describe BetterTogether::EventSeries do
     end
   end
 
+  describe 'grouping an existing event' do
+    let(:standalone) do
+      create(:better_together_event, starts_at: first_start, ends_at: first_start + 2.hours, creator:,
+                                     description: 'Own text', privacy: 'public')
+    end
+
+    it 'links it and leaves its own fields alone', :aggregate_failures do
+      series.update!(privacy: 'private', description: 'Series text')
+      standalone.update!(session_of: series.identifier)
+
+      expect(standalone.reload.parent_series).to eq(series)
+      expect([standalone.privacy, standalone.description.to_plain_text]).to eq(['public', 'Own text'])
+      expect(series.reload.starts_at).to eq(first_start)
+    end
+
+    it 'refuses an event that is already a session' do
+      session = add_session(first_start)
+      other = create(:better_together_event, series: true, starts_at: nil, ends_at: nil, creator:)
+
+      session.update(session_of: other.identifier)
+
+      expect(session.reload.parent_series).to eq(series)
+    end
+
+    it 'refuses a series, and changing whether an event is a series', :aggregate_failures do
+      expect(series.update(session_of: series.identifier)).to be(false)
+      expect(standalone.update(series: true)).to be(false)
+      expect(series.update(series: false)).to be(false)
+    end
+  end
+
   describe 'dates' do
     before do
       add_session(first_start)

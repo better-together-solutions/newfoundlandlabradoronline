@@ -12,10 +12,17 @@ RSpec.describe NewfoundlandLabradorOnline::EventResourceExtension do
     end
   end
 
-  it 'never returns the write-only image fields' do
+  it 'accepts the series fields on create and update, and only reads the series identifier', :aggregate_failures do
+    writable = resource.creatable_fields({}) & resource.updatable_fields({})
+    expect(writable).to include(:series, :session_of)
+    expect(writable).not_to include(:series_identifier)
+    expect(resource.new(BetterTogether::Event.new, {}).fetchable_fields).to include(:series_identifier)
+  end
+
+  it 'never returns the write-only image or session_of fields' do
     fields = resource.new(BetterTogether::Event.new, {}).fetchable_fields
 
-    expect(fields).not_to include(:cover_image_data, :cover_image_filename, :attachment_block_ids)
+    expect(fields).not_to include(:cover_image_data, :cover_image_filename, :attachment_block_ids, :session_of)
   end
 
   describe 'naming hosts' do
@@ -63,6 +70,23 @@ RSpec.describe NewfoundlandLabradorOnline::EventResourceExtension do
 
     it 'refuses an unknown status' do
       expect { assign('published') }.to raise_error(JSONAPI::Exceptions::InvalidFieldValue)
+    end
+  end
+
+  describe 'series_identifier' do
+    include RequestSpecHelper
+
+    let(:creator) { create(:better_together_person) }
+    let(:series) { create(:better_together_event, series: true, starts_at: nil, ends_at: nil, creator:) }
+
+    before { configure_host_platform }
+
+    it 'names the series a session belongs to, and is nil otherwise', :aggregate_failures do
+      session = create(:better_together_event, creator:, session_of: series.identifier)
+      alone = create(:better_together_event, creator:)
+
+      expect(resource.new(session.reload, {}).series_identifier).to eq(series.identifier)
+      expect(resource.new(alone, {}).series_identifier).to be_nil
     end
   end
 end

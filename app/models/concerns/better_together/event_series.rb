@@ -11,7 +11,10 @@ module BetterTogether
   # * Cancelling or deleting a series needs a choice for its sessions (see #session_disposition): cancel or delete
   #   them, or promote them to standalone events.
   # * +session_of+ (a series identifier) makes a new event a session of that series and fills in its hosts,
-  #   categories, description, privacy and timezone from the series where it gave none.
+  #   categories, description, privacy and timezone from the series where it gave none. On an existing event
+  #   that is in no series it only links it, changing nothing else (an ingester uses this to group events it first
+  #   saw as single ones).
+  # * Whether an event is a series is fixed when it is created.
   module EventSeries
     extend ActiveSupport::Concern
 
@@ -48,12 +51,13 @@ module BetterTogether
 
       attr_accessor :session_of
 
-      before_validation :join_series_from_session_of, prepend: true, on: :create
+      before_validation :join_series_from_session_of, prepend: true
+      after_save { self.session_of = nil }
       before_validation :keep_series_private_to_federation, if: :series?
       after_commit :refresh_parent_series_span
 
       validate :series_has_no_dates_of_its_own, :series_does_not_recur, :series_is_not_a_session
-      validate :session_of_must_name_a_series
+      validate :session_of_must_name_a_series, :session_of_must_be_joinable, :series_flag_is_fixed
     end
 
     def session?
@@ -123,12 +127,24 @@ module BetterTogether
       self.class.find_by(identifier: session_of.to_s.downcase, series: true)
     end
 
+    def session_of_must_be_joinable
+      return if session_of.blank?
+
+      errors.add(:session_of, 'is not allowed on a series') if series?
+      errors.add(:session_of, 'is already a session of a series') if series_link&.persisted?
+    end
+
+    def series_flag_is_fixed
+      errors.add(:series, 'cannot change once the event exists') if persisted? && will_save_change_to_series?
+    end
+
     def join_series_from_session_of
       series = session_of.present? && series_named_by_session_of
-      return unless series
+      return unless series && !series? && series_link.blank?
 
+      new_record = new_record?
       build_series_link(series:, position: series.series_session_links.count)
-      copy_series_defaults(series)
+      copy_series_defaults(series) if new_record
     end
 
     def copy_series_defaults(series)
