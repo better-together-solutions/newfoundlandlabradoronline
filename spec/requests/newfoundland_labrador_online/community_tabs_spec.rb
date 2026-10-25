@@ -33,6 +33,15 @@ RSpec.describe 'Community tabs' do
                                      'id="community-posts"', "/#{locale}/posts?community_id=#{community.slug}")
   end
 
+  it 'drives its tabs with the shared tabs controller and no inline hash script', :aggregate_failures do
+    get "/#{locale}/c/#{community.slug}"
+    doc = Nokogiri::HTML(response.body)
+
+    expect(doc.at_css('section.tabbed-section[data-controller~="better_together--tabs"]')).to be_present
+    expect(doc.css('#communityTabs [data-bs-toggle="tab"]:not([data-better_together--tabs-target])')).to be_empty
+    expect(response.body).not_to include('window.location.hash')
+  end
+
   describe 'headings inside the frames' do
     def headings(path, params)
       get path, params: params

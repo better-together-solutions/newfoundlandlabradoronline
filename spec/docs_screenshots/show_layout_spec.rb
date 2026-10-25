@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-# Documentation screenshots for the event map below the hosts, the community map beside the tabs (with the events
+# Documentation screenshots for the event map beside the tabs, the community map beside the tabs (with the events
 # list sized to the narrow pane) and the community Contact tab (desktop and mobile, plain and annotated).
 #
 #   RUN_DOCS_SCREENSHOTS=1 ./bin/dc-run bundle exec rspec spec/docs_screenshots/show_layout_spec.rb
@@ -53,11 +53,11 @@ RSpec.describe 'Documentation screenshots for the show layouts', :js, type: :fea
     geocode(community)
   end
 
-  it 'captures the event with its map below the hosts' do
+  it 'captures the event with its map beside the tabs' do
     visit "/#{locale}/events/#{event.slug}"
-    callouts = [{ selector: '#event-map', title: 'Map after the hosts' }]
+    callouts = [{ selector: '#event-map', title: 'Map beside the tabs' }]
 
-    expect(captured('event_map_below_hosts', callouts)).to all(be > 10_000)
+    expect(captured('event_map_beside_tabs', callouts)).to all(be > 10_000)
   end
 
   it 'captures the events tab beside the community map' do

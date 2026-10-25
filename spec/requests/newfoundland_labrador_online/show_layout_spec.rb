@@ -2,8 +2,8 @@
 
 require 'rails_helper'
 
-# The event map is auxiliary, so it follows the hosts; the community map sits beside the tabs like the partner
-# page; rich-text descriptions are blocks, so they render in a div, never a p.
+# The event and community maps sit in a column beside the tabs like the partner page; rich-text descriptions
+# are blocks, so they render in a div, never a p.
 RSpec.describe 'Event and community show layout' do
   include RequestSpecHelper
 
@@ -39,12 +39,11 @@ RSpec.describe 'Event and community show layout' do
   describe 'event' do
     before { geocode(event) }
 
-    it 'puts the map after the hosts section', :aggregate_failures do
-      about = page_for("/#{locale}/events/#{event.slug}").at_css('#about')
-      nodes = about.css('[id*="event_hosts"], #event-map').map { |node| node['id'] }
+    it 'places the map in a column beside the tabs', :aggregate_failures do
+      doc = page_for("/#{locale}/events/#{event.slug}")
 
-      expect(nodes.size).to eq(2)
-      expect(nodes.last).to eq('event-map')
+      expect(doc.at_css('.row > .col-xl-4#event-map')).to be_present
+      expect(doc.at_css('#about #event-map')).to be_nil
     end
 
     it 'renders the description in a div', :aggregate_failures do
