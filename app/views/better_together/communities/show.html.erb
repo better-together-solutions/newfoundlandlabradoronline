@@ -250,7 +250,7 @@
     </div>
 
     <% if mapped %>
-      <section class="community-map col-12 col-lg-6 col-xl-4 pb-2" id="community-map" aria-label="<%= t('newfoundland_labrador_online.community_map.label', name: @resource.name) %>">
+      <section class="community-map col-12 col-lg-6 col-xl-4 pb-2 align-self-start" id="community-map" aria-label="<%= t('newfoundland_labrador_online.community_map.label', name: @resource.name) %>">
         <%= render partial: 'better_together/shared/map', locals: { map: @resource.map } %>
       </section>
     <% end %>

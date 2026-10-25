@@ -77,8 +77,9 @@ RSpec.describe 'Community tabs' do
       expect(response.body).to include('turbo-frame id="community-posts"', 'data-turbo-frame="community-posts"')
     end
 
-    it 'collapses the filters on small screens like the events index', :aggregate_failures do
-      expect(response.body).to include('id="posts-filter-toggle"', 'id="posts-filter-sidebar"', 'collapse d-lg-block')
+    it 'keeps the filters collapsed behind the toggle at every width in the narrow pane', :aggregate_failures do
+      expect(response.body).to include('id="posts-filter-toggle"', 'id="posts-filter-sidebar"')
+      expect(response.body).not_to include('collapse d-lg-block', 'd-lg-none mb-2')
     end
   end
 end

@@ -1,4 +1,4 @@
-<%# Copied from community-engine-rails 929bb51a9492 (app/views/better_together/posts/index.html.erb). Changes: inside a frame the heading is an h2 (the host page owns the h1), the settlement-scoped title, the turbo-frame wrapper (settlement and community page Posts tabs) and the collapsible filter sidebar like the events index; re-diff when the CE pin moves. -%>
+<%# Copied from community-engine-rails 929bb51a9492 (app/views/better_together/posts/index.html.erb). Changes: inside a frame the filters stack above a container-sized card grid (the pane is narrower than the viewport), inside a frame the heading is an h2 (the host page owns the h1), the settlement-scoped title, the turbo-frame wrapper (settlement and community page Posts tabs) and the collapsible filter sidebar like the events index; re-diff when the CE pin moves. -%>
 <% heading = @settlement ? t('newfoundland_labrador_online.settlement_posts.title', name: @settlement.name) : resource_class.model_name.human.pluralize %>
 <% content_for :page_title do %>
   <%= heading %>
@@ -33,19 +33,19 @@
 
   <div class="row">
     <!-- Filter Sidebar -->
-    <div class="col-lg-3 mb-4">
-      <button id="posts-filter-toggle" class="btn btn-outline-secondary d-lg-none mb-2 sidebar-toggle" type="button"
+    <div class="<%= frame_id ? 'col-12' : 'col-lg-3' %> mb-4">
+      <button id="posts-filter-toggle" class="btn btn-outline-secondary <%= 'd-lg-none' unless frame_id %> mb-2 sidebar-toggle" type="button"
               data-bs-toggle="collapse" data-bs-target="#posts-filter-sidebar"
               aria-expanded="false" aria-controls="posts-filter-sidebar">
         <i class="fas fa-filter" aria-hidden="true"></i> <%= t('newfoundland_labrador_online.posts_filters.toggle_filters') %>
       </button>
-      <div id="posts-filter-sidebar" class="collapse d-lg-block sidebar">
+      <div id="posts-filter-sidebar" class="collapse <%= 'd-lg-block' unless frame_id %> sidebar">
         <%= render 'list_form' %>
       </div>
     </div>
 
     <!-- Posts List -->
-    <div class="col-lg-9">
+    <div class="<%= frame_id ? 'col-12' : 'col-lg-9' %>">
 
       <!-- Pagination -->
       <% if @posts.respond_to?(:total_pages) && @posts.total_pages > 1 %>
@@ -108,7 +108,7 @@
             </ul>
           </div>
         <% else %>
-          <div id="posts" class="row row-cols-1 row-cols-md-2">
+          <div id="posts" class="<%= frame_id ? 'frame-card-grid' : 'row row-cols-1 row-cols-md-2' %>">
             <%= render @posts %>
           </div>
         <% end %>
