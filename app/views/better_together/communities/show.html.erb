@@ -1,4 +1,4 @@
-<%# Copied from community-engine-rails 929bb51a9492 (app/views/better_together/communities/show.html.erb). Changes: the Posts and Events tabs embed the scoped indexes in lazy turbo-frames; the logo in place of the profile image (or large in place of a missing cover); the live image card, and the located-in line, address and map in the About section; re-diff when the CE pin moves. -%>
+<%# Copied from community-engine-rails 929bb51a9492 (app/views/better_together/communities/show.html.erb). Changes: the Posts and Events tabs embed the scoped indexes in lazy turbo-frames; the logo in place of the profile image (or large in place of a missing cover); the live image card, and the located-in line and address in the About section, the map beside the tabs like the partner page, the description in a div (rich text); re-diff when the CE pin moves. -%>
 <% content_for :page_title do %>
   <%= @resource.name %> | <%= resource_class.model_name.human.pluralize %>
 <% end %>
@@ -77,6 +77,10 @@
                  open_membership_request_count: @open_membership_request_count %>
     <% end %>
 
+    <%# With a geocoded location the map sits beside the tabs, as on the partner page. %>
+    <% mapped = @resource.spaces.any? %>
+    <div class="row">
+    <div class="col-12 <%= 'col-lg-6 col-xl-8' if mapped %> mb-4">
     <!-- Community tabbed section with members -->
     <section class="card tabbed-section">
       <div class="card-header">
@@ -105,9 +109,9 @@
           <div class="col-md-12">
 
             <!-- Description Section -->
-            <p class="card-text text-muted">
+            <div class="card-text text-muted" id="community-description">
               <%= @resource.description.presence || t('better_together.communities.show.about.no_description') %>
-            </p>
+            </div>
 
             <% place = @resource.location&.location %>
             <% if place.is_a?(BetterTogether::Geography::Settlement) %>
@@ -122,11 +126,6 @@
                 <% if @resource.location.name.present? %><strong><%= @resource.location.name %></strong><br><% end %>
                 <%= place.to_formatted_s(excluded: [:display_label]) %>
               </p>
-            <% end %>
-            <% if @resource.spaces.any? %>
-              <section class="community-map my-3" id="community-map" aria-label="<%= t('newfoundland_labrador_online.community_map.label', name: @resource.name) %>">
-                <%= render partial: 'better_together/shared/map', locals: { map: @resource.map } %>
-              </section>
             <% end %>
 
             <% live_slug = NewfoundlandLabradorOnline::LiveImage.slug_for(@resource) %>
@@ -241,6 +240,14 @@
         </div>
       </div>
     </section>
+    </div>
+
+    <% if mapped %>
+      <section class="community-map col-12 col-lg-6 col-xl-4 pb-2" id="community-map" aria-label="<%= t('newfoundland_labrador_online.community_map.label', name: @resource.name) %>">
+        <%= render partial: 'better_together/shared/map', locals: { map: @resource.map } %>
+      </section>
+    <% end %>
+    </div>
   </div>
 </div>
 

@@ -1,4 +1,4 @@
-<%# Copied from community-engine-rails 1b1c9fc9e62a (app/views/better_together/events/show.html.erb). Changes: series pages have no RSVP, attendees, invitations, add-to-calendar, tickets or delete button (a settlement panel replaces it) and list their sessions between the description and the hosts; session pages show a banner naming the series. Re-diff when the CE pin moves. -%>
+<%# Copied from community-engine-rails 1b1c9fc9e62a (app/views/better_together/events/show.html.erb). Changes: the map sits below the hosts and the description is a div (rich text), series pages have no RSVP, attendees, invitations, add-to-calendar, tickets or delete button (a settlement panel replaces it) and list their sessions between the description and the hosts; session pages show a banner naming the series. Re-diff when the CE pin moves. -%>
 <% content_for :page_title do %>
   <%= @resource.name %> | <%= resource_class.model_name.human.pluralize %>
 <% end %>
@@ -124,12 +124,6 @@
                     <i class="fas fa-map-marker-alt me-2"></i> <%= @event.location %>
                   </div>
                 <% end %>
-                <% if @event.spaces.any? %>
-                  <section class="event-map my-3">
-                    <%= render partial: 'better_together/shared/map', locals: { map: @event.map } %>
-                  </section>
-                <% end %>
-
                 <% if @event.categories.any? %>
                   <div class="event-categories mt-2">
                     <%= categories_badge(@event) %>
@@ -137,13 +131,19 @@
                 <% end %>
 
                 <!-- Description Section -->
-                <p class="card-text mt-3 text-muted">
+                <div class="card-text mt-3 text-muted" id="event-description">
                   <%= @resource.description.presence || t('better_together.events.no_description_available') %>
-                </p>
+                </div>
 
                 <%= render 'better_together/events/series_sessions', series: @event if @event.series? %>
 
                 <%= render 'better_together/events/event_hosts', event: @event %>
+
+                <% if @event.spaces.any? %>
+                  <section class="event-map my-3" id="event-map" aria-label="<%= t('better_together.events.show.map_label', default: 'Map') %>">
+                    <%= render partial: 'better_together/shared/map', locals: { map: @event.map } %>
+                  </section>
+                <% end %>
               </div>
             </div>
           </div>
