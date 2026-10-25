@@ -20,7 +20,9 @@ RSpec.describe 'Documentation screenshots for event series', :js, type: :feature
 
   def add_session(name, start)
     create(:better_together_event, starts_at: start, ends_at: start + 2.hours, privacy: 'public', name:,
-                                   session_of: series.identifier)
+                                   session_of: series.identifier, registration_url: 'https://tickets.example.test/night',
+                                   address_spec: { name: 'Rotary Arts Centre', line1: '5 Park Street',
+                                                   city_name: 'Corner Brook', country_name: 'Canada' }.to_json)
   end
 
   before do
