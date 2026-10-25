@@ -63,4 +63,5 @@ ActiveSupport::Reloader.to_prepare do
 
   BetterTogether::Event.include(BetterTogether::EventSeries)
   BetterTogether::EventsSearchFilter.singleton_class.prepend(BetterTogether::EventSeriesListing)
+  BetterTogether::Geography::EventCollectionMap.singleton_class.prepend(BetterTogether::EventSeriesMap)
 end
