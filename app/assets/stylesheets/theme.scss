@@ -390,3 +390,11 @@ a.active {
     object-fit: contain;
   }
 }
+
+// CE spaces rich text blocks through `.trix-content > div` (what the Trix editor writes), while Trix's own reset
+// zeroes every other element's margin. Content written as paragraphs (API, import, paste) therefore rendered
+// with no gaps; give paragraphs the same spacing as the editor's blocks.
+.trix-content > p {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
