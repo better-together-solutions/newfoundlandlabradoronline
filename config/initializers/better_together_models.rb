@@ -42,16 +42,8 @@ ActiveSupport::Reloader.to_prepare do
   NewfoundlandLabradorOnline::SubtypeResourceTypes.wire!
 end
 
-# API input: community logo and cover images; event cover image and hosting community.
+# Communities on the map fall back to their location; locations show the street address under a named place.
 ActiveSupport::Reloader.to_prepare do
-  BetterTogether::Community.include(NewfoundlandLabradorOnline::CommunityImages)
-  BetterTogether::Event.include(NewfoundlandLabradorOnline::EventImages, NewfoundlandLabradorOnline::EventHosting,
-                                NewfoundlandLabradorOnline::EventBlockAttachments)
-end
-
-# A community's contact details, written as one JSON string (see ContactData).
-ActiveSupport::Reloader.to_prepare do
-  BetterTogether::Community.include(NewfoundlandLabradorOnline::ContactData)
   BetterTogether::Community.prepend(NewfoundlandLabradorOnline::LocatedMapPoints)
   BetterTogether::Geography::LocatableLocation.prepend(NewfoundlandLabradorOnline::LocationDisplayName)
 end

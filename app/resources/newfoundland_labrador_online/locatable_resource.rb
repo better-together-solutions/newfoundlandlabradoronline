@@ -8,7 +8,8 @@ module NewfoundlandLabradorOnline
     FIELDS = %i[settlement_identifier address_data].freeze
 
     def self.prepended(base)
-      base.attributes :settlement_identifier, :address_data
+      base.attributes :settlement_identifier
+      base.attributes :address_data unless base._attributes.key?(:address_data)
       base.singleton_class.prepend(ClassMethods)
     end
 
