@@ -19,7 +19,6 @@ module NewfoundlandLabradorOnline
       BetterTogether::Role.prepend(self)
       BetterTogether::ResourcePermission.prepend(self)
       BetterTogether::RolesHelper.prepend(RoleResourceTypeLabels)
-      BetterTogether::PeopleHelper.prepend(NewfoundlandLabradorOnline::MentionVisibility)
     end
 
     def self.prepended(base)

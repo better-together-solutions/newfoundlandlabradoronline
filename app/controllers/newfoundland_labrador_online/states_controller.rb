@@ -4,8 +4,6 @@ module NewfoundlandLabradorOnline
   # Public state pages (under /g like settlements): a list and a page per state linking to the districts, parties and
   # elections scoped to it. /g/provinces serves the states that identify as provinces; /g/states serves any state.
   class StatesController < ApplicationController
-    include NewfoundlandLabradorOnline::MentionPrefetch
-
     helper NewfoundlandLabradorOnline::ProvincesHelper
     helper NewfoundlandLabradorOnline::DistrictsHelper
     helper NewfoundlandLabradorOnline::PartiesHelper
