@@ -82,7 +82,7 @@ RSpec.describe 'Settlement posts' do
       get "/#{locale}/g/settlements/#{settlement.slug}"
 
       pane = response.body[%r{<div id="communities".*?</div>\s*</div>}m]
-      expect(pane).to include(community.name)
+      expect(pane).to include(ERB::Util.html_escape(community.name))
       expect(response.body).not_to include('settlement-communities-heading')
     end
 
