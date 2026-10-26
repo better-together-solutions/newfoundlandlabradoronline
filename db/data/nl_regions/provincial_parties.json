@@ -1,0 +1,74 @@
+{
+ "parties": [
+  {
+   "key": "liberal",
+   "jurisdiction": "provincial-nl",
+   "name": "Liberal Party of Newfoundland and Labrador",
+   "short_name": "Liberal",
+   "wikipedia_page": "Liberal Party of Newfoundland and Labrador",
+   "color": "#D71920",
+   "color_source": "logo",
+   "chart_color": null,
+   "logo_file": "liberal.svg",
+   "logo_source_url": "https://en.wikipedia.org/wiki/File:Liberal_Party_Newfoundland_and_Labrador_logo.svg",
+   "logo_license": "Public domain",
+   "logo_non_free": false
+  },
+  {
+   "key": "pc",
+   "jurisdiction": "provincial-nl",
+   "name": "Progressive Conservative Party of Newfoundland and Labrador",
+   "short_name": "PC",
+   "wikipedia_page": "Progressive Conservative Party of Newfoundland and Labrador",
+   "color": "#0434A4",
+   "color_source": "logo",
+   "chart_color": null,
+   "logo_file": "pc.png",
+   "logo_source_url": "https://en.wikipedia.org/wiki/File:Progressive_Conservative_Party_of_Newfoundland_and_Labrador_2018.png",
+   "logo_license": "Fair use",
+   "logo_non_free": true
+  },
+  {
+   "key": "ndp",
+   "jurisdiction": "provincial-nl",
+   "name": "New Democratic Party of Newfoundland and Labrador",
+   "short_name": "NDP",
+   "wikipedia_page": "Newfoundland and Labrador New Democratic Party",
+   "color": "#F47424",
+   "color_source": "logo",
+   "chart_color": null,
+   "logo_file": "ndp.png",
+   "logo_source_url": "https://en.wikipedia.org/wiki/File:NL-NDP_Logo.png",
+   "logo_license": "Public domain",
+   "logo_non_free": false
+  },
+  {
+   "key": "nl-alliance",
+   "jurisdiction": "provincial-nl",
+   "name": "NL Alliance",
+   "short_name": "NL Alliance",
+   "wikipedia_page": "NL Alliance",
+   "color": "#2C348C",
+   "color_source": "logo",
+   "chart_color": null,
+   "logo_file": "nl-alliance.png",
+   "logo_source_url": "https://en.wikipedia.org/wiki/File:NL_Alliance_Logo%2C_April_2019.png",
+   "logo_license": "Fair use",
+   "logo_non_free": true
+  },
+  {
+   "key": "independent",
+   "jurisdiction": "provincial-nl",
+   "name": "Independent",
+   "short_name": "Independent",
+   "wikipedia_page": null,
+   "color": "#8A8D91",
+   "color_source": "default",
+   "chart_color": null,
+   "logo_file": null,
+   "logo_source_url": null,
+   "logo_license": null,
+   "logo_non_free": null
+  }
+ ]
+}

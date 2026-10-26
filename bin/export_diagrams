@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Regenerates the Rails-reflection diagrams in the container harness, then renders every docs/diagrams/source/*.mmd.
+./bin/dc-run bin/rails runner scripts/export_diagrams.rb
+bin/render_diagrams "$@"

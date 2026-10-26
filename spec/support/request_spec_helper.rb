@@ -28,7 +28,15 @@ module RequestSpecHelper
     create(:user, :confirmed, :platform_manager,
            email: 'manager@example.test',
            password: 'SecureTest123!@#')
+    create_nl_province
     host_platform
+  end
+
+  # The province the NL data is scoped to (production has all thirteen, seeded by CE).
+  def create_nl_province
+    BetterTogether::Geography::State.find_by(iso_code: 'CA-NL') ||
+      create(:geography_state, iso_code: 'CA-NL', name: 'Newfoundland and Labrador',
+                               identifier: 'newfoundland-and-labrador')
   end
 
   # See rails_helper.rb's before(:suite) hook for why this uses

@@ -1,0 +1,20 @@
+<div class="container py-4" id="parties-index">
+  <h1 class="mb-2"><%= @scope ? t(".titles.#{@scope}") : t('.title') %><% if @province %> <small class="text-muted"><%= @province.name %></small><% end %></h1>
+  <p class="text-muted"><%= t('.intro') %></p>
+
+  <% @parties.group_by { |party| [party.jurisdiction, party.state] }.each do |(jurisdiction, state), parties| %>
+    <% code = province_code(parties.first) %>
+    <section id="parties-<%= jurisdiction %>-<%= code %>">
+      <% unless @province %>
+        <h2 class="h4 mt-3"><%= link_to "#{t(".titles.#{jurisdiction}")}: #{state.name}", newfoundland_labrador_online_scoped_parties_path(jurisdiction, code, locale: I18n.locale) %></h2>
+      <% end %>
+      <div class="row" id="parties-list-<%= jurisdiction %>-<%= code %>">
+        <% parties.each do |party| %>
+          <%= render 'newfoundland_labrador_online/parties/card', party:, seats: @seats.fetch(party.id, 0) %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+  <p><%= link_to t('.elections'), province_index_path(:elections) %> ·
+     <%= link_to t('.districts'), province_index_path(:districts) %></p>
+</div>
