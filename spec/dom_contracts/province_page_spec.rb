@@ -42,7 +42,7 @@ RSpec.describe 'State and province pages', type: :request do
     get "/#{locale}/g/provinces/#{other.slug}"
     expect(response).to have_http_status(:not_found)
     get "/#{locale}/g/provinces"
-    expect(response.body).not_to include(other.name)
+    expect(response.body).not_to include(ERB::Util.html_escape(other.name))
   end
 
   it 'links to the province districts, parties and elections', :aggregate_failures do
