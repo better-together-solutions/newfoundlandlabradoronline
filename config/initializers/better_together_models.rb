@@ -41,9 +41,3 @@ end
 ActiveSupport::Reloader.to_prepare do
   NewfoundlandLabradorOnline::SubtypeResourceTypes.wire!
 end
-
-# Communities on the map fall back to their location; locations show the street address under a named place.
-ActiveSupport::Reloader.to_prepare do
-  BetterTogether::Community.prepend(NewfoundlandLabradorOnline::LocatedMapPoints)
-  BetterTogether::Geography::LocatableLocation.prepend(NewfoundlandLabradorOnline::LocationDisplayName)
-end

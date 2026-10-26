@@ -1,18 +1,17 @@
-<%# Copied from community-engine-rails 1b1c9fc9e62a (app/views/better_together/events/_list_form.html.erb). Changes: the filter form keeps the settlement scope and submits inside its turbo-frame; re-diff when the CE pin moves. -%>
+<%# Copied from community-engine-rails 8fba847c5 (app/views/better_together/events/_list_form.html.erb). Changes: the settlement scope (settlement page tab) is kept by the filter form. Re-diff when the CE pin moves. -%>
 <div class="panel panel-info">
   <div class="panel-heading">
     <h2 class="h5"><%= t('.filters') %></h2>
   </div>
   <div class="panel-body">
-    <% filter_path = events_path(**{ settlement: @settlement&.identifier, community_id: @scoped_community&.slug }.compact) %>
-    <% frame_id = @settlement ? 'settlement-events' : ('community-events' if @scoped_community) %>
+    <% filter_path = events_path(**{ settlement: @settlement&.identifier, community_id: scoped_community&.slug }.compact) %>
     <%= form_with url: filter_path, method: :get, class: 'events-filter-sidebar', local: true,
-                  data: (frame_id ? { turbo_frame: frame_id } : {}) do |f| %>
+                  data: (index_frame_id ? { turbo_frame: index_frame_id } : {}) do |f| %>
       <% if @settlement %>
         <%= f.hidden_field :settlement, value: @settlement.identifier %>
       <% end %>
-      <% if @scoped_community %>
-        <%= f.hidden_field :community_id, value: @scoped_community.slug %>
+      <% if scoped_community %>
+        <%= f.hidden_field :community_id, value: scoped_community.slug %>
       <% end %>
       <div class="mb-3">
         <%= f.label :q, t('.search_label'), class: 'form-label' %>
@@ -88,7 +87,7 @@
       <div class="clearfix">
         <% if params[:q].present? || params[:status].present? || params[:order_by].present? || params[:per_page].present? || params[:category_ids].present? || params[:past].present? || params[:recurring].present? %>
           <%= link_to t('.clear_filters'), filter_path, class: 'btn btn-outline-secondary', id: 'events-clear-filters',
-                      data: (frame_id ? { turbo_frame: frame_id } : {}) %>
+                      data: (index_frame_id ? { turbo_frame: index_frame_id } : {}) %>
         <% end %>
         <%= f.submit t('.search_button'), class: 'btn btn-primary float-end', id: 'events-search-submit' %>
       </div>

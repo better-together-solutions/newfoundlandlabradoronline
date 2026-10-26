@@ -1,4 +1,4 @@
-<%# Copied from community-engine-rails 929bb51a9492 (app/views/better_together/communities/show.html.erb). Changes: tabs use the CE tabs controller like the event page (no inline hash script), the Posts and Events tabs embed the scoped indexes in lazy turbo-frames; the logo in place of the profile image (or large in place of a missing cover); the live image card, and the located-in line and address in the About section, contact details in their own tab like the NNL partner page, the map beside the tabs like the partner page, the description in a div (rich text); re-diff when the CE pin moves. -%>
+<%# Copied from community-engine-rails 8fba847c5 (app/views/better_together/communities/show.html.erb). Changes: the logo (else profile image) in the header, the settlement link in the located-in line and the live image card in About. Re-diff when the CE pin moves. -%>
 <% content_for :page_title do %>
   <%= @resource.name %> | <%= resource_class.model_name.human.pluralize %>
 <% end %>
@@ -77,31 +77,31 @@
                  open_membership_request_count: @open_membership_request_count %>
     <% end %>
 
-    <%# With a geocoded location the map sits beside the tabs, as on the partner page. %>
+    <%# With a geocoded place the map sits beside the tabs, as on the event page. %>
     <% mapped = @resource.spaces.any? %>
     <div class="row">
     <div class="col-12 <%= 'col-lg-6 col-xl-8' if mapped %> mb-4">
     <!-- Community tabbed section with members -->
-    <section class="card tabbed-section" data-controller="better_together--tabs">
+    <section class="card tabbed-section" id="community-tabbed-section" data-controller="better_together--tabs">
       <div class="card-header">
         <!-- Navigation tabs -->
         <%# Initialize the active tab state with accessible attributes %>
         <%= content_tag :div, id: 'communityTabs', class: 'nav nav-tabs card-header-tabs', role: 'tablist', aria_label: t('better_together.communities.show.sections_aria') do %>
-          <%= link_to t('globals.tabs.about'), '#about', class: 'nav-link active', id: 'about-tab', data: { bs_toggle: 'tab', turbo: false, bs_target: '#about' }, 'data-better_together--tabs-target' => 'tab', role: 'tab', aria: { controls: 'about', selected: 'true' }, tabindex: '0' %>
+          <%= link_to t('globals.tabs.about'), '#about', class: 'nav-link active', id: 'about-tab', data: { bs_toggle: 'tab', bs_target: '#about', turbo: false }, 'data-better_together--tabs-target' => 'tab', role: 'tab', aria: { controls: 'about', selected: 'true' }, tabindex: '0' %>
           <% if @resource.has_contact_details? %>
-            <%= link_to t('globals.tabs.contact'), '#contact', class: 'nav-link', id: 'contact-tab', data: { bs_toggle: 'tab', turbo: false, bs_target: '#contact' }, 'data-better_together--tabs-target' => 'tab', role: 'tab', aria: { controls: 'contact', selected: 'false' }, tabindex: '-1' %>
+            <%= link_to t('globals.tabs.contact'), '#contact', class: 'nav-link', id: 'contact-tab', data: { bs_toggle: 'tab', bs_target: '#contact', turbo: false }, 'data-better_together--tabs-target' => 'tab', role: 'tab', aria: { controls: 'contact', selected: 'false' }, tabindex: '-1' %>
           <% end %>
           <% if policy(@resource).view_members? %>
-            <%= link_to t('globals.tabs.members'), '#members', class: 'nav-link', id: 'members-tab', data: { bs_toggle: 'tab', turbo: false, bs_target: '#members' }, 'data-better_together--tabs-target' => 'tab', role: 'tab', aria: { controls: 'members', selected: 'false' }, tabindex: '-1' %>
+            <%= link_to t('globals.tabs.members'), '#members', class: 'nav-link', id: 'members-tab', data: { bs_toggle: 'tab', bs_target: '#members', turbo: false }, 'data-better_together--tabs-target' => 'tab', role: 'tab', aria: { controls: 'members', selected: 'false' }, tabindex: '-1' %>
           <% end %>
           <% if policy(@resource).manage_roles? %>
-            <%= link_to t('globals.tabs.roles_and_permissions'), '#roles-and-permissions', class: 'nav-link', id: 'roles-and-permissions-tab', data: { bs_toggle: 'tab', turbo: false, bs_target: '#roles-and-permissions' }, 'data-better_together--tabs-target' => 'tab', role: 'tab', aria: { controls: 'roles-and-permissions', selected: 'false' }, tabindex: '-1' %>
+            <%= link_to t('globals.tabs.roles_and_permissions'), '#roles-and-permissions', class: 'nav-link', id: 'roles-and-permissions-tab', data: { bs_toggle: 'tab', bs_target: '#roles-and-permissions', turbo: false }, 'data-better_together--tabs-target' => 'tab', role: 'tab', aria: { controls: 'roles-and-permissions', selected: 'false' }, tabindex: '-1' %>
           <% end %>
           <% if @community_pages.any? %>
-            <%= link_to BetterTogether::Page.model_name.human.pluralize, '#pages', class: 'nav-link', id: 'pages-tab', data: { bs_toggle: 'tab', turbo: false, bs_target: '#pages' }, 'data-better_together--tabs-target' => 'tab', role: 'tab', aria: { controls: 'pages', selected: 'false' }, tabindex: '-1' %>
+            <%= link_to BetterTogether::Page.model_name.human.pluralize, '#pages', class: 'nav-link', id: 'pages-tab', data: { bs_toggle: 'tab', bs_target: '#pages', turbo: false }, 'data-better_together--tabs-target' => 'tab', role: 'tab', aria: { controls: 'pages', selected: 'false' }, tabindex: '-1' %>
           <% end %>
-          <%= link_to t('globals.tabs.posts'), '#posts', class: 'nav-link', id: 'posts-tab', data: { bs_toggle: 'tab', turbo: false, bs_target: '#posts' }, 'data-better_together--tabs-target' => 'tab', role: 'tab', aria: { controls: 'posts', selected: 'false' }, tabindex: '-1' %>
-          <%= link_to t('globals.tabs.events'), '#events', class: 'nav-link', id: 'events-tab', data: { bs_toggle: 'tab', turbo: false, bs_target: '#events' }, 'data-better_together--tabs-target' => 'tab', role: 'tab', aria: { controls: 'events', selected: 'false' }, tabindex: '-1' %>
+          <%= link_to t('globals.tabs.posts'), '#posts', class: 'nav-link', id: 'posts-tab', data: { bs_toggle: 'tab', bs_target: '#posts', turbo: false }, 'data-better_together--tabs-target' => 'tab', role: 'tab', aria: { controls: 'posts', selected: 'false' }, tabindex: '-1' %>
+          <%= link_to t('globals.tabs.events'), '#events', class: 'nav-link', id: 'events-tab', data: { bs_toggle: 'tab', bs_target: '#events', turbo: false }, 'data-better_together--tabs-target' => 'tab', role: 'tab', aria: { controls: 'events', selected: 'false' }, tabindex: '-1' %>
         <% end %>
       </div>
 
@@ -109,7 +109,7 @@
       <div class="card-body" id="communitySections">
         <div class="tab-content">
         <!-- Person About Section -->
-        <section id="about" class="row nav-tab-pane tab-pane fade show active" role="tabpanel" aria-labelledby="about-tab">
+        <section id="about" class="row tab-pane fade show active" role="tabpanel" aria-labelledby="about-tab">
           <div class="col-md-12">
 
             <!-- Description Section -->
@@ -124,11 +124,10 @@
                 <%= t('newfoundland_labrador_online.settlement_posts.located_in') %>
                 <%= link_to place.name, geography_settlement_path(place) %>
               </p>
-            <% elsif place %>
+            <% elsif @resource.location&.display_name.present? %>
               <p class="community-location card-text" id="community-location">
                 <i class="fas fa-map-marker-alt me-1" aria-hidden="true"></i>
-                <% if @resource.location.name.present? %><strong><%= @resource.location.name %></strong><br><% end %>
-                <%= place.to_formatted_s(excluded: [:display_label]) %>
+                <%= @resource.location.display_name %>
               </p>
             <% end %>
 
@@ -140,13 +139,13 @@
         </section>
 
         <% if @resource.has_contact_details? %>
-          <div id="contact" class="nav-tab-pane tab-pane fade" role="tabpanel" aria-labelledby="contact-tab">
-            <%= render partial: 'better_together/contact_details/about_section', locals: { contactable: @resource, include_heading: false } %>
+          <div id="contact" class="tab-pane fade" role="tabpanel" aria-labelledby="contact-tab">
+            <%= render partial: 'better_together/contact_details/about_section', locals: { contactable: @resource, include_heading: false, include_private: policy(@resource).update? } %>
           </div>
         <% end %>
 
         <% if policy(@resource).view_members? %>
-          <div id="members" class="nav-tab-pane tab-pane fade" role="tabpanel" aria-labelledby="members-tab">
+          <div id="members" class="tab-pane fade" role="tabpanel" aria-labelledby="members-tab">
             <%= render 'better_together/shared/invitation_panel',
               invitable: @community,
               invitation_class: BetterTogether::CommunityInvitation,
@@ -218,7 +217,7 @@
         <% end %>
 
         <% if policy(@resource).manage_roles? %>
-          <div id="roles-and-permissions" class="nav-tab-pane tab-pane fade" role="tabpanel" aria-labelledby="roles-and-permissions-tab">
+          <div id="roles-and-permissions" class="tab-pane fade" role="tabpanel" aria-labelledby="roles-and-permissions-tab">
             <%= render 'better_together/communities/community_roles_tab',
                        community: @community,
                        community_roles: @community_roles,
@@ -227,7 +226,7 @@
         <% end %>
 
         <% if @community_pages.any? %>
-          <div id="pages" class="nav-tab-pane tab-pane fade" role="tabpanel" aria-labelledby="pages-tab">
+          <div id="pages" class="tab-pane fade" role="tabpanel" aria-labelledby="pages-tab">
             <div id="community_pages_list" class="mt-3 mb-4 row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
               <%= render partial: 'better_together/pages/page', collection: @community_pages, as: :page %>
             </div>
@@ -235,15 +234,15 @@
         <% end %>
 
         <%# Posts and events: the posts and events indexes scoped to this community, loaded when the tab is first shown. %>
-        <div id="posts" class="nav-tab-pane tab-pane fade" role="tabpanel" aria-labelledby="posts-tab">
+        <div id="posts" class="tab-pane fade" role="tabpanel" aria-labelledby="posts-tab">
           <%= turbo_frame_tag 'community-posts', src: posts_path(community_id: @community.slug, locale: I18n.locale), loading: :lazy, target: '_top' do %>
-            <p class="text-muted"><%= t('newfoundland_labrador_online.settlement_posts.loading') %></p>
+            <p class="text-muted"><%= t('better_together.communities.show.posts.loading') %></p>
           <% end %>
         </div>
 
-        <div id="events" class="nav-tab-pane tab-pane fade" role="tabpanel" aria-labelledby="events-tab">
+        <div id="events" class="tab-pane fade" role="tabpanel" aria-labelledby="events-tab">
           <%= turbo_frame_tag 'community-events', src: events_path(community_id: @community.slug, locale: I18n.locale), loading: :lazy, target: '_top' do %>
-            <p class="text-muted"><%= t('newfoundland_labrador_online.settlement_events.loading') %></p>
+            <p class="text-muted"><%= t('better_together.communities.show.events.loading') %></p>
           <% end %>
         </div>
         </div>
@@ -252,7 +251,7 @@
     </div>
 
     <% if mapped %>
-      <section class="community-map col-12 col-lg-6 col-xl-4 pb-2 align-self-start" id="community-map" aria-label="<%= t('newfoundland_labrador_online.community_map.label', name: @resource.name) %>">
+      <section class="community-map col-12 col-lg-6 col-xl-4 pb-2 align-self-start" id="community-map" aria-label="<%= t('better_together.communities.show.map_aria', name: @resource.name) %>">
         <%= render partial: 'better_together/shared/map', locals: { map: @resource.map } %>
       </section>
     <% end %>

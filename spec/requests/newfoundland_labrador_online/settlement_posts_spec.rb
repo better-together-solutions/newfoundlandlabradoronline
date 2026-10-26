@@ -36,7 +36,7 @@ RSpec.describe 'Settlement posts' do
     end
 
     it 'wraps the list in the turbo frame the settlement page embeds', :aggregate_failures do
-      get "/#{locale}/posts", params: { settlement: 'cb-town' }
+      get "/#{locale}/posts", params: { settlement: 'cb-town' }, headers: { 'Turbo-Frame' => 'settlement-posts' }
 
       expect(response.body).to include('<turbo-frame id="settlement-posts"')
       expect(response.body).to include('value="cb-town" type="hidden" name="settlement"')

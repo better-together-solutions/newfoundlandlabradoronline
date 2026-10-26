@@ -44,7 +44,7 @@ RSpec.describe 'Community tabs' do
 
   describe 'headings inside the frames' do
     def headings(path, params)
-      get path, params: params
+      get path, params: params, headers: { 'Turbo-Frame' => "community-#{path.split('/').last}" }
       Nokogiri::HTML(response.body).css('turbo-frame#community-events h1, turbo-frame#community-events h2, ' \
                                         'turbo-frame#community-posts h1, turbo-frame#community-posts h2')
               .map(&:name).uniq
@@ -63,7 +63,10 @@ RSpec.describe 'Community tabs' do
   end
 
   describe 'GET /events?community_id=' do
-    before { get "/#{locale}/events", params: { community_id: community.slug } }
+    before do
+      get "/#{locale}/events", params: { community_id: community.slug },
+                               headers: { 'Turbo-Frame' => 'community-events' }
+    end
 
     it 'lists only the public events the community hosts', :aggregate_failures do
       expect(response.body).to include('Sooner show', 'Later show', 'events-filter-sidebar')
@@ -80,7 +83,9 @@ RSpec.describe 'Community tabs' do
   end
 
   describe 'GET /posts?community_id=' do
-    before { get "/#{locale}/posts", params: { community_id: community.slug } }
+    before do
+      get "/#{locale}/posts", params: { community_id: community.slug }, headers: { 'Turbo-Frame' => 'community-posts' }
+    end
 
     it 'sits in the community frame with the filter form inside it', :aggregate_failures do
       expect(response.body).to include('turbo-frame id="community-posts"', 'data-turbo-frame="community-posts"')

@@ -50,7 +50,7 @@ RSpec.describe 'Settlement events' do
     end
 
     it 'keeps the settlement scope in the filter form', :aggregate_failures do
-      get "/#{locale}/events", params: { settlement: 'cb-town' }
+      get "/#{locale}/events", params: { settlement: 'cb-town' }, headers: { 'Turbo-Frame' => 'settlement-events' }
 
       expect(response.body).to include('name="settlement"', 'data-turbo-frame="settlement-events"')
     end

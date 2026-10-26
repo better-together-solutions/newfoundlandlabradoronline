@@ -38,13 +38,13 @@ RSpec.describe 'Event detail ordering', type: :request do
     get "/#{locale}/events/#{session.slug}"
     header = Nokogiri::HTML(response.body).at_css('.event-info-container')
 
-    expect(in_order?(header, ['.event-datetime', '.event-series-banner', '.event-location'])).to be(true)
+    expect(in_order?(header, ['.event-datetime', '.event-location', '.event-series-banner'])).to be(true)
   end
 
   it 'orders the About pane' do
     get "/#{locale}/events/#{session.slug}"
     about = Nokogiri::HTML(response.body).at_css('#about')
-    order = ['.fa-eye', '.fa-ticket', '.fa-calendar-alt', '.event-series-other-dates', '.event-location']
+    order = ['.fa-eye', '.fa-ticket', '.fa-calendar-alt', '.event-location', '.event-series-other-dates']
 
     expect(in_order?(about, order)).to be(true)
   end
@@ -54,6 +54,6 @@ RSpec.describe 'Event detail ordering', type: :request do
     card = Nokogiri::HTML(response.body).at_css("#event_#{session.id}, #event_card_#{session.id}") ||
            Nokogiri::HTML(response.body).at_css('.event-card')
 
-    expect(in_order?(card, ['.event-datetime', '.event-series-mention', '.event-location'])).to be(true)
+    expect(in_order?(card, ['.event-datetime', '.event-location', '.event-series-mention'])).to be(true)
   end
 end
