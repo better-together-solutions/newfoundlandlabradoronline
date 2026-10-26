@@ -1,14 +1,12 @@
-<%# Copied from community-engine-rails 929bb51a9492 (app/views/better_together/posts/_list_form.html.erb). Changes: the filter form keeps the settlement scope and submits inside its turbo-frame; re-diff when the CE pin moves. -%>
+<%# Copied from community-engine-rails 8fba847c5 (app/views/better_together/posts/_list_form.html.erb). Changes: the settlement scope (settlement page tab) is kept by the filter form. Re-diff when the CE pin moves. -%>
 <div class="panel panel-info">
   <div class="panel-heading">
     <h2 class="h5"><%= t('.filters') %></h2>
   </div>
   <div class="panel-body">
-    <% filter_path = params[:community_id].present? ? posts_path(community_id: params[:community_id]) : posts_path %>
-    <% filter_path = posts_path(settlement: @settlement.identifier) if @settlement %>
-    <% frame_id = @settlement ? 'settlement-posts' : ('community-posts' if @scoped_community) %>
+    <% filter_path = posts_path(**{ settlement: @settlement&.identifier, community_id: params[:community_id].presence }.compact) %>
     <%= form_with url: filter_path, method: :get, class: 'posts-filter-sidebar', local: true,
-                  data: (frame_id ? { turbo_frame: frame_id } : {}) do |f| %>
+                  data: (index_frame_id ? { turbo_frame: index_frame_id } : {}) do |f| %>
       <% if @settlement %>
         <%= f.hidden_field :settlement, value: @settlement.identifier %>
       <% end %>
@@ -98,7 +96,7 @@
       <div class="clearfix">
         <% if params[:q].present? || params[:privacy].present? || params[:order_by].present? || params[:per_page].present? || params[:category_ids].present? || params[:author_ids].present? %>
           <%= link_to t('.clear_filters'), filter_path, class: 'btn btn-outline-secondary', id: 'posts-clear-filters',
-                      data: (frame_id ? { turbo_frame: frame_id } : {}) %>
+                      data: (index_frame_id ? { turbo_frame: index_frame_id } : {}) %>
         <% end %>
         <%= f.submit t('.search_button'), class: 'btn btn-primary float-end', id: 'posts-search-submit' %>
       </div>

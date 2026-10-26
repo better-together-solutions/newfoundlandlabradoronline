@@ -30,30 +30,6 @@ fr:
       resource/document: Document
       resource/link: Lien
   better_together:
-    events:
-      series:
-        no_sessions: Aucune date n'a encore été ajoutée à cette série.
-        other_dates: Autres dates
-        part_of: Fait partie de %{name}
-        part_of_run:
-          one: Fait partie d'une série de %{count} date
-          other: Fait partie d'une série de %{count} dates
-        sessions_heading: Dates
-        settled: Série mise à jour.
-        settlement:
-          cancel_legend: Annuler la série
-          cancel_sessions: Annuler aussi les dates à venir
-          cancel_submit: Annuler la série
-          delete_legend: Supprimer la série
-          delete_sessions: Supprimer aussi les dates
-          delete_submit: Supprimer la série
-          explain: Cette série compte %{count} dates. Indiquez ce qu'il advient de
-            ces dates avant de l'annuler ou de la supprimer.
-          open: Annuler ou supprimer cette série
-          promote_sessions: Garder les dates comme événements distincts
-        show_all_dates:
-          one: Afficher %{count} date de plus
-          other: Afficher %{count} dates de plus
     shared:
       map:
         buttons:
@@ -108,8 +84,6 @@ fr:
   journeys:
     title: Mon parcours
   newfoundland_labrador_online:
-    community_map:
-      label: Carte de %{name}
     community_subtypes:
       committee_community: Rôles de comité
       department_community: Rôles de département
@@ -252,8 +226,6 @@ fr:
         logo_non_free: Logo non libre, affiché au titre de l’utilisation équitable.
         logo_source: Source
         none: Aucun député enregistré.
-    posts_filters:
-      toggle_filters: Filtres
     settlement_events:
       loading: Chargement des événements...
       title: Événements à %{name}

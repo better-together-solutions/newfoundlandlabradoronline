@@ -70,9 +70,9 @@ RSpec.describe 'Documentation screenshots for event series', :js, type: :feature
   it 'captures the cancel and delete panel' do
     sign_in_as_manager
     visit "/#{locale}/events/#{series.slug}"
-    find("button[data-bs-target='#settlement_panel_event_#{series.id}']").click
-    callouts = [{ selector: "#settlement_event_#{series.id}", title: 'Choose for the dates' }]
+    find("button[data-bs-target='#disposition_panel_event_#{series.id}']").click
+    callouts = [{ selector: "#disposition_event_#{series.id}", title: 'Choose for the dates' }]
 
-    expect(captured('event_series_settlement', callouts)).to all(be > 10_000)
+    expect(captured('event_series_disposition', callouts)).to all(be > 10_000)
   end
 end

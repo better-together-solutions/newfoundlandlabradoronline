@@ -21,10 +21,10 @@ RSpec.describe 'Event series DOM contract', type: :request do
     login('manager@example.test', 'SecureTest123!@#')
   end
 
-  it 'gives the series page its sessions list and settlement panel', :aggregate_failures do
+  it 'gives the series page its sessions list and disposition panel', :aggregate_failures do
     get "/#{locale}/events/#{series.slug}"
 
-    expect(response.body).to include("id=\"sessions_event_#{series.id}\"", "id=\"settlement_event_#{series.id}\"",
+    expect(response.body).to include("id=\"sessions_event_#{series.id}\"", "id=\"disposition_event_#{series.id}\"",
                                      "id=\"cancel_form_event_#{series.id}\"", "id=\"delete_form_event_#{series.id}\"")
   end
 

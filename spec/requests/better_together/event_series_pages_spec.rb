@@ -66,19 +66,19 @@ RSpec.describe 'Event series pages' do
     it 'shows the confirmation panel with no choice preselected', :aggregate_failures do
       get "/#{locale}/events/#{series.slug}"
 
-      expect(response.body).to include("id=\"settlement_event_#{series.id}\"", 'session_disposition')
+      expect(response.body).to include("id=\"disposition_event_#{series.id}\"", 'session_disposition')
       expect(response.body).not_to match(/session_disposition[^>]*checked/)
     end
 
     it 'refuses to cancel without a choice', :aggregate_failures do
-      patch "/#{locale}/events/#{series.slug}", params: { settle: 'cancel' }
+      patch "/#{locale}/events/#{series.slug}", params: { series_action: 'cancel' }
 
       expect(series.reload).not_to be_status_cancelled
       expect(response).to redirect_to("/#{locale}/events/#{series.slug}")
     end
 
     it 'cancels the series and its upcoming sessions when asked', :aggregate_failures do
-      patch "/#{locale}/events/#{series.slug}", params: { settle: 'cancel', session_disposition: 'cancel' }
+      patch "/#{locale}/events/#{series.slug}", params: { series_action: 'cancel', session_disposition: 'cancel' }
 
       expect(series.reload).to be_status_cancelled
       expect(session.reload).to be_status_cancelled
