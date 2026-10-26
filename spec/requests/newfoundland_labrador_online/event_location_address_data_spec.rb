@@ -13,7 +13,7 @@ RSpec.describe 'Event page location' do
 
   before do
     configure_host_platform
-    event.update!(address_spec: { name: 'Rotary Arts Centre', line1: '5 Park Street', city_name: 'Corner Brook',
+    event.update!(address_data: { name: 'Rotary Arts Centre', line1: '5 Park Street', city_name: 'Corner Brook',
                                   postal_code: 'A2H 2Y8', country_name: 'Canada' }.to_json)
   end
 

@@ -52,7 +52,7 @@ RSpec.describe 'Event series surfaces' do
   end
 
   it 'pins the sessions on the events map, not the series', :aggregate_failures do
-    [series, *series.sessions].each { |event| event.update!(address_spec: address.to_json) }
+    [series, *series.sessions].each { |event| event.update!(address_data: address.to_json) }
     records = BetterTogether::Geography::EventCollectionMap.records(BetterTogether::Event.where(platform:))
 
     expect(records.map(&:identifier)).to include(*series.sessions.map(&:identifier))

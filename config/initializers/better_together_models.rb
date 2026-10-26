@@ -49,9 +49,9 @@ ActiveSupport::Reloader.to_prepare do
                                 NewfoundlandLabradorOnline::EventBlockAttachments)
 end
 
-# A community's contact details, written as one JSON string (see ContactSpec).
+# A community's contact details, written as one JSON string (see ContactData).
 ActiveSupport::Reloader.to_prepare do
-  BetterTogether::Community.include(NewfoundlandLabradorOnline::ContactSpec)
+  BetterTogether::Community.include(NewfoundlandLabradorOnline::ContactData)
   BetterTogether::Community.prepend(NewfoundlandLabradorOnline::LocatedMapPoints)
   BetterTogether::Geography::LocatableLocation.prepend(NewfoundlandLabradorOnline::LocationDisplayName)
 end

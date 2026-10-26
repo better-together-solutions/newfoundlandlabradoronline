@@ -17,7 +17,7 @@ RSpec.describe 'Event detail ordering', type: :request do
   end
   let(:session) do
     create(:better_together_event, starts_at: 3.days.from_now, ends_at: 3.days.from_now + 1.hour, privacy: 'public',
-                                   name: 'Night', session_of: series.identifier, address_spec: address.to_json,
+                                   name: 'Night', session_of: series.identifier, address_data: address.to_json,
                                    registration_url: 'https://tickets.example.test/night')
   end
 

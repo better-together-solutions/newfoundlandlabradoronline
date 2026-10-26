@@ -29,7 +29,7 @@ RSpec.describe 'Address located events on the settlement page' do
     settlement.save!
     event = create(:better_together_event, name: 'At the Arts Centre', privacy: 'public',
                                            starts_at: 3.days.from_now, ends_at: 3.days.from_now + 2.hours)
-    event.update!(address_spec: address_json)
+    event.update!(address_data: address_json)
     address = event.location.location
     address.space.update!(latitude: lat, longitude: lng)
     BetterTogether::Geography::HierarchyResolutionJob.perform_now(address)

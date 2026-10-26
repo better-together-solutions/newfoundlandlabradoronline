@@ -13,11 +13,11 @@ RSpec.describe 'Event and community show layout' do
       state_province_name: 'Newfoundland and Labrador', country_name: 'Canada' }
   end
   let(:community) do
-    create(:better_together_community, privacy: 'public', name: 'Arts Centre', address_spec: address.to_json)
+    create(:better_together_community, privacy: 'public', name: 'Arts Centre', address_data: address.to_json)
   end
   let(:event) do
     create(:better_together_event, privacy: 'public', name: 'Night', starts_at: 3.days.from_now,
-                                   ends_at: 3.days.from_now + 1.hour, address_spec: address.to_json,
+                                   ends_at: 3.days.from_now + 1.hour, address_data: address.to_json,
                                    description: '<div>Doors at <strong>7</strong></div>')
   end
 

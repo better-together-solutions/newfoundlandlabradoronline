@@ -13,12 +13,12 @@ RSpec.describe 'Documentation screenshots for the show layouts', :js, type: :fea
   let(:platform) { BetterTogether::Platform.find_by(host: true) }
   let(:community) do
     create(:better_together_community, privacy: 'public', name: 'Rotary Arts Centre',
-                                       address_spec: address.to_json, contact_spec: contacts.to_json)
+                                       address_data: address.to_json, contact_data: contacts.to_json)
   end
   let(:event) do
     create(:better_together_event, platform:, name: 'A Tribute to Fleetwood Mac', privacy: 'public',
                                    status: 'confirmed', starts_at: 3.days.from_now,
-                                   ends_at: 3.days.from_now + 2.hours, address_spec: address.to_json,
+                                   ends_at: 3.days.from_now + 2.hours, address_data: address.to_json,
                                    description: '<div>Doors open at 7.</div>')
   end
 

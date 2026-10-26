@@ -20,7 +20,7 @@ RSpec.describe 'Community page location and contacts' do
 
   before do
     configure_host_platform
-    community.update!(address_spec: address.to_json, contact_spec: contacts.to_json)
+    community.update!(address_data: address.to_json, contact_data: contacts.to_json)
   end
 
   def geocode_address
