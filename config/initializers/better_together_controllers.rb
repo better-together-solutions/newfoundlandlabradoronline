@@ -11,8 +11,6 @@ Rails.application.config.to_prepare do
   BetterTogether::EventsController.prepend(NewfoundlandLabradorOnline::CommunityEvents)
   BetterTogether::EventsController.prepend(NewfoundlandLabradorOnline::CommunityScope)
   BetterTogether::PostsController.prepend(NewfoundlandLabradorOnline::CommunityScope)
-  # Cancelling or deleting an event series asks what happens to its sessions.
-  BetterTogether::EventsController.prepend(BetterTogether::EventSeriesActions)
 
   # Attached video blocks render through CE's CSP-aware iframe_embed_state helper. Action Text
   # renders attachments in whichever controller's view context is current (API responses
