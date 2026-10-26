@@ -16,6 +16,8 @@ module NewfoundlandLabradorOnline
     include BetterTogether::RemoveableAttachment
 
     belongs_to :state, class_name: 'BetterTogether::Geography::State', optional: true, inverse_of: :political_parties
+    belongs_to :community, class_name: 'NewfoundlandLabradorOnline::PartyCommunity', optional: true,
+                           inverse_of: :political_party
     has_many :memberships, class_name: 'NewfoundlandLabradorOnline::PartyMembership', dependent: :destroy,
                            inverse_of: :political_party
     has_many :elected_terms, class_name: 'NewfoundlandLabradorOnline::ElectedTerm', dependent: :nullify,
@@ -23,8 +25,7 @@ module NewfoundlandLabradorOnline
 
     # Parties that have ever had a member elected; others that only contested are not listed.
     scope :ever_seated, lambda {
-      where(id: NewfoundlandLabradorOnline::ElectedTerm.select(:political_party_id))
-        .or(where(id: NewfoundlandLabradorOnline::PartyMembership.select(:political_party_id)))
+      where(community_id: BetterTogether::PersonCommunityMembership.select(:joinable_id))
     }
 
     validates :jurisdiction, :identifier, :name, :short_name, presence: true

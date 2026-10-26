@@ -33,7 +33,7 @@ module NewfoundlandLabradorOnline
 
     # The candidate's name; an elected candidate is shown as their Person mention.
     def candidate_name(candidacy)
-      person = candidacy.term&.person
+      person = candidacy.member
       person ? member_mention(person) : candidacy.candidate_name
     end
 

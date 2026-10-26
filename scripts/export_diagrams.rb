@@ -14,7 +14,12 @@ DIAGRAMS = {
                                    NewfoundlandLabradorOnline::Election
                                    NewfoundlandLabradorOnline::ElectoralContest NewfoundlandLabradorOnline::Candidacy
                                    NewfoundlandLabradorOnline::ElectedTerm NewfoundlandLabradorOnline::PoliticalParty
-                                   NewfoundlandLabradorOnline::PartyMembership]
+                                   NewfoundlandLabradorOnline::PartyMembership],
+  'nlo_civic_roles_schema_erd' => %w[BetterTogether::Community BetterTogether::PersonCommunityMembership
+                                     NewfoundlandLabradorOnline::MembershipMandate
+                                     NewfoundlandLabradorOnline::CommunitySeat
+                                     NewfoundlandLabradorOnline::CommunityAssociation
+                                     NewfoundlandLabradorOnline::LegislatureDetail]
 }.freeze
 
 TYPE_MAP = { 'uuid' => 'uuid', 'string' => 'string', 'text' => 'text', 'integer' => 'int', 'date' => 'date',

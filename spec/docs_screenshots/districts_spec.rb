@@ -23,6 +23,15 @@ RSpec.describe 'Documentation screenshots for electoral districts', :js, type: :
     settlement = create(:geography_settlement, identifier: 'corner-brook', name: 'Corner Brook')
     space = BetterTogether::Geography::Space.create!(latitude: 48.95, longitude: -57.95)
     BetterTogether::Geography::GeospatialSpace.create!(geospatial: settlement, space:)
+    %w[nl-ped-corner-brook nl-ped-st-john-s-centre].each { |identifier| attach_cover(identifier) }
+  end
+
+  def attach_cover(identifier)
+    district = NewfoundlandLabradorOnline::ProvincialElectoralDistrict.find_by!(identifier:)
+    file = Rails.root.join("spec/fixtures/covers/#{identifier}.jpg")
+    file.open('rb') do |io|
+      NewfoundlandLabradorOnline::Geography::DistrictCover.call(region: district, io:, filename: file.basename.to_s)
+    end
   end
 
   def captured(slug, callouts)
@@ -41,12 +50,21 @@ RSpec.describe 'Documentation screenshots for electoral districts', :js, type: :
 
   it 'captures the Corner Brook district page' do
     visit "/#{locale}/e/districts/provincial/nl/nl-ped-corner-brook"
-    callouts = %w[#district-map-section #district-member #district-facts #district-settlements #district-members
-                  #district-results #district-history].map do |selector|
+    callouts = %w[#district-cover #district-map-section #district-member #district-facts #district-settlements
+                  #district-members #district-results #district-history].map do |selector|
       { selector:, title: selector.delete_prefix('#district-').tr('-', ' ') }
     end
 
     expect(captured('district_show', callouts)).to all(be > 10_000)
+  end
+
+  it 'captures the legislature page' do
+    visit "/#{locale}/e/members/provincial/nl"
+    callouts = [{ selector: '#legislature-seats', title: 'Sitting seats by party' },
+                { selector: '#legislature-members', title: 'Sitting members by district' },
+                { selector: '#legislature-former', title: 'Former members' }]
+
+    expect(captured('legislature_show', callouts)).to all(be > 10_000)
   end
 
   it 'captures the party index' do

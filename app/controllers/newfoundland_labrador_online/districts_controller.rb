@@ -17,6 +17,7 @@ module NewfoundlandLabradorOnline
       @districts = province_districts.with_translations.with_attached_cover_image.order(:identifier).to_a
       preload_versions(@districts)
       load_current_members(@districts)
+      prefetch_mention_visibility(@current_terms.values.map(&:person))
     end
 
     def show
@@ -26,6 +27,7 @@ module NewfoundlandLabradorOnline
       @identifiers = @district.identifiers.order(:scheme)
       @settlements = settlements_inside(@district)
       load_electoral_history(@district)
+      prefetch_mention_visibility(history_people)
     end
 
     private
@@ -59,18 +61,21 @@ module NewfoundlandLabradorOnline
 
     # Each district's sitting member (by region id) and the seats per party for the legend.
     def load_current_members(districts)
-      @current_terms = NewfoundlandLabradorOnline::ElectedTerm.current.where(region_id: districts.map(&:id))
-                                                              .includes(:political_party, person: PERSON_PRELOAD)
-                                                              .index_by(&:region_id)
+      @current_terms = NewfoundlandLabradorOnline::Civic::Roster.current_holdings(region_ids: districts.map(&:id))
+                                                                .index_by(&:region_id)
       counts = @current_terms.values.group_by(&:party_on).transform_values(&:size)
       @seats = counts.sort_by { |party, count| [-count, seat_rank(party), party&.short_name.to_s] }
     end
 
     def load_electoral_history(district)
-      @terms = district.elected_terms.includes(:election, :political_party, person: PERSON_PRELOAD).latest_first
-      contests = district.contests.includes(:election,
-                                            candidacies: [:political_party, { term: { person: PERSON_PRELOAD } }])
+      @terms = NewfoundlandLabradorOnline::Civic::Roster.district_history(district)
+      elected = { mandate: { membership: { member: PERSON_PRELOAD } } }
+      contests = district.contests.includes(:election, candidacies: [:political_party, elected])
       @contests = contests.sort_by { |contest| contest.election.held_on }.reverse
+    end
+
+    def history_people
+      @terms.flat_map { |run| [run.person] } + @contests.flat_map { |contest| contest.candidacies.map(&:member) }
     end
 
     def settlements_inside(district)

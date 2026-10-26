@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_20_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_21_050000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -1787,12 +1787,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_120000) do
     t.uuid "role_id", null: false
     t.string "status", default: "pending", null: false
     t.uuid "platform_id"
-    t.index ["joinable_id", "member_id", "role_id"], name: "unique_person_community_membership_member_role", unique: true
+    t.datetime "starts_at"
+    t.datetime "ends_at"
+    t.index ["joinable_id", "member_id", "role_id", "starts_at"], name: "unique_person_community_membership_member_role_start", unique: true, nulls_not_distinct: true
+    t.index ["joinable_id", "starts_at", "ends_at"], name: "person_community_membership_by_joinable_window"
     t.index ["joinable_id"], name: "person_community_membership_by_joinable"
     t.index ["member_id"], name: "person_community_membership_by_member"
     t.index ["platform_id"], name: "idx_on_platform_id_5fd57e5d06"
     t.index ["role_id"], name: "person_community_membership_by_role"
     t.index ["status"], name: "index_better_together_person_community_memberships_on_status"
+    t.check_constraint "ends_at IS NULL OR starts_at IS NULL OR ends_at > starts_at", name: "person_community_membership_window_order"
   end
 
   create_table "better_together_person_data_exports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -2597,6 +2601,40 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_120000) do
     t.index ["political_party_id"], name: "index_candidacies_on_political_party_id"
   end
 
+  create_table "community_associations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "source_community_id", null: false
+    t.uuid "target_community_id", null: false
+    t.string "relation", limit: 50, null: false
+    t.string "kind", limit: 30, null: false
+    t.string "role", limit: 30
+    t.string "participation", limit: 30, null: false
+    t.string "eligibility_group", limit: 50
+    t.boolean "cascade_end", default: false, null: false
+    t.date "starts_on"
+    t.date "ends_on"
+    t.index ["source_community_id", "target_community_id", "relation", "starts_on"], name: "index_community_associations_uniq", unique: true, nulls_not_distinct: true
+    t.index ["source_community_id"], name: "index_community_associations_on_source_community_id"
+    t.index ["target_community_id"], name: "index_community_associations_on_target_community_id"
+    t.check_constraint "source_community_id <> target_community_id", name: "community_association_not_self"
+  end
+
+  create_table "community_seats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "community_id", null: false
+    t.uuid "represents_community_id"
+    t.string "name", null: false
+    t.string "kind", limit: 30, default: "at_large", null: false
+    t.integer "position", default: 0, null: false
+    t.index ["community_id", "name"], name: "index_community_seats_on_community_and_name", unique: true
+    t.index ["community_id"], name: "index_community_seats_on_community_id"
+    t.index ["represents_community_id"], name: "index_community_seats_on_represents_community_id"
+  end
+
   create_table "elected_terms", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "lock_version", default: 0, null: false
     t.datetime "created_at", null: false
@@ -2658,6 +2696,40 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_120000) do
     t.index ["slug", "sluggable_type", "locale"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_locale"
     t.index ["slug", "sluggable_type", "scope", "locale"], name: "index_friendly_id_slugs_unique", unique: true
     t.index ["sluggable_type", "sluggable_id"], name: "by_sluggable"
+  end
+
+  create_table "legislature_details", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "community_id", null: false
+    t.string "level", limit: 30, null: false
+    t.string "jurisdiction_type"
+    t.uuid "jurisdiction_id"
+    t.integer "seat_count"
+    t.string "member_title"
+    t.index ["community_id"], name: "index_legislature_details_on_community_id", unique: true
+    t.index ["jurisdiction_type", "jurisdiction_id"], name: "index_legislature_details_on_jurisdiction"
+  end
+
+  create_table "membership_mandates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "membership_id", null: false
+    t.string "kind", limit: 30, null: false
+    t.string "seat_type"
+    t.uuid "seat_id"
+    t.string "conferred_by_type"
+    t.uuid "conferred_by_id"
+    t.string "title"
+    t.string "end_reason", limit: 50
+    t.string "source_url"
+    t.string "start_reason", limit: 50
+    t.index ["conferred_by_type", "conferred_by_id"], name: "index_membership_mandates_on_candidacy", unique: true, where: "(conferred_by_id IS NOT NULL)"
+    t.index ["conferred_by_type", "conferred_by_id"], name: "index_membership_mandates_on_conferred_by"
+    t.index ["membership_id"], name: "index_membership_mandates_on_membership_id", unique: true
+    t.index ["seat_type", "seat_id"], name: "index_membership_mandates_on_seat"
   end
 
   create_table "mobility_string_translations", force: :cascade do |t|
@@ -2772,6 +2844,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_120000) do
     t.string "logo_license"
     t.boolean "logo_non_free"
     t.uuid "state_id"
+    t.uuid "community_id"
+    t.index ["community_id"], name: "index_political_parties_on_community_id", unique: true
     t.index ["jurisdiction", "state_id", "identifier"], name: "index_political_parties_on_jurisdiction_state_identifier", unique: true, nulls_not_distinct: true
     t.index ["state_id"], name: "index_political_parties_on_state_id"
   end
@@ -3092,6 +3166,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_120000) do
   add_foreign_key "better_together_wizards", "better_together_platforms", column: "platform_id"
   add_foreign_key "candidacies", "electoral_contests"
   add_foreign_key "candidacies", "political_parties"
+  add_foreign_key "community_associations", "better_together_communities", column: "source_community_id"
+  add_foreign_key "community_associations", "better_together_communities", column: "target_community_id"
+  add_foreign_key "community_seats", "better_together_communities", column: "community_id"
+  add_foreign_key "community_seats", "better_together_communities", column: "represents_community_id"
   add_foreign_key "elected_terms", "better_together_geography_regions", column: "region_id"
   add_foreign_key "elected_terms", "better_together_people", column: "person_id"
   add_foreign_key "elected_terms", "candidacies"
@@ -3100,11 +3178,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_120000) do
   add_foreign_key "elections", "better_together_geography_states", column: "state_id"
   add_foreign_key "electoral_contests", "better_together_geography_regions", column: "region_id"
   add_foreign_key "electoral_contests", "elections"
+  add_foreign_key "legislature_details", "better_together_communities", column: "community_id"
+  add_foreign_key "membership_mandates", "better_together_person_community_memberships", column: "membership_id"
   add_foreign_key "nlo_region_identifiers", "better_together_geography_regions", column: "region_id"
   add_foreign_key "nlo_region_versions", "better_together_geography_regions", column: "region_id"
   add_foreign_key "noticed_notifications", "better_together_platforms", column: "platform_id"
   add_foreign_key "party_memberships", "better_together_people", column: "person_id"
   add_foreign_key "party_memberships", "political_parties"
+  add_foreign_key "political_parties", "better_together_communities", column: "community_id"
   add_foreign_key "political_parties", "better_together_geography_states", column: "state_id"
   add_foreign_key "region_identifiers", "better_together_geography_regions", column: "region_id"
   add_foreign_key "region_versions", "better_together_geography_regions", column: "region_id"

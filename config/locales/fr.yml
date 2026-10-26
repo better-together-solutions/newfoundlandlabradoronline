@@ -84,6 +84,13 @@ fr:
   journeys:
     title: Mon parcours
   newfoundland_labrador_online:
+    community_subtypes:
+      committee_community: Rôles de comité
+      department_community: Rôles de département
+      executive_community: Rôles de l'exécutif
+      legislature_community: Rôles de la législature
+      organization_community: Rôles d'organisation
+      party_community: Rôles de parti
     districts:
       directory:
         count:
@@ -135,6 +142,9 @@ fr:
         results: Résultats électoraux
         settlements: Localités incluses
         share: Part
+        terms_count:
+          one: "%{count} mandat"
+          other: "%{count} mandats"
         turnout: Participation %{value} %
         unknown: Inconnu
         valid_from: Du
@@ -158,6 +168,21 @@ fr:
           provincial: Élection générale provinciale de %{year}
     image_blocks:
       preview: 'Image : %{caption}'
+    legislatures:
+      show:
+        district: Circonscription
+        districts: Circonscriptions électorales de cette province
+        former: Anciens députés
+        from: Depuis
+        intro:
+          one: "%{count} député en fonction à la législature de %{province}."
+          other: "%{count} députés en fonction à la législature de %{province}."
+        member: Député
+        none: Aucun député n’est encore enregistré.
+        party: Parti
+        seats: Sièges par parti
+        sitting: Députés en fonction
+        to: Jusqu’au
     listing_map:
       label: 'Carte : %{title}'
     live_images:
@@ -219,6 +244,7 @@ fr:
       show:
         all_districts: Toutes les circonscriptions de cette province
         all_elections: Toutes les élections de cette province
+        all_legislature: Membres de la législature
         all_parties: Tous les partis de cette province
         manage: Gérer cette province
         tabs:

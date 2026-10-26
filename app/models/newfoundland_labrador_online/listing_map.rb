@@ -19,6 +19,12 @@ module NewfoundlandLabradorOnline
       @spaces ||= records.filter_map(&:space)
     end
 
+    # Credits the electoral boundary data whenever the listed records include districts.
+    def layers
+      districts = records.any?(NewfoundlandLabradorOnline::ProvincialElectoralDistrict)
+      BetterTogether::Geography::MapLayer.resolve(districts ? :nl_electoral_boundaries : nil)
+    end
+
     def types
       []
     end

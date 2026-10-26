@@ -10,6 +10,7 @@ ActiveSupport::Reloader.to_prepare do
   require_dependency 'better_together/geography/state'
   require_dependency 'better_together/geography/state_policy'
   require_dependency 'better_together/person'
+  require_dependency 'better_together/person_community_membership'
 
   BetterTogether::Post.include(NewfoundlandLabradorOnline::Post)
   # Regions: versioned boundaries and external identifiers (the typed subclasses live in app/models).
@@ -19,6 +20,10 @@ ActiveSupport::Reloader.to_prepare do
   BetterTogether::Geography::StatePolicy.prepend(NewfoundlandLabradorOnline::StatePolicy)
   # Elected members: a person's terms in district seats.
   BetterTogether::Person.include(NewfoundlandLabradorOnline::Person)
+  # Civic roles (docs/civic-roles-membership-design.md): time-boxed memberships and community associations.
+  BetterTogether::PersonCommunityMembership.prepend(NewfoundlandLabradorOnline::MembershipTimeBox)
+  BetterTogether::Community.include(NewfoundlandLabradorOnline::Associable)
+  BetterTogether::CommunityPolicy::Scope.prepend(NewfoundlandLabradorOnline::CommunityPolicyScope)
   # Locations: every record in LocatableModels gets the shared location interface.
   NewfoundlandLabradorOnline::LocatableModels.wire!
   BetterTogether::Content::VideoBlock.include(NewfoundlandLabradorOnline::VideoBlock)
@@ -30,4 +35,9 @@ ActiveSupport::Reloader.to_prepare do
     'BetterTogether::Content::VideoBlock', 'BetterTogether::Content::Image'
   )
   ActionText::ContentHelper.scrubber = NewfoundlandLabradorOnline::VideoBlockScrubber.new
+end
+
+# Roles and permissions may be scoped to one Community subtype instead of every community.
+ActiveSupport::Reloader.to_prepare do
+  NewfoundlandLabradorOnline::SubtypeResourceTypes.wire!
 end

@@ -25,11 +25,13 @@ RSpec.describe NewfoundlandLabradorOnline::Geography::ProvincialElectionLoader d
     it 'matches district names despite dashes and accents' do
       humber = NewfoundlandLabradorOnline::ProvincialElectoralDistrict.find_by!(identifier: 'nl-ped-humber-gros-morne')
 
-      expect(humber.elected_terms.map { |term| term.person.name }).to eq(['Mike Goosney'])
+      holdings = NewfoundlandLabradorOnline::Civic::Roster.district_history(humber)
+
+      expect(holdings.map { |holding| holding.person.name }).to eq(['Mike Goosney'])
     end
 
     it 'makes one person per member with a term per election, ending when the next begins', :aggregate_failures do
-      terms = corner_brook.elected_terms.order(:started_on)
+      terms = NewfoundlandLabradorOnline::Civic::Roster.district_history(corner_brook).reverse
 
       expect(terms.map { |term| term.person.name }).to eq(['Gerry Byrne', 'Jim Parsons'])
       expect(terms.first.ended_on).to eq(Date.new(2025, 10, 14))
@@ -39,8 +41,16 @@ RSpec.describe NewfoundlandLabradorOnline::Geography::ProvincialElectionLoader d
 
   it 'is idempotent' do
     described_class.new(path:).call
-    counts = -> { [NewfoundlandLabradorOnline::Candidacy.count, NewfoundlandLabradorOnline::ElectedTerm.count, BetterTogether::Person.count] }
+    counts = -> { [NewfoundlandLabradorOnline::Candidacy.count, BetterTogether::PersonCommunityMembership.count, BetterTogether::Person.count] }
 
     expect { described_class.new(path:).call }.not_to(change(&counts))
+  end
+
+  it 'loads the full packet twice without overlapping re-elected terms' do
+    full = NewfoundlandLabradorOnline::Geography::ProvincialDistrictLoader
+    full.new(path: Rails.root.join('db/data/nl_regions/provincial_electoral_districts_2015.geojson')).call
+    2.times { described_class.new.call }
+
+    expect(NewfoundlandLabradorOnline::Civic::Roster.current_holdings.size).to eq(40)
   end
 end

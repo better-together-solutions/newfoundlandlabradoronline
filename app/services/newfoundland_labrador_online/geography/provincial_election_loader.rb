@@ -6,8 +6,9 @@ module NewfoundlandLabradorOnline
   module Geography
     # Loads provincial general-election results from the offline packet (built by management-tool
     # scripts/nl_elections_ingest.py). Idempotent: elections, contests, candidacies and terms are matched on their
-    # natural keys. Elected candidates become Person records (one per name) with one ElectedTerm per cycle; a term
-    # ends when the next election's winner for the district takes the seat (by-elections are not loaded yet).
+    # natural keys. Elected candidates become Person records (one per name) with one dated legislature membership per
+    # cycle; a term ends when the next election's winner for the district takes the seat (by-elections are not
+    # loaded yet).
     class ProvincialElectionLoader
       DEFAULT_PATH = Rails.root.join('db/data/nl_regions/provincial_election_results.json')
       JURISDICTION = 'provincial'
@@ -27,9 +28,13 @@ module NewfoundlandLabradorOnline
         @result = Result.new(elections: 0, contests: 0, candidacies: 0, terms: 0, missing_districts: [])
       end
 
+      def writer
+        @writer ||= Civic::Writer.new
+      end
+
       def call
         packet = JSON.parse(File.read(@path)).fetch('elections')
-        load_all(packet)
+        Civic.in_platform_zone { load_all(packet) }
         @result
       end
 
@@ -37,8 +42,10 @@ module NewfoundlandLabradorOnline
 
       def load_all(packet)
         ActiveRecord::Base.transaction do
-          packet.each { |entry| load_election(entry) }
-          close_terms
+          packet.sort_by { |entry| entry.fetch('date') }.each do |entry|
+            load_election(entry)
+            close_terms
+          end
           build_memberships
         end
       end
@@ -93,9 +100,9 @@ module NewfoundlandLabradorOnline
       end
 
       def load_term(contest, candidacy)
-        term = ElectedTerm.find_or_initialize_by(region: contest.region, election: contest.election, office: 'mha')
-        term.update!(person: person_for(candidacy.candidate_name), candidacy:, party_name: candidacy.party_name,
-                     political_party: candidacy.political_party, started_on: contest.election.held_on)
+        person = person_for(candidacy.candidate_name)
+        writer.end_open_seats(person, on: contest.election.held_on)
+        writer.hold_seat(person:, region: contest.region, from: contest.election.held_on, candidacy:, state:)
         @result.terms += 1
       end
 
@@ -106,28 +113,20 @@ module NewfoundlandLabradorOnline
           BetterTogether::Person.create!(identifier:, name: clean, privacy: 'public', locale: 'en')
       end
 
-      # One membership per run of consecutive terms for the same party (a party change starts a new one).
       def build_memberships
-        ElectedTerm.where.not(political_party_id: nil).order(:started_on).group_by(&:person_id).each_value do |terms|
-          terms.slice_when { |a, b| a.political_party_id != b.political_party_id || a.ended_on != b.started_on }
-               .each { |run| save_membership(run) }
-        end
+        Civic::ElectedPartyMemberships.new(writer, seat_memberships).call
       end
 
-      def save_membership(run)
-        membership = PartyMembership.find_or_initialize_by(person_id: run.first.person_id,
-                                                           political_party_id: run.first.political_party_id,
-                                                           started_on: run.first.started_on)
-        return if membership.end_reason == 'floor_crossing' # recorded by PartyChangeLoader; keep it
-
-        membership.update!(ended_on: run.last.ended_on, start_reason: 'elected',
-                           end_reason: run.last.ended_on && 'term_ended', source_url: run.first.election.source_url)
+      def seat_memberships
+        Civic::Roster.seat_memberships.includes(:mandate, :member).order(:starts_at)
       end
 
       # Each term ends when the district's next term starts; the newest stays open.
       def close_terms
-        ElectedTerm.order(:started_on).group_by(&:region_id).each_value do |terms|
-          terms.each_cons(2) { |old, newer| old.update!(ended_on: newer.started_on, end_reason: 'next_election') }
+        seat_memberships.group_by { |m| m.mandate.seat_id }.each_value do |memberships|
+          memberships.each_cons(2) do |old, newer|
+            writer.end_membership(old, on: Civic.local_date(newer.starts_at), reason: 'next_election')
+          end
         end
       end
     end
