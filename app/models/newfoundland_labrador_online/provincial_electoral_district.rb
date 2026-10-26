@@ -9,7 +9,10 @@ module NewfoundlandLabradorOnline
     IDENTIFIER_PREFIX = 'nl-ped-'
 
     attachable_cover_image
-    include NewfoundlandLabradorOnline::DefaultCoverImage
+    include BetterTogether::DefaultCoverImage
+
+    # The card shows the cover whole, so use the larger cover variant (CE's card variant is a 4:1 limit).
+    def optimized_card_image = optimized_cover_image
 
     def self.identifier_for_name(name)
       "#{IDENTIFIER_PREFIX}#{name.parameterize}"

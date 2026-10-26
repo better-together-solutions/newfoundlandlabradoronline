@@ -124,5 +124,5 @@ Pipeline, run on bts-0 with the NLO app only touched at the two ends:
 3. `rake nlo:regions:attach_covers DIR=... [WRITE=1]` (dry run without WRITE) attaches each JPEG to the district's
    district as `default_cover_image`, and as `cover_image` unless someone uploaded their own.
 
-Clearing the cover on a district restores the stored default (`NewfoundlandLabradorOnline::DefaultCoverImage`).
+Clearing the cover on a district restores the stored default (`BetterTogether::DefaultCoverImage`).
 The district page shows the cover above the title (like the settlement page) and the district cards use it as their card image.
