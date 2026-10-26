@@ -1,0 +1,29 @@
+<div class="container py-4" id="election-page">
+  <nav><%= link_to t('.all_elections'), newfoundland_labrador_online_scoped_elections_path(@election.jurisdiction, province_code(@election), locale: I18n.locale) %></nav>
+  <h1 id="election-name" class="my-3"><%= t(".kinds.#{@election.jurisdiction}", year: @election.year) %> <small><%= link_to @election.state.name, state_page_path(@election.state), class: 'text-muted' %></small></h1>
+  <p class="text-muted"><%= l(@election.held_on, format: :long) %></p>
+
+  <% @contests.each do |contest| %>
+    <section class="card mt-3" id="<%= dom_id(contest) %>">
+      <div class="card-body">
+        <h2 class="h6 card-title"><%= district_link(contest.region) %>
+          <% if contest.turnout %><small class="text-muted"><%= t('newfoundland_labrador_online.districts.show.turnout', value: contest.turnout) %></small><% end %></h2>
+        <div class="table-responsive">
+<table class="table table-sm mb-0">
+          <tbody>
+            <% contest.candidacies.each do |candidacy| %>
+              <tr id="<%= dom_id(candidacy) %>" class="<%= 'fw-bold' if candidacy.elected %>">
+                <td><%= candidate_name(candidacy) %> <% if candidacy.elected %><span class="badge text-bg-success"><%= t('newfoundland_labrador_online.districts.show.elected') %></span><% end %></td>
+                <% party = @parties[candidacy.political_party_id] %>
+                <td><%= party ? link_to(candidacy.party_name, party_path_for(party)) : candidacy.party_name %></td>
+                <td class="text-end"><%= number_with_delimiter(candidacy.votes) %></td>
+                <td class="text-end"><%= number_with_precision(candidacy.vote_share, precision: 1) %>%</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </section>
+  <% end %>
+</div>

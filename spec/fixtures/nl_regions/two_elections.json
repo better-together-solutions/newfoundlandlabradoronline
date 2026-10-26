@@ -1,0 +1,14 @@
+{"elections":[
+{"year":2019,"date":"2019-05-16","source_url":"https://example.test/2019","source_revid":1,"source_sha256":"a","license":"CC BY-SA 4.0",
+ "districts":[{"district":"Corner Brook","turnout":49.87,"candidates":[
+  {"candidate":"Gerry Byrne","votes":2436,"share":48.85,"wikipedia_path":"/wiki/Gerry_Byrne","party":"Liberal","elected":true},
+  {"candidate":"Tom Stewart","votes":1682,"share":33.73,"wikipedia_path":null,"party":"PC","elected":false}]},
+  {"district":"Humber–Gros Morne","turnout":50.0,"candidates":[
+  {"candidate":"Mike Goosney","votes":3000,"share":60.0,"wikipedia_path":null,"party":"PC","elected":true}]},
+  {"district":"Nowhere","turnout":1.0,"candidates":[
+  {"candidate":"Nobody","votes":1,"share":100.0,"wikipedia_path":null,"party":"PC","elected":true}]}]},
+{"year":2025,"date":"2025-10-14","source_url":"https://example.test/2025","source_revid":2,"source_sha256":"b","license":"CC BY-SA 4.0",
+ "districts":[{"district":"Corner Brook","turnout":39.2,"candidates":[
+  {"candidate":"Jim Parsons","votes":2347,"share":56.94,"wikipedia_path":null,"party":"Liberal","elected":true},
+  {"candidate":"Charles Pender","votes":1420,"share":34.45,"wikipedia_path":null,"party":"PC","elected":false}]}]}
+]}

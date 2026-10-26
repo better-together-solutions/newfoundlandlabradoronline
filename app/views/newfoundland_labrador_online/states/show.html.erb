@@ -1,0 +1,72 @@
+<% province = @state.province? %>
+<% code = NewfoundlandLabradorOnline::Province.code_for(@state) if province %>
+<% tabs = province ? %w[districts parties elections regions settlements] : %w[regions settlements] %>
+<div class="container py-4" id="state-page">
+  <h1 id="state-name"><%= @state.name %></h1>
+  <% if @state.description.present? %>
+    <p class="lead text-muted" id="state-description"><%= @state.description %></p>
+  <% end %>
+
+  <div class="mt-3">
+    <ul class="nav nav-tabs" id="stateTabs" role="tablist">
+      <% tabs.each_with_index do |tab, index| %>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link <%= 'active' if index.zero? %>" id="<%= tab %>-tab" data-bs-toggle="tab" href="#<%= tab %>" role="tab" aria-controls="<%= tab %>" aria-selected="<%= index.zero? %>"><%= t("newfoundland_labrador_online.states.show.tabs.#{tab}") %></a>
+        </li>
+      <% end %>
+    </ul>
+    <div class="tab-content mt-3" id="stateTabsContent">
+      <% if province %>
+      <div class="tab-pane fade show active" id="districts" role="tabpanel" aria-labelledby="districts-tab">
+        <p>
+          <%= link_to t('newfoundland_labrador_online.states.show.all_districts'), newfoundland_labrador_online_scoped_districts_path(code, locale: I18n.locale) %>
+          <% if NewfoundlandLabradorOnline::Civic::Provisioner.new.legislature_for(@state) %>
+            <span id="province-legislature-link"> · <%= link_to t('newfoundland_labrador_online.states.show.all_legislature'), newfoundland_labrador_online_legislature_path(code, locale: I18n.locale) %></span>
+          <% end %>
+        </p>
+        <div class="row" id="province-districts">
+          <% @districts.each do |district| %>
+            <%= render 'newfoundland_labrador_online/districts/card', district:, term: @current_terms[district.id] %>
+          <% end %>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="parties" role="tabpanel" aria-labelledby="parties-tab">
+        <p><%= link_to t('newfoundland_labrador_online.states.show.all_parties'), newfoundland_labrador_online_scoped_parties_path('provincial', code, locale: I18n.locale) %></p>
+        <div class="row" id="province-parties">
+          <% @parties.each do |party| %>
+            <%= render 'newfoundland_labrador_online/parties/card', party:, seats: @seats.fetch(party.id, 0) %>
+          <% end %>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="elections" role="tabpanel" aria-labelledby="elections-tab">
+        <p><%= link_to t('newfoundland_labrador_online.states.show.all_elections'), newfoundland_labrador_online_scoped_elections_path('provincial', code, locale: I18n.locale) %></p>
+        <ul class="list-group" id="province-elections">
+          <% @elections.each do |election| %>
+            <%= render 'newfoundland_labrador_online/elections/item', election:, seat_counts: @seat_counts %>
+          <% end %>
+        </ul>
+      </div>
+      <% end %>
+      <div class="tab-pane fade <%= 'show active' unless province %>" id="regions" role="tabpanel" aria-labelledby="regions-tab">
+        <div class="row" id="state-regions">
+          <% @regions.each do |region| %>
+            <%= render 'better_together/shared/card', entity: region, link_target: geography_region_path(region, locale: I18n.locale),
+                       col_classes: 'col-12 col-md-6 col-xl-4' %>
+          <% end %>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="settlements" role="tabpanel" aria-labelledby="settlements-tab">
+        <div class="row" id="state-settlements">
+          <% @settlements.each do |settlement| %>
+            <%= render 'better_together/shared/card', entity: settlement, link_target: geography_settlement_path(settlement, locale: I18n.locale),
+                       col_classes: 'col-12 col-md-6 col-xl-4' %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% if policy(@state).update? %>
+    <%= link_to t('.manage'), geography_state_path(@state, locale: I18n.locale), class: 'btn btn-primary mt-3' %>
+  <% end %>
+</div>

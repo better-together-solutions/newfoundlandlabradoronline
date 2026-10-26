@@ -1,0 +1,8 @@
+<%# locals: (election:, seat_counts: {}) %>
+<li class="list-group-item" id="<%= dom_id(election) %>">
+  <h3 class="h5"><%= link_to t("newfoundland_labrador_online.elections.index.kinds.#{election.jurisdiction}", year: election.year), election_path_for(election) %>
+    <small class="text-muted"><%= l(election.held_on, format: :long) %></small></h3>
+  <p class="small mb-0">
+    <%= safe_join(seat_counts.select { |(id, _), _| id == election.id }.sort_by { |_, n| -n }.map { |(_, name), n| "#{name} #{n}" }, ' · ') %>
+  </p>
+</li>

@@ -1,0 +1,20 @@
+<%# locals: (district:, term: nil, col_classes: 'col-12 col-md-6 col-xl-4') %>
+<% party = term&.party_on %>
+<%= render 'better_together/shared/card',
+           entity: district,
+           link_target: district_path_for(district),
+           col_classes:,
+           card_classes: 'hover-effect district-card' do %>
+  <ul class="list-unstyled small mb-0 mt-2">
+    <li id="<%= dom_id(district, :card_member) %>">
+      <span class="text-muted"><%= t('newfoundland_labrador_online.districts.show.member') %>:</span>
+      <%= term ? member_mention(term.person) : t('newfoundland_labrador_online.districts.show.no_member') %>
+    </li>
+    <% if term %>
+      <li id="<%= dom_id(district, :card_party) %>" style="position: relative; z-index: 2">
+        <span class="text-muted"><%= t('newfoundland_labrador_online.districts.show.party') %>:</span>
+        <%= party_chip(party) %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
