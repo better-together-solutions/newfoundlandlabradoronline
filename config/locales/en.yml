@@ -30,6 +30,30 @@ en:
       resource/document: Document
       resource/link: Link
   better_together:
+    events:
+      series:
+        no_sessions: No dates have been added to this series yet.
+        other_dates: Other dates
+        part_of: Part of %{name}
+        part_of_run:
+          one: Part of a series of %{count} date
+          other: Part of a series of %{count} dates
+        sessions_heading: Dates
+        settled: Series updated.
+        settlement:
+          cancel_legend: Cancel the series
+          cancel_sessions: Cancel the upcoming dates too
+          cancel_submit: Cancel series
+          delete_legend: Delete the series
+          delete_sessions: Delete the dates too
+          delete_submit: Delete series
+          explain: This series has %{count} dates. Say what happens to them before
+            cancelling or deleting it.
+          open: Cancel or delete this series
+          promote_sessions: Keep the dates as separate events
+        show_all_dates:
+          one: Show %{count} more date
+          other: Show %{count} more dates
     shared:
       map:
         buttons:
@@ -84,6 +108,8 @@ en:
   journeys:
     title: My Journey
   newfoundland_labrador_online:
+    community_map:
+      label: Map of %{name}
     community_subtypes:
       committee_community: Committee roles
       department_community: Department roles
@@ -225,8 +251,10 @@ en:
         logo_non_free: Non-free logo, shown under fair use.
         logo_source: Source
         none: No members recorded.
+    posts_filters:
+      toggle_filters: Filters
     settlement_events:
-      empty: No upcoming events in %{name} yet.
+      loading: Loading events...
       title: Events in %{name}
     settlement_map:
       label: Map of %{name}

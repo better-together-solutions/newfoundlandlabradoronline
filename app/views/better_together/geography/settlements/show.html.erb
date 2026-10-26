@@ -91,9 +91,11 @@
           </div>
         <% end %>
       
-        <%# Upcoming events located here, through the events policy scope so visibility never widens. %>
+        <%# Events located here: the events index scoped to this settlement, loaded when the tab is first shown. %>
         <div id="events" class="nav-tab-pane tab-pane fade" role="tabpanel" aria-labelledby="events-tab">
-          <%= render 'better_together/geography/settlements/events', settlement: @geography_settlement %>
+          <%= turbo_frame_tag 'settlement-events', src: events_path(settlement: @geography_settlement.identifier, locale: I18n.locale), loading: :lazy, target: '_top' do %>
+            <p class="text-muted"><%= t('newfoundland_labrador_online.settlement_events.loading') %></p>
+          <% end %>
         </div>
 
         <%# COMMENTED OUT UNTIL NEEDED  --------------

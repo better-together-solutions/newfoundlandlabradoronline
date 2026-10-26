@@ -9,10 +9,13 @@ module NewfoundlandLabradorOnline
     extend ActiveSupport::Concern
 
     SETTLEMENT = 'BetterTogether::Geography::Settlement'
+    ADDRESS_FIELDS = %w[name line1 line2 city_name state_province_name postal_code country_name].freeze
+    ADDRESS_MATCH_FIELDS = %w[line1 city_name postal_code country_name].freeze
 
     included do
       class_attribute :location_inheritance, instance_accessor: false
       validate :settlement_identifier_must_exist
+      validate :address_data_must_be_valid
     end
 
     class_methods do
@@ -52,6 +55,25 @@ module NewfoundlandLabradorOnline
       else
         @settlement_identifier_error = value.to_s
       end
+    end
+
+    # Write-only API input: locates the record at a street address, given as a hash or a JSON string (the JSON:API
+    # rejects nested objects) with line1, line2, city_name, state_province_name, postal_code and country_name. An
+    # existing address with the same line1, city, postal code and country is reused; otherwise a public one is
+    # created. CE then places the address in the settlement whose boundary contains it. Blank clears the location.
+    def address_data
+      nil
+    end
+
+    def address_data=(spec)
+      @address_data_error = nil
+      if spec.blank?
+        clear_location
+      else
+        locate_at_address(spec)
+      end
+    rescue JSON::ParserError
+      @address_data_error = 'is not valid JSON'
     end
 
     # The map point for the record's own location when it has coordinates (an address or building with a geocoded
@@ -99,6 +121,30 @@ module NewfoundlandLabradorOnline
       errors.add(:settlement_identifier, :invalid) if @settlement_identifier_error
     end
 
-    private :clear_location, :settlement_identifier_must_exist, :located_url, :located_link, :located_map_style
+    def address_data_must_be_valid
+      errors.add(:address_data, @address_data_error) if @address_data_error
+    end
+
+    def locate_at_address(spec)
+      attrs = parse_address_data(spec)
+      return @address_data_error = 'must be an address with line1' if attrs['line1'].blank?
+
+      name = attrs.delete('name') # CE's views show a location only when it has a name
+      place = location || build_location
+      place.assign_attributes(location: address_for(attrs), name: name.presence || place.name)
+    end
+
+    def parse_address_data(spec)
+      spec = JSON.parse(spec) if spec.is_a?(String)
+      spec.to_h.stringify_keys.slice(*ADDRESS_FIELDS).transform_values { |value| value.to_s.strip }.compact_blank
+    end
+
+    def address_for(attrs)
+      BetterTogether::Address.find_by(attrs.slice(*ADDRESS_MATCH_FIELDS)) ||
+        BetterTogether::Address.new(attrs.merge('physical' => true, 'postal' => false, 'privacy' => 'public'))
+    end
+
+    private :clear_location, :settlement_identifier_must_exist, :address_data_must_be_valid, :parse_address_data,
+            :address_for, :locate_at_address, :located_url, :located_link, :located_map_style
   end
 end

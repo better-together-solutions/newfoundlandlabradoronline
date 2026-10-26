@@ -1,0 +1,13 @@
+%% render.orientation: landscape
+flowchart LR
+  F["fetch source events + published events"] --> K["series key: name without dates, parentheticals, session words"]
+  K --> S{"same key, 2+ events, one upcoming?"}
+  S -- "yes" --> A["create-series if missing, then group: link-only PATCH session_of"]
+  S -- "no" --> L{"alike or prefix names?"}
+  L -- "yes" --> R["REVIEW list: tmp/event_sources_review.json"]
+  L -- "no" --> I["stay individual events"]
+  A --> G{"guards"}
+  G -- "in another series or edited on platform" --> R
+  G -- "ok" --> N["new dates created with session_of"]
+  R -. "person approves" .-> C["series.groups or series.never_group in config/event_sources.json"]
+  C -. "next run" .-> F

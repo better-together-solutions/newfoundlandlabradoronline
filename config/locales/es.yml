@@ -30,6 +30,30 @@ es:
       resource/document: Documento
       resource/link: Enlace
   better_together:
+    events:
+      series:
+        no_sessions: Aún no se han añadido fechas a esta serie.
+        other_dates: Otras fechas
+        part_of: Forma parte de %{name}
+        part_of_run:
+          one: Forma parte de una serie de %{count} fecha
+          other: Forma parte de una serie de %{count} fechas
+        sessions_heading: Fechas
+        settled: Serie actualizada.
+        settlement:
+          cancel_legend: Cancelar la serie
+          cancel_sessions: Cancelar también las fechas próximas
+          cancel_submit: Cancelar serie
+          delete_legend: Eliminar la serie
+          delete_sessions: Eliminar también las fechas
+          delete_submit: Eliminar serie
+          explain: Esta serie tiene %{count} fechas. Indique qué ocurre con ellas
+            antes de cancelarla o eliminarla.
+          open: Cancelar o eliminar esta serie
+          promote_sessions: Conservar las fechas como eventos independientes
+        show_all_dates:
+          one: Mostrar %{count} fecha más
+          other: Mostrar %{count} fechas más
     shared:
       map:
         buttons:
@@ -84,6 +108,8 @@ es:
   journeys:
     title: Mi Viaje
   newfoundland_labrador_online:
+    community_map:
+      label: Mapa de %{name}
     community_subtypes:
       committee_community: Roles de comité
       department_community: Roles de departamento
@@ -226,8 +252,10 @@ es:
         logo_non_free: Logotipo no libre, mostrado como uso legítimo.
         logo_source: Fuente
         none: No hay miembros registrados.
+    posts_filters:
+      toggle_filters: Filtros
     settlement_events:
-      empty: Aún no hay eventos próximos en %{name}.
+      loading: Cargando eventos...
       title: Eventos en %{name}
     settlement_map:
       label: Mapa de %{name}

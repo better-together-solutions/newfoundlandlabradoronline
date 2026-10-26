@@ -4,6 +4,15 @@ Rails.application.config.to_prepare do
   # The posts index can be scoped to a settlement (settlement page Posts tab).
   require_dependency 'better_together/posts_controller'
   BetterTogether::PostsController.prepend(NewfoundlandLabradorOnline::SettlementPosts)
+  # Likewise the events index (settlement page Events tab).
+  require_dependency 'better_together/events_controller'
+  BetterTogether::EventsController.prepend(NewfoundlandLabradorOnline::SettlementEvents)
+  # The community page Events and Posts tabs embed the indexes scoped to the community.
+  BetterTogether::EventsController.prepend(NewfoundlandLabradorOnline::CommunityEvents)
+  BetterTogether::EventsController.prepend(NewfoundlandLabradorOnline::CommunityScope)
+  BetterTogether::PostsController.prepend(NewfoundlandLabradorOnline::CommunityScope)
+  # Cancelling or deleting an event series asks what happens to its sessions.
+  BetterTogether::EventsController.prepend(BetterTogether::EventSeriesActions)
 
   # Attached video blocks render through CE's CSP-aware iframe_embed_state helper. Action Text
   # renders attachments in whichever controller's view context is current (API responses
@@ -12,4 +21,5 @@ Rails.application.config.to_prepare do
   ActionView::Base.include(NewfoundlandLabradorOnline::LocationPickerHelper)
   ActionView::Base.include(NewfoundlandLabradorOnline::SettlementMapHelper)
   ActionView::Base.include(NewfoundlandLabradorOnline::ListingMapHelper)
+  ActionView::Base.include(NewfoundlandLabradorOnline::CommunityMarkHelper)
 end

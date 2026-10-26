@@ -41,3 +41,27 @@ end
 ActiveSupport::Reloader.to_prepare do
   NewfoundlandLabradorOnline::SubtypeResourceTypes.wire!
 end
+
+# API input: community logo and cover images; event cover image and hosting community.
+ActiveSupport::Reloader.to_prepare do
+  BetterTogether::Community.include(NewfoundlandLabradorOnline::CommunityImages)
+  BetterTogether::Event.include(NewfoundlandLabradorOnline::EventImages, NewfoundlandLabradorOnline::EventHosting,
+                                NewfoundlandLabradorOnline::EventBlockAttachments)
+end
+
+# A community's contact details, written as one JSON string (see ContactData).
+ActiveSupport::Reloader.to_prepare do
+  BetterTogether::Community.include(NewfoundlandLabradorOnline::ContactData)
+  BetterTogether::Community.prepend(NewfoundlandLabradorOnline::LocatedMapPoints)
+  BetterTogether::Geography::LocatableLocation.prepend(NewfoundlandLabradorOnline::LocationDisplayName)
+end
+
+# Event series (docs/event-series-and-sessions-design.md): groups of sessions, kept in the BetterTogether namespace
+# so they can move into the gem as they are.
+ActiveSupport::Reloader.to_prepare do
+  require_dependency 'better_together/event'
+
+  BetterTogether::Event.include(BetterTogether::EventSeries)
+  BetterTogether::EventsSearchFilter.singleton_class.prepend(BetterTogether::EventSeriesListing)
+  BetterTogether::Geography::EventCollectionMap.singleton_class.prepend(BetterTogether::EventSeriesMap)
+end
