@@ -84,8 +84,107 @@ es:
   journeys:
     title: Mi Viaje
   newfoundland_labrador_online:
+    community_subtypes:
+      committee_community: Roles de comité
+      department_community: Roles de departamento
+      executive_community: Roles del ejecutivo
+      legislature_community: Roles de legislatura
+      organization_community: Roles de organización
+      party_community: Roles de partido
+    districts:
+      directory:
+        count:
+          one: "%{count} distrito"
+          other: "%{count} distritos"
+        elections: Elecciones
+        intro: Distritos electorales por provincia, cada uno enlazado al listado y
+          mapa de su provincia.
+        parties: Partidos políticos
+        title: Distritos electorales
+        titles:
+          provincial: Distritos electorales provinciales
+      index:
+        elections: Elecciones
+        intro: "%{count} distritos en vigor desde las elecciones de 2015."
+        kind: Distrito electoral provincial
+        legend: Escaños por partido
+        legend_note: Cada distrito se colorea con el partido de su miembro actual.
+          Las licencias de los logotipos se registran con cada partido.
+        no_party: Sin partido registrado
+        parties: Partidos políticos
+        seats:
+          one: "%{count} escaño"
+          other: "%{count} escaños"
+        title: Distritos electorales provinciales
+      show:
+        all_districts: Todos los distritos
+        area: Superficie
+        area_km2: "%{value} km²"
+        authority: Autoridad
+        breadcrumb: Ruta de navegación
+        candidate: Candidatura
+        current_member: Miembro de la Cámara de la Asamblea
+        elected: Electo
+        election_results: Elecciones de %{year}
+        facts: Datos
+        history: Nombres y límites a lo largo del tiempo
+        identifiers: Identificadores
+        in_force_since: En vigor desde
+        kind: Distrito electoral provincial
+        licence: Licencia
+        map_label: Mapa de %{name}
+        member: Miembro
+        members: Miembros de la Cámara de la Asamblea
+        no_member: Todavía no hay un miembro registrado para este distrito.
+        no_settlements: Todavía no hay localidades registradas en este distrito.
+        party: Partido
+        present: Actualidad
+        results: Resultados electorales
+        settlements: Localidades dentro
+        share: Porcentaje
+        terms_count:
+          one: "%{count} mandato"
+          other: "%{count} mandatos"
+        turnout: Participación %{value}%
+        unknown: Desconocido
+        valid_from: Desde
+        valid_to: Hasta
+        version_name: Nombre
+        votes: Votos
+    elections:
+      index:
+        districts: Distritos
+        intro: Elecciones generales a la Cámara de la Asamblea, con los escaños ganados
+          por partido.
+        kinds:
+          provincial: Elecciones generales provinciales de %{year}
+        parties: Partidos
+        title: Elecciones
+        titles:
+          provincial: Elecciones provinciales
+      show:
+        all_elections: Todas las elecciones
+        kinds:
+          provincial: Elecciones generales provinciales de %{year}
     image_blocks:
       preview: 'Imagen: %{caption}'
+    legislatures:
+      show:
+        district: Distrito
+        districts: Distritos electorales de esta provincia
+        former: Antiguos miembros
+        from: Desde
+        intro:
+          one: "%{count} miembro en ejercicio de la legislatura de %{province}."
+          other: "%{count} miembros en ejercicio de la legislatura de %{province}."
+        member: Miembro
+        none: Aún no hay miembros registrados.
+        party: Partido
+        seats: Escaños por partido
+        sitting: Miembros en ejercicio
+        to: Hasta
+    listing_map:
+      label: 'Mapa: %{title}'
     live_images:
       alt: Última imagen de la cámara sobre %{name}
       title: "%{name} en directo"
@@ -105,6 +204,28 @@ es:
         new_named_with_query: 'Crear %{model}: "%{q}"'
         tab: Ubicación
         use_typed_name: Usar "%{q}" como nombre de ubicación personalizado
+    parties:
+      index:
+        districts: Distritos
+        elections: Elecciones
+        intro: Partidos que han tenido o disputado escaños en la Cámara de la Asamblea,
+          con sus escaños actuales.
+        seats:
+          one: "%{count} escaño"
+          other: "%{count} escaños"
+        title: Partidos políticos
+        titles:
+          provincial: Partidos políticos provinciales
+      logo_alt: Logotipo de %{name}
+      show:
+        all_parties: Todos los partidos
+        current: Miembros actuales
+        districts: Distritos
+        former: Antiguos miembros
+        logo_licence: 'Licencia del logotipo: %{license}.'
+        logo_non_free: Logotipo no libre, mostrado como uso legítimo.
+        logo_source: Fuente
+        none: No hay miembros registrados.
     settlement_events:
       empty: Aún no hay eventos próximos en %{name}.
       title: Eventos en %{name}
@@ -114,6 +235,24 @@ es:
       loading: Cargando publicaciones...
       located_in: Ubicado en
       title: Publicaciones en %{name}
+    states:
+      index:
+        code: Código
+        name: Provincia
+        provinces: Provincias
+        title: Provincias
+      show:
+        all_districts: Todos los distritos de esta provincia
+        all_elections: Todas las elecciones de esta provincia
+        all_legislature: Miembros de la legislatura
+        all_parties: Todos los partidos de esta provincia
+        manage: Administrar esta provincia
+        tabs:
+          districts: Distritos electorales
+          elections: Elecciones
+          parties: Partidos políticos
+          regions: Otras regiones
+          settlements: Localidades
     video_blocks:
       preview: 'Video: %{url}'
   time:

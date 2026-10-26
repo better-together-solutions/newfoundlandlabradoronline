@@ -1,0 +1,140 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe NewfoundlandLabradorOnline::MembershipTimeBox do
+  # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+  include RequestSpecHelper
+
+  before { configure_host_platform }
+
+  let(:person) { create(:better_together_person) }
+  let(:community) { civic_community }
+  let(:role) { civic_role }
+  let(:t0) { Time.zone.local(2020, 1, 1) }
+
+  it 'leaves undated memberships open ended and active', :aggregate_failures do
+    membership = join(person, community)
+
+    expect(membership.current?).to be(true)
+    expect(BetterTogether::PersonCommunityMembership.active).to include(membership)
+    expect(BetterTogether::PersonCommunityMembership.current).to include(membership)
+  end
+
+  it 'allows the same role in successive terms', :aggregate_failures do
+    first = join(person, community, starts_at: t0, ends_at: t0 + 4.years)
+    second = join(person, community, starts_at: t0 + 4.years, ends_at: t0 + 8.years)
+
+    expect(first).to be_persisted
+    expect(second).to be_persisted
+    expect(community.person_community_memberships.held_on(t0 + 5.years)).to contain_exactly(second)
+  end
+
+  it 'accepts a subtype role only on that subtype, and generic roles anywhere', :aggregate_failures do
+    NewfoundlandLabradorOnline::Civic::RoleSeeder.call
+    leader = BetterTogether::Role.find_by!(identifier: 'party_leader')
+    party = civic_community(NewfoundlandLabradorOnline::PartyCommunity)
+    legislature = civic_community(NewfoundlandLabradorOnline::LegislatureCommunity)
+
+    expect(join(person, party, role: leader)).to be_persisted
+    expect(join(person, legislature)).to be_persisted
+
+    wrong = BetterTogether::PersonCommunityMembership.new(member: person, joinable: legislature, role: leader,
+                                                          status: 'active')
+    expect(wrong).not_to be_valid
+    expect(wrong.errors[:role_id]).to be_present
+    expect(BetterTogether::PersonCommunityMembership.new(member: person, joinable: community, role: leader,
+                                                         status: 'active')).not_to be_valid
+  end
+
+  it 'rejects overlapping holdings of one role' do
+    join(person, community, starts_at: t0, ends_at: t0 + 4.years)
+    overlap = BetterTogether::PersonCommunityMembership.new(member: person, joinable: community, role:,
+                                                            status: 'active', starts_at: t0 + 3.years)
+
+    expect(overlap).not_to be_valid
+    expect(overlap.errors[:role_id]).to be_present
+  end
+
+  it 'rejects a window that ends before it starts' do
+    bad = BetterTogether::PersonCommunityMembership.new(member: person, joinable: community, role:,
+                                                        status: 'active', starts_at: t0, ends_at: t0 - 1.day)
+
+    expect(bad).not_to be_valid
+  end
+
+  it 'excludes ended and future memberships from .active', :aggregate_failures do
+    ended = join(person, community, starts_at: 3.years.ago, ends_at: 1.year.ago)
+    future = join(create(:better_together_person), community, starts_at: 1.year.from_now)
+    scope = BetterTogether::PersonCommunityMembership.active
+
+    expect(scope).not_to include(ended, future)
+    expect(BetterTogether::PersonCommunityMembership.former).to include(ended)
+    expect(BetterTogether::PersonCommunityMembership.upcoming).to include(future)
+  end
+
+  it 'stores instants in UTC and converts calendar dates in the current zone', :aggregate_failures do
+    stamp = Time.use_zone('America/St_Johns') { NewfoundlandLabradorOnline::Civic.local_midnight(Date.new(2025, 10, 14)) }
+    membership = join(person, community, starts_at: stamp)
+
+    expect(stamp.time_zone.name).to eq('America/St_Johns')
+    expect(membership.reload.read_attribute_before_type_cast(:starts_at).to_s).to include('2025-10-14 02:30:00')
+    expect(Time.use_zone('America/St_Johns') { NewfoundlandLabradorOnline::Civic.local_date(membership.starts_at) })
+      .to eq(Date.new(2025, 10, 14))
+    expect(Time.use_zone('America/Halifax') { NewfoundlandLabradorOnline::Civic.local_date(membership.starts_at) })
+      .to eq(Date.new(2025, 10, 13))
+  end
+
+  it 'runs loaders under the platform time zone' do
+    BetterTogether::Platform.find_by(host: true).update_columns(time_zone: 'America/Halifax')
+
+    expect(NewfoundlandLabradorOnline::Civic.in_platform_zone { Time.zone.name }).to eq('America/Halifax')
+  end
+
+  describe 'notifications' do
+    it 'stays quiet when skip_notifications is set' do
+      allow(BetterTogether::MembershipNotificationService).to receive(:new).and_call_original
+
+      join(person, community, skip_notifications: true)
+
+      expect(BetterTogether::MembershipNotificationService).not_to have_received(:new)
+    end
+
+    it 'still notifies by default' do
+      allow(BetterTogether::MembershipNotificationService).to receive(:new).and_call_original
+
+      join(person, community)
+
+      expect(BetterTogether::MembershipNotificationService).to have_received(:new).at_least(:once)
+    end
+  end
+
+  describe 'permission cache' do
+    around do |example|
+      adapter = ActiveJob::Base.queue_adapter
+      ActiveJob::Base.queue_adapter = :test
+      example.run
+      ActiveJob::Base.queue_adapter = adapter
+    end
+
+    it 'schedules a cache expiry at the end of a future window' do
+      expect { join(person, community, starts_at: Time.current, ends_at: 1.week.from_now) }
+        .to have_enqueued_job(NewfoundlandLabradorOnline::ExpireMemberPermissionCacheJob).with(person.id)
+    end
+  end
+
+  describe 'cascade_end' do
+    it 'ends dependent memberships when the source membership ends', :aggregate_failures do
+      legislature = civic_community(NewfoundlandLabradorOnline::LegislatureCommunity)
+      cabinet = civic_community(NewfoundlandLabradorOnline::ExecutiveCommunity)
+      associate(legislature, cabinet, 'drawn_from', cascade_end: true)
+      seat = join(person, legislature, role: civic_role('legislature_member'), starts_at: t0)
+      minister = join(person, cabinet, role: civic_role('executive_member'), starts_at: t0 + 1.day)
+
+      seat.update!(ends_at: t0 + 2.years)
+
+      expect(minister.reload.ends_at).to eq(t0 + 2.years)
+    end
+  end
+  # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
+end

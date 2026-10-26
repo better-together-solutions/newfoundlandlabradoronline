@@ -1,0 +1,6 @@
+{"type":"FeatureCollection","features":[
+{"type":"Feature","properties":{"name":"Corner Brook","source_sha256":"aaa","authority":"Test Commission","valid_from":"2015-11-30","valid_to":null,"license":"OGL","source_url":"https://example.test"},
+ "geometry":{"type":"MultiPolygon","coordinates":[[[[-58.1,48.9],[-58.1,49.0],[-57.8,49.0],[-57.8,48.9],[-58.1,48.9]]]]}},
+{"type":"Feature","properties":{"name":"Humber-Gros Morne","source_sha256":"bbb","authority":"Test Commission","valid_from":"2015-11-30","valid_to":null,"license":"OGL","source_url":"https://example.test"},
+ "geometry":{"type":"MultiPolygon","coordinates":[[[[-58.5,49.0],[-58.5,50.0],[-57.5,50.0],[-57.5,49.0],[-58.5,49.0]]]]}}
+]}

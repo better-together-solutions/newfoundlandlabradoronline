@@ -1,0 +1,157 @@
+# Diagram Rendering System
+
+The `bin/render_diagrams` script automatically renders Mermaid diagrams from `docs/diagrams/source/*.mmd` to both PNG and SVG formats in `docs/diagrams/exports/{png,svg}/` with intelligent resolution selection based on diagram complexity and a deterministic portrait/landscape orientation pass.
+
+PNG exports are also re-rendered automatically until their rendered short side reaches the configured minimum, so GitHub comments and other raster embeds stay readable even when Mermaid lays a diagram out very wide. SVG exports remain vector outputs and are rendered once.
+
+## Orientation Selection
+
+The renderer now chooses diagram orientation in a deterministic way before it renders the final exports.
+
+### Orientation modes
+
+- `auto` (default) probes both portrait and landscape candidates, compares their rendered shape, and keeps the option that reduces avoidable stretch
+- `portrait` forces portrait-oriented render dimensions
+- `landscape` forces landscape-oriented render dimensions
+
+### Source override
+
+Any Mermaid source can pin its orientation with a leading comment:
+
+```mermaid
+%% render.orientation: portrait
+```
+
+Supported values are:
+
+- `portrait`
+- `landscape`
+- `auto`
+
+This is the canonical way to mark diagrams whose semantic structure should always stack vertically, such as a polymorphic association map.
+
+## Automatic Complexity Detection
+
+The script analyzes each diagram and automatically selects the appropriate resolution:
+
+### High Resolution (4800x3600) for Complex Diagrams
+Automatically applied when a diagram meets any of these thresholds:
+- **Lines of code**: > 80 lines
+- **Subgraphs**: > 5 subgraphs  
+- **Connections**: > 30 arrows/connections
+- **Nodes**: > 25 nodes
+
+### Standard Resolution (3200x2400) for Simple Diagrams
+Used for diagrams that don't meet the complexity thresholds above.
+
+## Current Diagram Classifications
+
+### High Resolution Diagrams
+- `conversations_messaging_flow.mmd` - 155 lines, 9 subgraphs, 102 connections
+- `events_flow.mmd` - 102 lines, complex event management flows
+- `exchange_flow.mmd` - 70 lines, multiple exchange workflows  
+- `models_and_concerns_diagram.mmd` - 91 lines, comprehensive class diagram
+- `notifications_flow.mmd` - 62 lines, complex notification system
+
+### Standard Resolution Diagrams
+- `metrics_flow.mmd` - 26 lines, 2 subgraphs, simple metrics flow
+- `navigation_flow.mmd` - 31 lines, straightforward navigation
+- `accounts_flow.mmd` - 41 lines, basic account workflows
+- `content_flow.mmd` - 36 lines, content management flow
+- `democratic_by_design_map.mmd` - 44 lines, conceptual map
+- `role_based_access_control_flow.mmd` - 41 lines, RBAC workflow
+
+## Usage Examples
+
+```bash
+# Render all diagrams in both PNG and SVG formats
+bin/render_diagrams
+
+# Generate only PNG files
+OUTPUT_FORMATS="png" bin/render_diagrams --force
+
+# Generate only SVG files  
+OUTPUT_FORMATS="svg" bin/render_diagrams --force
+
+# Force re-render all diagrams in both formats
+bin/render_diagrams --force
+# or
+FORCE=1 bin/render_diagrams
+
+# Show complexity detection details
+DEBUG=1 bin/render_diagrams
+
+# Customize resolution settings
+HIGH_RES_WIDTH=6400 HIGH_RES_HEIGHT=4800 bin/render_diagrams --force
+
+# Adjust complexity thresholds
+COMPLEXITY_LINE_THRESHOLD=50 bin/render_diagrams
+```
+
+## Configuration Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `WIDTH` | 3200 | Standard diagram width |
+| `HEIGHT` | 2400 | Standard diagram height |
+| `HIGH_RES_WIDTH` | 4800 | High resolution width |
+| `HIGH_RES_HEIGHT` | 3600 | High resolution height |
+| `OUTPUT_FORMATS` | "png svg" | Space-separated output formats |
+| `ORIENTATION_MODE` | auto | Default orientation policy: `auto`, `portrait`, or `landscape` |
+| `MIN_SHORT_SIDE_PX` | 1500 | Minimum rendered PNG short side before the renderer retries with a higher scale |
+| `MAX_RESIZE_ATTEMPTS` | 4 | Maximum PNG rerender attempts to satisfy `MIN_SHORT_SIDE_PX` |
+| `COMPLEXITY_LINE_THRESHOLD` | 80 | Lines threshold for complexity |
+| `COMPLEXITY_NODE_THRESHOLD` | 25 | Nodes threshold for complexity |
+| `COMPLEXITY_SUBGRAPH_THRESHOLD` | 5 | Subgraphs threshold for complexity |
+| `DEBUG` | 0 | Show complexity detection details |
+| `FORCE` | 0 | Force re-render all diagrams |
+
+## Benefits
+
+1. **Improved Readability**: Complex diagrams with many elements are rendered at higher resolution for better clarity
+2. **Multiple Formats**: Both PNG (raster) and SVG (vector) formats generated automatically
+3. **Scalable Vector Graphics**: SVG files scale perfectly at any zoom level without quality loss
+4. **Deterministic Orientation**: Portrait versus landscape is chosen by one canonical rule instead of ad hoc per-diagram guesses
+5. **Readable Raster Exports**: Wide Mermaid layouts are automatically upscaled until PNG embeds reach the minimum short-side floor
+6. **Optimized Performance**: Simple diagrams use standard resolution to keep file sizes reasonable
+7. **Automatic Detection**: No manual intervention needed - complexity is detected automatically
+8. **Customizable**: Thresholds, resolution, and default orientation can be adjusted via environment variables
+9. **Informative Output**: Clear indication of which diagrams are rendered at high resolution
+
+## File Size Impact
+
+Typical file size differences:
+
+### PNG Files
+- **High resolution diagrams**: 300K - 350K
+- **Standard resolution diagrams**: 50K - 180K
+
+### SVG Files  
+- **High resolution diagrams**: 80K - 130K
+- **Standard resolution diagrams**: 20K - 25K
+
+The system balances visual quality for complex diagrams with reasonable file sizes for simple ones. SVG files are generally smaller and provide infinite scalability.
+
+## Output Format Selection
+
+Both PNG and SVG formats are generated by default, each with their own advantages:
+
+### PNG Format
+- **Use for**: Documentation, presentations, web display where compatibility is crucial
+- **Advantages**: Universal browser support, predictable rendering, good for screenshots
+- **Considerations**: Fixed resolution, larger file sizes, quality loss when scaled
+
+### SVG Format  
+- **Use for**: Web documentation, responsive designs, print materials, interactive diagrams
+- **Advantages**: Infinitely scalable, smaller file sizes, crisp at any zoom level, can be styled with CSS
+- **Considerations**: May have rendering differences across browsers/applications
+
+### Format-Specific Generation
+You can generate only one format if needed:
+```bash
+# PNG only
+OUTPUT_FORMATS="png" bin/render_diagrams --force
+
+# SVG only  
+OUTPUT_FORMATS="svg" bin/render_diagrams --force
+```
