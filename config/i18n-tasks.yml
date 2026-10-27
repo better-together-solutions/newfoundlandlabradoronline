@@ -43,6 +43,7 @@ ignore_missing:
 ignore_unused:
   - "better_together.shared.map.**" # used by the shared map partial copied from CE (until the CE pin includes it)
   - "newfoundland_labrador_online.locations.picker.**" # looked up through a scope variable in the shared picker partial
+  - "better_together.community_subtypes.*" # read by BetterTogether::CommunitySubtype.community_subtype_label
   - "actions.*"
   - "globals.**"
   - "date.**"

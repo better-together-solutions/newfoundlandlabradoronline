@@ -39,7 +39,8 @@ module NewfoundlandLabradorOnline
       end
 
       # CE scopes the role to the community resource type; subtype roles carry the subtype name instead.
-      belongs_to :role, -> { where(resource_type: SubtypeResourceTypes.allowed) }, optional: true
+      belongs_to :role, -> { where(resource_type: BetterTogether::Resourceful.allowed_resource_classes) },
+                 optional: true
       validate :role_fits_community
 
       scope :current, -> { held_on(Time.current) }

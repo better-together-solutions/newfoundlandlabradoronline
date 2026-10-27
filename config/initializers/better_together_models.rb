@@ -37,7 +37,9 @@ ActiveSupport::Reloader.to_prepare do
   ActionText::ContentHelper.scrubber = NewfoundlandLabradorOnline::VideoBlockScrubber.new
 end
 
-# Roles and permissions may be scoped to one Community subtype instead of every community.
+# Subtypes register themselves as role resource types when loaded, so load them with the other host extensions.
 ActiveSupport::Reloader.to_prepare do
-  NewfoundlandLabradorOnline::SubtypeResourceTypes.wire!
+  %w[Legislature Executive Party Department Committee Organization].each do |kind|
+    "NewfoundlandLabradorOnline::#{kind}Community".constantize
+  end
 end

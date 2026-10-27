@@ -301,7 +301,7 @@ Same shape as other `/e` kinds, plus the new bodies:
 - The index swap changes a CE table from the host app: idempotent, reversible, first backport item.
 - Roles and permissions that only make sense for one Community subtype carry that subtype's class name as their
   `resource_type` (for example `NewfoundlandLabradorOnline::PartyCommunity`), so CE's pickers, which match the type
-  exactly, never offer them for ordinary communities. `SubtypeResourceTypes` extends CE's resource type allowlist for
+  exactly, never offer them for ordinary communities. Including `BetterTogether::CommunitySubtype` registers each subtype in CE's resource type registry for
   Role and ResourcePermission, `MembershipTimeBox` re-scopes the membership role and rejects a role that does not fit the
   community (generic community roles stay valid everywhere, so `default_member_role` is unchanged). Any new scoped role or
   permission follows the same rule.
