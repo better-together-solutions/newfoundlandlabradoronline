@@ -57,9 +57,6 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
                                                      constraints: { jurisdiction: /provincial/, year: /\d{4}/,
                                                                     **province }
     end
-
-    get 'locations/available', to: 'newfoundland_labrador_online/locations#available',
-                               as: :newfoundland_labrador_online_available_locations
   end
 
   scope path: BetterTogether.route_scope_path do

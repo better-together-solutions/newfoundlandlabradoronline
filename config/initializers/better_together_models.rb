@@ -26,15 +26,13 @@ ActiveSupport::Reloader.to_prepare do
   BetterTogether::CommunityPolicy::Scope.prepend(NewfoundlandLabradorOnline::CommunityPolicyScope)
   # Locations: every record in LocatableModels gets the shared location interface.
   NewfoundlandLabradorOnline::LocatableModels.wire!
-  BetterTogether::Content::VideoBlock.include(NewfoundlandLabradorOnline::VideoBlock)
-  BetterTogether::Content::Image.include(NewfoundlandLabradorOnline::ImageBlock)
 
   # Video and image blocks are accepted in rich text and rendered while public (CE's attachable registry); the
-  # scrubber keeps the video iframe (see NewfoundlandLabradorOnline::VideoBlockScrubber).
+  # scrubber keeps the video iframe.
   BetterTogether::ContentSecurity::AttachableRegistry.register(
     'BetterTogether::Content::VideoBlock', 'BetterTogether::Content::Image'
   )
-  ActionText::ContentHelper.scrubber = NewfoundlandLabradorOnline::VideoBlockScrubber.new
+  ActionText::ContentHelper.scrubber = BetterTogether::ContentSecurity::VideoEmbedScrubber.new
 end
 
 # Subtypes register themselves as role resource types when loaded, so load them with the other host extensions.

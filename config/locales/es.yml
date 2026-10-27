@@ -166,8 +166,6 @@ es:
         all_elections: Todas las elecciones
         kinds:
           provincial: Elecciones generales provinciales de %{year}
-    image_blocks:
-      preview: 'Imagen: %{caption}'
     legislatures:
       show:
         district: Distrito
@@ -191,19 +189,7 @@ es:
       updated: Foto tomada a las
     locations:
       picker:
-        announcements:
-          cancelled: Nueva dirección cancelada. Volvió al campo de búsqueda de ubicación.
-          creating: Creando una nueva dirección. Complete los campos siguientes y
-            guarde.
-        cancel_new_address: Cancelar nueva dirección
-        create_new: Crear %{model}
-        hint: Busque una localidad, región, dirección o edificio. Escriba un nombre
-          para usarlo como ubicación personalizada.
-        label: Ubicación
-        new_address_legend: Nueva dirección
-        new_named_with_query: 'Crear %{model}: "%{q}"'
         tab: Ubicación
-        use_typed_name: Usar "%{q}" como nombre de ubicación personalizado
     parties:
       index:
         districts: Distritos
@@ -253,8 +239,6 @@ es:
           parties: Partidos políticos
           regions: Otras regiones
           settlements: Localidades
-    video_blocks:
-      preview: 'Video: %{url}'
   time:
     am: am
     formats:

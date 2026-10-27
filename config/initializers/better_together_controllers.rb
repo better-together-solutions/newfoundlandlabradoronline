@@ -12,7 +12,6 @@ Rails.application.config.to_prepare do
   # renders attachments in whichever controller's view context is current (API responses
   # included), so the helper is added to every view rather than to individual controllers.
   ActionView::Base.include(BetterTogether::Content::BlocksHelper)
-  ActionView::Base.include(NewfoundlandLabradorOnline::LocationPickerHelper)
   ActionView::Base.include(NewfoundlandLabradorOnline::SettlementMapHelper)
   ActionView::Base.include(NewfoundlandLabradorOnline::ListingMapHelper)
   ActionView::Base.include(BetterTogether::CommunityMarkHelper)
