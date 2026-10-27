@@ -29,7 +29,7 @@ Behaviour changes accepted by adopting CE: on an event page and card the series 
 | `PostCoverImage`, `PostVideo`, `ImageBlock`, `VideoBlock`, `VideoBlockScrubber` | post cover via base64, featured video block, image/video blocks as Action Text attachments | about 190 | medium (CE has `VideoBlock` and `Image` media_data; check what remains) |
 | `LocationPickerHelper` + `locations/picker` partial, `LocationQueries`, `LocatableModels` | shared location picker and "located in a place" queries | about 150 | medium, needs views, screenshots and diagrams |
 | `ListingMap`, `ListingMapHelper`, `shared/listing_map` | map above index lists (regions, settlements) | about 190 | lower |
-| `BotPersonCleanupService` | guarded cleanup of bot person records | 251 | lower, ops tooling; may belong in management-tool |
+| `BotPersonCleanupService` | guarded cleanup of bot person records | 251 | removed: CE's `better_together:people:hard_delete` (`PersonHardDeletionExecutor`) already breaks the creator/protected cycle and removes the primary community, calendars and memberships |
 | `CommunitySubtype`, `SubtypeResourceTypes`, `RoleResourceTypeLabels` | roles scoped to a Community subtype (STI) | about 75 | medium; a CE extension point for host subtypes |
 | `ExpireMemberPermissionCacheJob` | permission cache expiry on time-boxed memberships | small | tied to civic roles design |
 | Host hook views (`_extra_form_content`, `_extra_form_tabs`, `people/_extra_person_tab_contents`, `host_dashboard/_host_app_resources`) | CE's own empty extension points | none | n/a, intended overrides |
