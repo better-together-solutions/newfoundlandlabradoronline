@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe NewfoundlandLabradorOnline::CommunitySubtype do
+RSpec.describe NewfoundlandLabradorOnline::PartyCommunity do
   include RequestSpecHelper
 
   before { configure_host_platform }
@@ -25,7 +25,7 @@ RSpec.describe NewfoundlandLabradorOnline::CommunitySubtype do
   it 'uses the community member role as the default role' do
     role = BetterTogether::Role.find_by(identifier: 'community_member', resource_type: 'BetterTogether::Community') ||
            create(:better_together_role, :community_role, identifier: 'community_member')
-    party = civic_community(NewfoundlandLabradorOnline::PartyCommunity)
+    party = civic_community(described_class)
 
     expect(party.default_member_role).to eq(role)
   end
@@ -35,5 +35,25 @@ RSpec.describe NewfoundlandLabradorOnline::CommunitySubtype do
     detail = legislature.create_legislature_detail!(level: 'provincial', seat_count: 40, member_title: 'MHA')
 
     expect(legislature.reload.legislature_detail).to eq(detail)
+  end
+
+  it 'lets roles and permissions be scoped to a community subtype', :aggregate_failures do
+    role = build(:better_together_role, :community_role, resource_type: 'NewfoundlandLabradorOnline::PartyCommunity')
+    permission = build(:better_together_resource_permission,
+                       resource_type: 'NewfoundlandLabradorOnline::PartyCommunity')
+
+    expect(role).to be_valid
+    expect(permission).to be_valid
+  end
+
+  it 'still rejects unknown resource types', :aggregate_failures do
+    expect(build(:better_together_role, :community_role, resource_type: 'Kernel')).not_to be_valid
+    expect(build(:better_together_resource_permission, resource_type: 'Kernel')).not_to be_valid
+  end
+
+  it 'labels subtype role tabs for the roles page' do
+    helper = Class.new { include BetterTogether::RolesHelper }.new
+
+    expect(helper.role_resource_type_label('NewfoundlandLabradorOnline::PartyCommunity')).to eq('Party roles')
   end
 end

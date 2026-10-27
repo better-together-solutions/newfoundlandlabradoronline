@@ -3,6 +3,6 @@
 module NewfoundlandLabradorOnline
   # Organization communities: a Community subtype (STI on the type column).
   class OrganizationCommunity < BetterTogether::Community
-    include NewfoundlandLabradorOnline::CommunitySubtype
+    include BetterTogether::CommunitySubtype
   end
 end

@@ -3,6 +3,6 @@
 module NewfoundlandLabradorOnline
   # Committee communities: a Community subtype (STI on the type column).
   class CommitteeCommunity < BetterTogether::Community
-    include NewfoundlandLabradorOnline::CommunitySubtype
+    include BetterTogether::CommunitySubtype
   end
 end
