@@ -9,6 +9,9 @@ Sentry.init do |config|
   config.dsn = ENV.fetch('SENTRY_DSN', '')
   config.release = ENV.fetch('GIT_REV', '')
 
+  # `rails runner` scripts that call exit (timelapse publishing) are not errors; their callers see the exit status.
+  config.excluded_exceptions += ['SystemExit']
+
   config.breadcrumbs_logger = %i[active_support_logger http_logger]
 
   traces_rate = ENV.fetch('SENTRY_TRACES_SAMPLE_RATE', '0.05').to_f
