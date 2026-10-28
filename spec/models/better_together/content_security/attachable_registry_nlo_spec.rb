@@ -66,7 +66,7 @@ RSpec.describe BetterTogether::ContentSecurity::AttachableRegistry do
     it 'renders the video iframe for the attachable', :aggregate_failures do
       html = render_content(ActionText::Content.new("<div>Hi</div>#{ActionText::Attachment.from_attachable(embed).to_html}"))
 
-      expect(html).to include('youtube-nocookie.com/embed/dQw4w9WgXcQ', 'ratio-16x9', 'post-video--landscape')
+      expect(html).to include('youtube-nocookie.com/embed/dQw4w9WgXcQ', 'ratio-16x9', 'attached-video--landscape')
       expect(html).not_to include('held-review')
     end
 
@@ -74,7 +74,7 @@ RSpec.describe BetterTogether::ContentSecurity::AttachableRegistry do
       embed.update!(aspect_ratio: '9x16')
       html = render_content(ActionText::Content.new(ActionText::Attachment.from_attachable(embed).to_html))
 
-      expect(html).to include('ratio-9x16', 'post-video--portrait')
+      expect(html).to include('ratio-9x16', 'attached-video--portrait')
     end
 
     it 'renders the image with its caption', :aggregate_failures do

@@ -18,11 +18,6 @@ module NewfoundlandLabradorOnline
     end
 
     class_methods do
-      # A record without a location of its own takes the place of +association+ (a post takes its community's).
-      def inherit_location_from(association)
-        self.location_inheritance = association
-      end
-
       def extra_permitted_attributes
         locations = BetterTogether::Geography::LocatableLocation
         super + [{ location_attributes: locations.permitted_attributes(id: true, destroy: true) }]

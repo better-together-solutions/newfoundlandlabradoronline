@@ -26,8 +26,8 @@ Behaviour changes accepted by adopting CE: on an event page and card the series 
 | `PrivatePrimaryCommunity` | primary community of a person or region stays private | 20 lines | high, small |
 | `MentionPrefetch` + `MentionVisibility` | one query for which mentioned people the viewer can see; removes per-person policy checks on lists | about 25 lines | high, perf |
 | `DefaultCoverImage` | restores a generated default cover when the cover is cleared | 41 | medium |
-| `PostCoverImage`, `PostVideo`, `ImageBlock`, `VideoBlock`, `VideoBlockScrubber` | post cover via base64, featured video block, image/video blocks as Action Text attachments | about 190 | medium (CE has `VideoBlock` and `Image` media_data; check what remains) |
-| `LocationPickerHelper` + `locations/picker` partial, `LocationQueries`, `LocatableModels` | shared location picker and "located in a place" queries | about 150 | medium, needs views, screenshots and diagrams |
+| `PostCoverImage`, `PostVideo`, `ImageBlock`, `VideoBlock`, `VideoBlockScrubber` (done: CE #2013 to #2016, host copies removed) | post cover via base64, featured video block, image/video blocks as Action Text attachments | about 190 | medium (CE has `VideoBlock` and `Image` media_data; check what remains) |
+| `LocationPickerHelper` + `locations/picker` partial, `LocationQueries` (done: CE #2019 and #2021, host copies removed; `LocatableModels` stays) | shared location picker and "located in a place" queries | about 150 | medium, needs views, screenshots and diagrams |
 | `ListingMap`, `ListingMapHelper`, `shared/listing_map` | map above index lists (regions, settlements) | about 190 | lower |
 | `BotPersonCleanupService` | guarded cleanup of bot person records | 251 | lower, ops tooling; may belong in management-tool |
 | `CommunitySubtype`, `SubtypeResourceTypes`, `RoleResourceTypeLabels` | roles scoped to a Community subtype (STI) | about 75 | medium; a CE extension point for host subtypes |

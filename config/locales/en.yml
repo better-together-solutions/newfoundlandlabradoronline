@@ -165,8 +165,6 @@ en:
         all_elections: All elections
         kinds:
           provincial: Provincial general election %{year}
-    image_blocks:
-      preview: 'Image: %{caption}'
     legislatures:
       show:
         district: District
@@ -190,19 +188,7 @@ en:
       updated: Photo taken
     locations:
       picker:
-        announcements:
-          cancelled: New address cancelled. Returned to the location search field.
-          creating: Creating a new address. Fill in the address fields below, then
-            save.
-        cancel_new_address: Cancel new address
-        create_new: Create new %{model}
-        hint: Search for a settlement, region, address or building. Type a name to
-          use it as a custom location.
-        label: Location
-        new_address_legend: New address
-        new_named_with_query: 'Create new %{model}: "%{q}"'
         tab: Location
-        use_typed_name: Use "%{q}" as a custom location name
     parties:
       index:
         districts: Districts
@@ -252,8 +238,6 @@ en:
           parties: Political parties
           regions: Other regions
           settlements: Settlements
-    video_blocks:
-      preview: 'Video: %{url}'
   time:
     am: am
     formats:

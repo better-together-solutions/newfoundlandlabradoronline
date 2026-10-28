@@ -7,27 +7,15 @@ RSpec.describe NewfoundlandLabradorOnline::PostResourceExtension do
 
   it 'adds the publisher fields to creatable fields' do
     expect(resource.creatable_fields({})).to include(
-      :community_id, :published_at, :video_block_id, :contributor_specs
+      :community_id, :published_at, :contributor_specs
     )
-  end
-
-  it 'accepts the cover image fields on create and update but never returns them', :aggregate_failures do
-    expect(resource.creatable_fields({})).to include(:cover_image_data, :cover_image_filename)
-    expect(resource.updatable_fields({})).to include(:cover_image_data, :cover_image_filename)
-    expect(resource.new(BetterTogether::Post.new, {}).fetchable_fields).not_to include(:cover_image_data)
   end
 
   it 'keeps slug read-only' do
     expect(resource.creatable_fields({})).not_to include(:slug)
   end
 
-  it 'accepts contributors and the video input on create only' do
-    expect(resource.updatable_fields({})).not_to include(:contributor_specs, :video_block_id)
-  end
-
-  it 'never returns the write-only video block id' do
-    instance = resource.new(BetterTogether::Post.new, {})
-
-    expect(instance.fetchable_fields).not_to include(:video_block_id)
+  it 'accepts contributors on create only' do
+    expect(resource.updatable_fields({})).not_to include(:contributor_specs)
   end
 end

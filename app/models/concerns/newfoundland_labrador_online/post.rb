@@ -2,12 +2,9 @@
 
 module NewfoundlandLabradorOnline
   # Host-side additions to BetterTogether::Post for the Corner Brook Online publisher:
-  # explicit contributors (categories by identifier and pinned dates are CE's). Video input is in PostVideo.
+  # explicit contributors (categories by identifier and pinned dates are CE's).
   module Post
     extend ActiveSupport::Concern
-
-    include NewfoundlandLabradorOnline::PostVideo
-    include NewfoundlandLabradorOnline::PostCoverImage
 
     included do
       validate :contributor_specs_must_be_supported

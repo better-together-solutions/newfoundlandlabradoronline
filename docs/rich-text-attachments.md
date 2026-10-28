@@ -17,7 +17,7 @@ How a host app adds a new kind of embedded content to CE's Trix editor and to re
 2. Define `to_attachable_partial_path`, `to_trix_content_attachment_partial_path` and `attachable_plain_text_representation`.
 3. Write both partials with `<%# locals: (<model_element>:, in_gallery: false) -%>`. Strict locals fail on the `in_gallery` local if it is missing. For a block, `model_name.element` is `video_block`.
 4. Allow the class in CE's security controls: add its class name to the `BetterTogether::ContentSecurity::AttachableRegistry.register` call in `config/initializers/better_together_models.rb`. CE renders registered blocks only while public and visible.
-5. If the partial emits tags the sanitizer strips (iframe, video), extend `VideoBlockScrubber` narrowly: allowed host, and only inside an `action-text-attachment`.
+5. If the partial emits tags the sanitizer strips (iframe, video), extend CE's `VideoEmbedScrubber` narrowly: allowed host, and only inside an `action-text-attachment`.
 6. Create the record (blocks can be created through the blocks API) and insert `ActionText::Attachment.from_attachable(record).to_html` server side; `post.video_block_id` does this at create time. The sgid cannot be built in the browser, so an editor UI needs an endpoint that returns the sgid and preview, plus a Trix toolbar button (not built yet).
 7. Specs: sgid round trip, `to_trix_html` round trip, save accepted, a different attachable still rejected, rendering, non-public held, sanitizer behaviour.
 
@@ -25,14 +25,11 @@ How a host app adds a new kind of embedded content to CE's Trix editor and to re
 
 | Concern | File |
 |---|---|
-| Attachable video block, 9x16 ratio | `app/models/concerns/newfoundland_labrador_online/video_block.rb` |
+| Attachable video and image blocks, 9x16 ratio, privacy-enhanced embed, partials | CE (`Content::AttachableBlock`, `app/views/better_together/content/attachments/`) |
 | Allow-list and render rule | `AttachableRegistry.register` in `config/initializers/better_together_models.rb` (CE) |
-| Scoped iframe scrubber | `app/models/concerns/newfoundland_labrador_online/video_block_scrubber.rb` |
-| Post attaches an existing block by `video_block_id` | `app/models/concerns/newfoundland_labrador_online/post_video.rb` |
-| Partials | `app/views/newfoundland_labrador_online/video_blocks/` |
-| Attachable image block, base64 `media_data`, required caption | `app/models/concerns/newfoundland_labrador_online/image_block.rb`, partials in `app/views/newfoundland_labrador_online/image_blocks/` |
+| Scoped iframe scrubber | CE `BetterTogether::ContentSecurity::VideoEmbedScrubber`, set in `config/initializers/better_together_models.rb` |
+| Post attaches blocks at creation (`video_block_id`, `attachment_block_ids`), base64 cover | CE `PostResource` and `BlockAttachments` |
 | Block API input (`media_data`, `media_filename`) | `app/resources/newfoundland_labrador_online/block_resource_extension.rb` |
-| Posts attach blocks at creation (`video_block_id`, `attachment_block_ids`) | `app/models/concerns/newfoundland_labrador_online/post_video.rb` |
 | Wiring | `config/initializers/better_together_models.rb` |
 
 ## Gotchas found

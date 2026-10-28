@@ -166,8 +166,6 @@ fr:
         all_elections: Toutes les élections
         kinds:
           provincial: Élection générale provinciale de %{year}
-    image_blocks:
-      preview: 'Image : %{caption}'
     legislatures:
       show:
         district: Circonscription
@@ -191,19 +189,7 @@ fr:
       updated: Photo prise à
     locations:
       picker:
-        announcements:
-          cancelled: Nouvelle adresse annulée. Retour au champ de recherche du lieu.
-          creating: Création d'une nouvelle adresse. Remplissez les champs ci-dessous,
-            puis enregistrez.
-        cancel_new_address: Annuler la nouvelle adresse
-        create_new: Créer %{model}
-        hint: Recherchez une localité, une région, une adresse ou un bâtiment. Saisissez
-          un nom pour l'utiliser comme lieu personnalisé.
-        label: Lieu
-        new_address_legend: Nouvelle adresse
-        new_named_with_query: 'Créer %{model} : « %{q} »'
         tab: Lieu
-        use_typed_name: Utiliser « %{q} » comme nom de lieu personnalisé
     parties:
       index:
         districts: Circonscriptions
@@ -253,8 +239,6 @@ fr:
           parties: Partis politiques
           regions: Autres régions
           settlements: Localités
-    video_blocks:
-      preview: 'Vidéo : %{url}'
   time:
     am: am
     formats:
