@@ -14,7 +14,7 @@ Deleted: the event series concerns, partials, controller concern and locale keys
 
 Kept, rebased onto CE `8fba847c5` with only the NLO additions:
 - `events/index`, `events/_list_form`, `posts/index`, `posts/_list_form`: the settlement scope (hidden field, heading). Frames now come from CE's `index_frame_id` (the Turbo-Frame request header), so request specs send that header.
-- `communities/show`: logo in the header, the settlement link in the located-in line, the live image card.
+- `communities/show`: done. CE hook partials (`_header_media`, `_location_line`, `_about_extra`) carry the logo header, the settlement link and the live image card; the host copy is gone.
 - `LocatableResource` (`settlement_identifier`; adds `address_data` only to resources that lack it) and `LocationInterface` (settlement location and Post `address_data`).
 
 Behaviour changes accepted by adopting CE: on an event page and card the series line now follows the location (it preceded it in NLO), and the cancel or delete panel uses `series_action`/`disposition` ids.

@@ -42,7 +42,7 @@ Pending, not yet onboarded (listed in `PENDING`, covered by a registry spec so t
 - `app/resources/newfoundland_labrador_online/locatable_resource.rb`
 - The picker partial, helper, `/:locale/locations/available` lookup, `LocationQueries` and the `located_in` scope with `inherit_location_from` are CE's (`BetterTogether::Geography::Locatable::LocatedIn`, `docs/development/location_picker.md` in CE)
 - `app/controllers/concerns/newfoundland_labrador_online/settlement_posts.rb` (posts index `?settlement=`)
-- Views copied from CE with version headers: `posts/_form`, `posts/index`, `posts/_list_form`, `communities/show`, `geography/settlements/show`; the community form uses CE's `_extra_form_tabs` and `_extra_form_content` hooks.
+- Views copied from CE with version headers: `posts/_form`, `posts/index`, `posts/_list_form`, `geography/settlements/show`; the community page and form use CE hook partials (`_header_media`, `_location_line`, `_about_extra`, `_extra_form_tabs`, `_extra_form_content`).
 
 ## Settlement page
 

@@ -1,0 +1,25 @@
+<%# locals: (community:) -%>
+<%# Host override of the CE hook partial: the logo (else the profile image) stands for the community, as a tile in the profile image's place, or large in place of a missing cover. -%>
+<% mark_kind, mark = community_mark(community) %>
+<% mark_only = mark.present? && !community.cover_image.attached? %>
+<div class="cover-image-container" id="<%= dom_id(community, :cover) %>">
+  <% if mark_only %>
+    <div class="community-header-mark" id="<%= dom_id(community, :header_mark) %>">
+      <%= image_tag storage_proxy_url_for(mark), alt: community.name %>
+    </div>
+  <% else %>
+    <%= cover_image_tag(community) %>
+  <% end %>
+</div>
+
+<% unless mark_only %>
+  <div class="profile-image-wrapper" id="<%= dom_id(community, :profile_image) %>">
+    <% if mark_kind == :logo %>
+      <span class="community-logo-tile" id="<%= dom_id(community, :logo_tile) %>">
+        <%= image_tag storage_proxy_url_for(mark), alt: community.name %>
+      </span>
+    <% else %>
+      <%= profile_image_tag(community) %>
+    <% end %>
+  </div>
+<% end %>
