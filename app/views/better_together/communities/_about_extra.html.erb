@@ -1,0 +1,4 @@
+<%# locals: (community:) -%>
+<%# Host override of the CE hook partial: the live image card for communities listed in LiveImage::RECORDS. -%>
+<% live_slug = NewfoundlandLabradorOnline::LiveImage.slug_for(community) %>
+<%= render 'newfoundland_labrador_online/live_images/card', slug: live_slug, title: community.name if live_slug %>

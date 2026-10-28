@@ -1,0 +1,15 @@
+<%# locals: (community:) -%>
+<%# Host override of the CE hook partial: links the settlement when the community is located in one. -%>
+<% place = community.location&.location %>
+<% if place.is_a?(BetterTogether::Geography::Settlement) %>
+  <p class="card-text">
+    <i class="fas fa-map-marker-alt me-1" aria-hidden="true"></i>
+    <%= t('newfoundland_labrador_online.settlement_posts.located_in') %>
+    <%= link_to place.name, geography_settlement_path(place) %>
+  </p>
+<% elsif community.location&.display_name.present? %>
+  <p class="community-location card-text" id="community-location">
+    <i class="fas fa-map-marker-alt me-1" aria-hidden="true"></i>
+    <%= community.location.display_name %>
+  </p>
+<% end %>
