@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# This migration comes from better_together (originally 20261024100100)
 # Which events are the sessions of which series. A session belongs to one series; sessions on the same day are fine.
 class CreateBetterTogetherEventSeriesSessions < ActiveRecord::Migration[8.1]
   TABLE = :better_together_event_series_sessions
