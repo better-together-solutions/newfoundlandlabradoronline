@@ -5,7 +5,7 @@ module NewfoundlandLabradorOnline
     # A person's membership of a party, read from the party community membership and its mandate.
     class PartyHolding
       def self.model_name
-        ActiveModel::Name.new(self, nil, 'NewfoundlandLabradorOnline::PartyMembership')
+        ActiveModel::Name.new(self, NewfoundlandLabradorOnline)
       end
 
       delegate :model_name, to: :class

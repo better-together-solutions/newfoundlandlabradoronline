@@ -8,7 +8,6 @@ module NewfoundlandLabradorOnline
     belongs_to :state, class_name: 'BetterTogether::Geography::State', optional: true, inverse_of: :elections
     has_many :contests, class_name: 'NewfoundlandLabradorOnline::ElectoralContest', dependent: :destroy,
                         inverse_of: :election
-    has_many :terms, class_name: 'NewfoundlandLabradorOnline::ElectedTerm', dependent: :destroy, inverse_of: :election
 
     validates :jurisdiction, :held_on, presence: true
 

@@ -10,8 +10,7 @@ In: membership dates and the unique index swap; `MembershipMandate`; `CommunityS
 party, executive, department, committee, organisation) with `LegislatureDetail` only; generic roles; community
 associations (hierarchy, peer, membership) with the eligibility rule and the child-privacy rule; quiet notifications.
 
-Out (later phases): governing instruments and rules, electoral systems and sessions, backfill of `ElectedTerm` and
-`PartyMembership`, member pages, cabinet and committees data, constituency offices, by-elections.
+Out (later phases): governing instruments and rules, electoral systems and sessions, member pages, cabinet and committees data, constituency offices, by-elections.
 
 ## Facts checked in the CE gem (pin 929bb51a9492)
 
@@ -112,7 +111,7 @@ short `docs/civic-roles.md` usage guide. No views change, so no screenshots are 
 
 1. Branch: a new branch stacked on PR #213's head (`feat/civic-roles-foundation`) with its own PR, or continue on the same
    branch. I recommend the stacked branch, since this is a different concern from regions and elections.
-2. Production: phase 1 changes a CE table and adds nothing visible. I recommend not deploying until the backfill phase,
+2. Production: phase 1 changes a CE table and adds nothing visible. I recommend not deploying until the data phase,
    with a snapshot taken before that first data-model deploy.
 3. Role identifiers are generic and unprotected, with no permissions. Confirm you want them seeded through a rake task
    and a deploy step rather than a migration.

@@ -18,10 +18,6 @@ module NewfoundlandLabradorOnline
     belongs_to :state, class_name: 'BetterTogether::Geography::State', optional: true, inverse_of: :political_parties
     belongs_to :community, class_name: 'NewfoundlandLabradorOnline::PartyCommunity', optional: true,
                            inverse_of: :political_party
-    has_many :memberships, class_name: 'NewfoundlandLabradorOnline::PartyMembership', dependent: :destroy,
-                           inverse_of: :political_party
-    has_many :elected_terms, class_name: 'NewfoundlandLabradorOnline::ElectedTerm', dependent: :nullify,
-                             inverse_of: :political_party
 
     # Parties that have ever had a member elected; others that only contested are not listed.
     scope :ever_seated, lambda {

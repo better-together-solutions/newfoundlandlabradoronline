@@ -62,22 +62,6 @@ erDiagram
     string wikipedia_path
     uuid political_party_id FK
   }
-  ELECTED_TERMS {
-    uuid id PK
-    int lock_version
-    datetime created_at
-    datetime updated_at
-    uuid person_id FK
-    uuid region_id FK
-    uuid election_id FK
-    uuid candidacy_id FK
-    string office
-    string party_name
-    date started_on
-    date ended_on
-    string end_reason
-    uuid political_party_id FK
-  }
   POLITICAL_PARTIES {
     uuid id PK
     int lock_version
@@ -96,27 +80,9 @@ erDiagram
     uuid state_id FK
     uuid community_id FK
   }
-  PARTY_MEMBERSHIPS {
-    uuid id PK
-    int lock_version
-    datetime created_at
-    datetime updated_at
-    uuid person_id FK
-    uuid political_party_id FK
-    date started_on
-    date ended_on
-    string start_reason
-    string end_reason
-    string source_url
-  }
   BETTER_TOGETHER_GEOGRAPHY_STATES ||--o{ BETTER_TOGETHER_GEOGRAPHY_REGIONS : "regions"
   BETTER_TOGETHER_GEOGRAPHY_STATES ||--o{ POLITICAL_PARTIES : "political_parties"
   BETTER_TOGETHER_GEOGRAPHY_STATES ||--o{ ELECTIONS : "elections"
   BETTER_TOGETHER_GEOGRAPHY_REGIONS ||--o{ ELECTORAL_CONTESTS : "contests"
-  BETTER_TOGETHER_GEOGRAPHY_REGIONS ||--o{ ELECTED_TERMS : "elected_terms"
   ELECTIONS ||--o{ ELECTORAL_CONTESTS : "contests"
-  ELECTIONS ||--o{ ELECTED_TERMS : "terms"
   ELECTORAL_CONTESTS ||--o{ CANDIDACIES : "candidacies"
-  CANDIDACIES ||--o| ELECTED_TERMS : "term"
-  POLITICAL_PARTIES ||--o{ PARTY_MEMBERSHIPS : "memberships"
-  POLITICAL_PARTIES ||--o{ ELECTED_TERMS : "elected_terms"

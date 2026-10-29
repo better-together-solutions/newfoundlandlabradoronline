@@ -13,8 +13,7 @@ DIAGRAMS = {
   'nlo_elections_schema_erd' => %w[BetterTogether::Geography::State BetterTogether::Geography::Region
                                    NewfoundlandLabradorOnline::Election
                                    NewfoundlandLabradorOnline::ElectoralContest NewfoundlandLabradorOnline::Candidacy
-                                   NewfoundlandLabradorOnline::ElectedTerm NewfoundlandLabradorOnline::PoliticalParty
-                                   NewfoundlandLabradorOnline::PartyMembership],
+                                   NewfoundlandLabradorOnline::PoliticalParty],
   'nlo_civic_roles_schema_erd' => %w[BetterTogether::Community BetterTogether::PersonCommunityMembership
                                      NewfoundlandLabradorOnline::MembershipMandate
                                      NewfoundlandLabradorOnline::CommunitySeat

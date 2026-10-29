@@ -6,7 +6,7 @@ module NewfoundlandLabradorOnline
     # questions the pages asked of an elected term: who, where, when, under which party.
     class Holding
       def self.model_name
-        ActiveModel::Name.new(self, nil, 'NewfoundlandLabradorOnline::ElectedTerm')
+        ActiveModel::Name.new(self, NewfoundlandLabradorOnline)
       end
 
       delegate :model_name, to: :class

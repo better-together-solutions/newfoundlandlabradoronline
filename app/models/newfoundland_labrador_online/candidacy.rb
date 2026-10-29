@@ -11,7 +11,6 @@ module NewfoundlandLabradorOnline
                                  inverse_of: false
     has_one :mandate, as: :conferred_by, class_name: 'NewfoundlandLabradorOnline::MembershipMandate',
                       dependent: :nullify
-    has_one :term, class_name: 'NewfoundlandLabradorOnline::ElectedTerm', dependent: :destroy, inverse_of: :candidacy
 
     delegate :membership, to: :mandate, allow_nil: true
 
