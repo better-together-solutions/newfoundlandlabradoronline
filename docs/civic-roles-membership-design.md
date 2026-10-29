@@ -251,17 +251,14 @@ person and seat share one office; a new office is created when the representativ
   board (kind `appointed`, `conferred_by` a board vote), election under a plurality or STV system.
 - Committees: `CommitteeCommunity` with members appointed by the legislature or board.
 
-### What becomes of the NLO tables
+### How the NLO data maps
 
-| Today | After |
+| Data | Model |
 |---|---|
-| `ElectedTerm` | A `legislature_member` membership with a mandate (seat = district, candidacy, `elected`) |
-| `PartyMembership` | A `party_member` membership in the party community |
+| A member's term in a district | A `legislature_member` membership with a mandate (seat = district, candidacy, `elected`) |
+| A member's party | A `party_member` membership in the party community |
 | Ministers, Speaker, leaders (not yet loaded) | Memberships in the cabinet or legislature with titled mandates |
 | `Election`, `ElectoralContest`, `Candidacy` | Kept; gain system, community, kind and seats as above |
-
-Migration is a reversible backfill with row-count and date parity checks; `ElectedTerm` and `PartyMembership` stay until
-the new reads are verified in production.
 
 ## Views and routes
 
@@ -284,7 +281,7 @@ Same shape as other `/e` kinds, plus the new bodies:
    term lengths. Specs, no UI.
 3. Elections reference model: electoral systems, electorate, election community and kind, contest seats, nullable party,
    nominations by organisations, sessions.
-4. Backfill `ElectedTerm`/`PartyMembership` into memberships and mandates, with parity report and constituency offices.
+4. Constituency offices.
 5. Member pages and directory (DOM contracts, screenshots, diagrams).
 6. Cabinet and departments: executive communities, governing-party associations, ministers and portfolio history from
    the Assembly pages, government and department views, committees.

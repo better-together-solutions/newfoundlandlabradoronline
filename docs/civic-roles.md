@@ -54,19 +54,17 @@ Community API: `parents`, `children`, `peers`, `ancestors`, `descendants` (recur
 invited:)` returning `:member`, `:invited`, `:invitation_required`, `:open` or `:ineligible`. Creating a membership
 applies this check on top of the community's own access mode.
 
-## Pages and data (migration)
+## Pages and data
 
-Elected terms and party memberships now live in the civic model. `Civic::Roster` is the one read path for pages;
-`Civic::Writer` is the one write path (used by the loaders and the backfill, quiet and idempotent).
+Who held a seat and which party they belonged to live in the civic model. `Civic::Roster` is the one read path for
+pages; `Civic::Writer` is the one write path (used by the loaders, quiet and idempotent).
 
-- `nlo:civic:provision`: legislature per province and a party community per party.
-- `nlo:civic:backfill` (`WRITE=1` to apply): converts legacy rows; a dry run rolls back.
-- `nlo:civic:parity`: compares the new model with the legacy tables; non-empty output means a difference.
-- `BackfillCivicRoles` runs the same steps as a migration and fails closed on any error or difference.
+- `nlo:electoral:seed` seeds the whole electoral packet on an installed platform (see `docs/regions.md`).
+- `nlo:civic:seed_roles` and `nlo:civic:provision`: the generic roles, a legislature per province and a party community
+  per party, for partial reruns.
 - The legislature page is at `/e/members/provincial/:province`; district pages fold re-elections into one entry.
 - Civic communities are hidden from the CE communities index (`CommunityPolicyScope`).
 
 ## Not yet built
 
 Governing instruments and rules, election reference model, cabinet and committee data (design doc phases 2 to 7).
-Dropping the legacy `elected_terms` and `party_memberships` tables is a separate, confirmed cleanup migration.

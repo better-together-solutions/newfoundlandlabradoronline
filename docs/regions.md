@@ -20,6 +20,20 @@ erDiagram
 - `RegionIdentifier` (`region_identifiers`) holds external ids, unique per scheme (`nlo_ped`, `statcan_dguid`,
   `statcan_feduid`, `wikidata`, `osm_relation`, `elections_nl`).
 
+## Seeding a new install
+
+After the platform is set up (setup wizard, or `better_together:load_seed`), with a public host platform, one command
+loads the whole packet in order: civic roles, the 40 districts, parties, the 2015 to 2025 elections and members, party
+changes, and the Districts header link. The province comes from CE's geography reference data and is planted first when
+missing (no external requests). It is idempotent and stops with a message if the platform is not set up or the roster
+does not match the packet.
+
+```bash
+./bin/dc-run bin/rails nlo:electoral:seed
+```
+
+The sections below describe each step, which can also be run alone.
+
 ## Loading the 40 districts (2015 map)
 
 `bin/rails nlo:regions:load_provincial_districts` reads `db/data/nl_regions/provincial_electoral_districts_2015.geojson`
@@ -61,7 +75,8 @@ each election; cross-check against Elections NL before relying on a figure).
 - `elections` holds one row per general election; `electoral_contests` one per district per election;
   `candidacies` the candidates (names only).
 - Only elected candidates become `BetterTogether::Person` records (identifier `nl-mha-<name>`), joined to the district
-  and election cycle by `elected_terms`. A term ends when the next election's winner takes the seat.
+  and election cycle by a dated `legislature_member` membership in the House of Assembly community, with a mandate for
+  the district seat conferred by the candidacy. A term ends when the next election's winner takes the seat.
 - By-elections and mid-term resignations are not loaded yet.
 
 ### Parties, brand colours and affiliation over time
@@ -79,9 +94,9 @@ Parties load first from `db/data/nl_regions/provincial_parties.json` (built by m
 - The brand colour is derived from the logo (SVG fills or dominant saturated pixels), falling back to Wikipedia's
   chart colour, then a neutral grey; `color_source` records which. Logo licence and source are stored per party.
   The PC and NL Alliance logos are Wikipedia fair-use (non-free): confirm permission before public production use.
-- `party_memberships` are dated rows (`started_on`, `ended_on`, start and end reasons such as `elected`,
-  `floor_crossing`) so a member can change party mid-term. The loader seeds one per run of terms in the party elected;
-  `ElectedTerm#party_on(date)` answers from the membership in force, else the party elected.
+- Party membership is a dated `party_member` membership in the party's community, whose mandate carries the start and end
+  reasons (such as `elected`, `floor_crossing`), so a member can change party mid-term. The loader seeds one per run of
+  terms in the party elected; `Civic::Holding#party_on(date)` answers from the membership in force, else the party elected.
 - The districts map fills each district in its sitting member's party colour (no member: grey) with a legend and
   seat counts; the district page shows the member's party swatch and logo.
 - Floor crossings come from the official House of Assembly "History of the Standings" page, parsed by management-tool
