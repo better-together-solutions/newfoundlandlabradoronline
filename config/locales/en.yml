@@ -211,15 +211,10 @@ en:
         logo_non_free: Non-free logo, shown under fair use.
         logo_source: Source
         none: No members recorded.
-    settlement_events:
-      loading: Loading events...
-      title: Events in %{name}
     settlement_map:
       label: Map of %{name}
     settlement_posts:
-      loading: Loading posts...
       located_in: Located in
-      title: Posts in %{name}
     states:
       index:
         code: Code
