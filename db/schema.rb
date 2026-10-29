@@ -2749,35 +2749,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_29_210000) do
     t.index ["translatable_id", "translatable_type", "locale", "key"], name: "index_mobility_text_translations_on_keys", unique: true
   end
 
-  create_table "nlo_region_identifiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.integer "lock_version", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.uuid "region_id", null: false
-    t.string "scheme", limit: 50, null: false
-    t.string "value", null: false
-    t.index ["region_id", "scheme"], name: "index_nlo_region_identifiers_on_region_and_scheme", unique: true
-    t.index ["region_id"], name: "index_nlo_region_identifiers_on_region_id"
-    t.index ["scheme", "value"], name: "index_nlo_region_identifiers_on_scheme_and_value", unique: true
-  end
-
-  create_table "nlo_region_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.integer "lock_version", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.uuid "region_id", null: false
-    t.string "name", null: false
-    t.date "valid_from", null: false
-    t.date "valid_to"
-    t.geography "boundary", limit: {srid: 4326, type: "multi_polygon", geographic: true}
-    t.string "authority", null: false
-    t.string "source_url"
-    t.string "source_sha256", limit: 64
-    t.string "license"
-    t.index ["boundary"], name: "index_nlo_region_versions_on_boundary", using: :gist
-    t.index ["region_id", "valid_from"], name: "index_nlo_region_versions_on_region_and_valid_from", unique: true
-  end
-
   create_table "noticed_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "type"
     t.string "record_type"
@@ -3152,8 +3123,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_29_210000) do
   add_foreign_key "electoral_contests", "elections"
   add_foreign_key "legislature_details", "better_together_communities", column: "community_id"
   add_foreign_key "membership_mandates", "better_together_person_community_memberships", column: "membership_id"
-  add_foreign_key "nlo_region_identifiers", "better_together_geography_regions", column: "region_id"
-  add_foreign_key "nlo_region_versions", "better_together_geography_regions", column: "region_id"
   add_foreign_key "noticed_notifications", "better_together_platforms", column: "platform_id"
   add_foreign_key "political_parties", "better_together_communities", column: "community_id"
   add_foreign_key "political_parties", "better_together_geography_states", column: "state_id"
