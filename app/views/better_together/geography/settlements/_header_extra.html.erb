@@ -1,0 +1,8 @@
+<%# locals: (settlement:) -%>
+<%# Host override of the CE hook partial: the settlement map, between the page header and the tabs. -%>
+<% located_map = settlement_map(settlement) %>
+<% if located_map.spaces.any? %>
+  <section class="settlement-map mb-4" id="settlement-map" aria-label="<%= t('newfoundland_labrador_online.settlement_map.label', name: settlement.name) %>">
+    <%= render 'better_together/shared/map', map: located_map, types: located_map.types, boundary: located_map.boundary %>
+  </section>
+<% end %>

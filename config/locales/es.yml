@@ -212,15 +212,10 @@ es:
         logo_non_free: Logotipo no libre, mostrado como uso legítimo.
         logo_source: Fuente
         none: No hay miembros registrados.
-    settlement_events:
-      loading: Cargando eventos...
-      title: Eventos en %{name}
     settlement_map:
       label: Mapa de %{name}
     settlement_posts:
-      loading: Cargando publicaciones...
       located_in: Ubicado en
-      title: Publicaciones en %{name}
     states:
       index:
         code: Código

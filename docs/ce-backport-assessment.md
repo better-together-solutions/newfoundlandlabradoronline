@@ -36,7 +36,7 @@ Behaviour changes accepted by adopting CE: on an event page and card the series 
 
 ## C. Stays in NLO
 
-Provinces, regions and electoral districts (`Region`/`State` concerns, `Province`, `District*`), elections, parties, legislatures, candidacies, seats, terms, community associations and committees, civic role migrations, settlement pages (`SettlementEvents`, `SettlementPosts`, `SettlementMap`, `geography/settlements/*`), CBO live images, `newfoundland_labrador_online.*` locales, theme and CSP initializers, layout hooks (`_custom_head_javascript`, `_custom_stylesheets`), Stimulus controllers for live images and party overlay.
+Provinces, regions and electoral districts (`Region`/`State` concerns, `Province`, `District*`), elections, parties, legislatures, candidacies, seats, terms, community associations and committees, civic role migrations, settlement map and the settlement page hook partials (`SettlementMap`, `geography/settlements/_{header,about,index}_extra`), CBO live images, `newfoundland_labrador_online.*` locales, theme and CSP initializers, layout hooks (`_custom_head_javascript`, `_custom_stylesheets`), Stimulus controllers for live images and party overlay.
 
 ## Suggested next steps
 

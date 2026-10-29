@@ -41,8 +41,8 @@ Pending, not yet onboarded (listed in `PENDING`, covered by a registry spec so t
 - `app/models/concerns/newfoundland_labrador_online/{locatable,location_interface,locatable_models}.rb`
 - `app/resources/newfoundland_labrador_online/locatable_resource.rb`
 - The picker partial, helper, `/:locale/locations/available` lookup, `LocationQueries` and the `located_in` scope with `inherit_location_from` are CE's (`BetterTogether::Geography::Locatable::LocatedIn`, `docs/development/location_picker.md` in CE)
-- `app/controllers/concerns/newfoundland_labrador_online/settlement_posts.rb` (posts index `?settlement=`)
-- Views copied from CE with version headers: `posts/_form`, `posts/index`, `posts/_list_form`, `geography/settlements/show`; the community page and form use CE hook partials (`_header_media`, `_location_line`, `_about_extra`, `_extra_form_tabs`, `_extra_form_content`).
+- The posts and events index `?settlement=` scoping is CE's (`BetterTogether::PlaceScopedIndex`, `docs/development/located_in_scope.md` in CE)
+- Views copied from CE with version headers: `posts/_form`, `posts/index`, `posts/_list_form`; the settlement page and index are CE's, extended through the hook partials `geography/settlements/{_header_extra,_about_extra,_index_extra}`; the community page and form use CE hook partials (`_header_media`, `_location_line`, `_about_extra`, `_extra_form_tabs`, `_extra_form_content`).
 
 ## Settlement page
 
