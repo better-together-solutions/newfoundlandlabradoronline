@@ -27,8 +27,7 @@ RSpec.describe 'Documentation screenshots for the settlement boundary credit', :
 
   it 'captures the credit under the settlement map' do
     visit "/#{I18n.default_locale}/g/settlements/corner-brook"
-    callouts = [{ selector: '#settlement-map', title: 'Boundary drawn on the map' },
-                { selector: '#settlement-boundary-credit', title: 'Boundary credit, one link' }]
+    callouts = [{ selector: '#settlement-map', title: 'Boundary drawn and credited on the map' }]
 
     expect(DocsScreenshots.capture(page, 'settlement_boundary_credit', callouts:).map { |p| File.size(p) })
       .to all(be > 10_000)

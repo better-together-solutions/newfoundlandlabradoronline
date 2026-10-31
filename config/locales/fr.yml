@@ -213,7 +213,6 @@ fr:
         logo_source: Source
         none: Aucun député enregistré.
     settlement_map:
-      boundary_credit_html: "%{credit}"
       label: Carte de %{name}
     settlement_posts:
       located_in: Situé à

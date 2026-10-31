@@ -30,8 +30,7 @@ behaviour is the `settlement-map` Stimulus controller.
 
 OpenStreetMap-derived boundaries stay in this host app, never in the CE gem's boundary packet, and are credited
 wherever they are drawn. The credit is one short link (source and licence together, for example "Boundary:
-OpenStreetMap (ODbL)") shown in Leaflet's attribution control and again as text under the map
-(`#settlement-boundary-credit`). Electoral district boundaries use the same one-link form, "NL Electoral Boundaries
+OpenStreetMap (ODbL)") shown in Leaflet's attribution control only. Electoral district boundaries use the same one-link form, "NL Electoral Boundaries
 Commission (OGL-NL)", from the `nl_electoral_boundaries` map layer; the full authority and licence are on the district
 page.
 

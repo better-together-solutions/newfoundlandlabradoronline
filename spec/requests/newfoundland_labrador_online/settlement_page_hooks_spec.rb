@@ -38,19 +38,18 @@ RSpec.describe 'Settlement page host hooks' do
       BetterTogether::Geography::GeospatialSpace.create!(geospatial: settlement, space:)
     end
 
-    it 'credits the boundary source in one link under the map', :aggregate_failures do
+    it 'passes the boundary credit to the map attribution, not as a separate line', :aggregate_failures do
       space.update!(metadata: { 'boundary_source' => { 'osm_type' => 'relation', 'osm_id' => 1234 } })
       get "/#{locale}/g/settlements/#{settlement.slug}"
 
-      credit = Nokogiri::HTML(body).at_css('#settlement-boundary-credit')
-      expect(credit.text.squish).to eq('Boundary: OpenStreetMap (ODbL)')
-      expect(credit.css('a').map { |a| a['href'] }).to eq(['https://www.openstreetmap.org/relation/1234'])
+      expect(body).to include('Boundary: OpenStreetMap (ODbL)')
+      expect(body).not_to include('settlement-boundary-credit')
     end
 
     it 'credits nothing when the source is not recorded' do
       get "/#{locale}/g/settlements/#{settlement.slug}"
 
-      expect(body).not_to include('settlement-boundary-credit')
+      expect(body).not_to include('Boundary: OpenStreetMap')
     end
   end
 end
