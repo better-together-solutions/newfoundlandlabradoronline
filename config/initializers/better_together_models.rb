@@ -24,6 +24,7 @@ ActiveSupport::Reloader.to_prepare do
   BetterTogether::PersonCommunityMembership.prepend(NewfoundlandLabradorOnline::MembershipTimeBox)
   BetterTogether::Community.include(NewfoundlandLabradorOnline::Associable)
   BetterTogether::CommunityPolicy::Scope.prepend(NewfoundlandLabradorOnline::CommunityPolicyScope)
+  BetterTogether::Community.singleton_class.prepend(NewfoundlandLabradorOnline::CommunitySitemapScope)
   # Locations: every record in LocatableModels gets the shared location interface.
   NewfoundlandLabradorOnline::LocatableModels.wire!
 
