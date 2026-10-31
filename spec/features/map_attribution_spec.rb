@@ -20,8 +20,7 @@ RSpec.describe 'Map data attribution', :js, type: :feature do
   it 'credits the commission and the licence on the district page', :aggregate_failures do
     visit "/#{I18n.default_locale}/e/districts/provincial/nl/nl-ped-corner-brook"
 
-    expect(page).to have_css('.leaflet-control-attribution', text: 'Electoral Boundaries Commission')
-    expect(page).to have_css('.leaflet-control-attribution', text: 'Open Government Licence')
+    expect(page).to have_css('.leaflet-control-attribution a', text: 'Electoral Boundaries Commission (OGL-NL)')
     expect(page).to have_css('.leaflet-control-attribution', text: 'OpenStreetMap')
   end
 end

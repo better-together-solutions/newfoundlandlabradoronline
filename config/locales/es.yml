@@ -213,6 +213,7 @@ es:
         logo_source: Fuente
         none: No hay miembros registrados.
     settlement_map:
+      boundary_credit_html: "%{credit}"
       label: Mapa de %{name}
     settlement_posts:
       located_in: Ubicado en

@@ -34,6 +34,16 @@ namespace :nlo do
       puts "missing districts: #{result.missing_districts.uniq.join(', ')}" if result.missing_districts.any?
     end
 
+    desc 'Record the OSM source of a settlement boundary: SETTLEMENT=identifier OSM_TYPE=relation OSM_ID=n [APPLY=1]'
+    task backfill_boundary_provenance: :environment do
+      settlement = BetterTogether::Geography::Settlement.find_by!(identifier: ENV.fetch('SETTLEMENT'))
+      result = NewfoundlandLabradorOnline::Geography::BoundaryProvenanceBackfill.new(
+        settlement:, osm_type: ENV.fetch('OSM_TYPE'), osm_id: ENV.fetch('OSM_ID'), apply: ENV['APPLY'] == '1'
+      ).call
+      note = ' (dry run, set APPLY=1 to write)' if result.status == :would_update
+      puts "#{settlement.identifier}: #{result.status}#{note}"
+    end
+
     def attach_cover(region, file)
       file.open('rb') do |io|
         NewfoundlandLabradorOnline::Geography::DistrictCover.call(region:, io:, filename: file.basename.to_s).status
