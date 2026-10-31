@@ -3,10 +3,8 @@
 Built on CE's map classes (see `docs/mapping-system-assessment-20261015.md` in management-tool): `SettlementMap <
 BetterTogether::Geography::LocatableMap` (host STI subtype, unsaved, with `SettlementMapPolicy` and `settlement_map`
 helper), points from each located record's `located_leaflet_point`, rendered by CE's `shared/_map` partial and
-`better_together--map` controller. Until NLO's CE pin includes community-engine-rails PR #1914, the controller, partial,
-styles, vendored clustering plugin and translations are carried here as marked copies (`app/javascript/controllers/
-better_together/map_controller.js`, `app/views/better_together/shared/_map.html.erb`, `app/assets/stylesheets/
-settlement_map.scss`, `app/javascript/vendor`, `config/importmap.rb`); delete them when the pin moves.
+`better_together--map` controller. The listing maps on the settlement, region, country, state and continent indexes are
+host overrides of CE's `_index_extra` hook partials; nothing from CE's map layer is copied into this app.
 
 Everything below about data, types and limits still holds; the standalone controller and service it once described are
 gone.
