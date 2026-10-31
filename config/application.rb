@@ -73,6 +73,10 @@ module BetterTogether
 
     config.time_zone = ENV.fetch('APP_TIME_ZONE', 'Newfoundland')
 
+    # CE layouts render records such as the platform CSS block. With the default, an NLO controller prefixes its
+    # namespace onto the record's partial path and the lookup fails; a record always renders from its own path.
+    config.action_view.prefix_partial_path_with_controller_namespace = false
+
     # Add engine manifest to precompile assets in production
     initializer 'assets' do |app|
       # Ensure we are not modifying frozen arrays
