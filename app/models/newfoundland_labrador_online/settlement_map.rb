@@ -54,6 +54,11 @@ module NewfoundlandLabradorOnline
       json && JSON.parse(json)
     end
 
+    # Who the drawn boundary is credited to (a BoundaryCredit::Credit), or nil when its source is unknown.
+    def boundary_credit
+      Geography::BoundaryCredit.for_space(settlement_space)
+    end
+
     private
 
     def type_entry(model)

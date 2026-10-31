@@ -212,6 +212,7 @@ en:
         logo_source: Source
         none: No members recorded.
     settlement_map:
+      boundary_credit_html: "%{credit}"
       label: Map of %{name}
     settlement_posts:
       located_in: Located in

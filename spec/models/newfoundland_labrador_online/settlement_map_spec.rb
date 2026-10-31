@@ -96,4 +96,18 @@ RSpec.describe NewfoundlandLabradorOnline::SettlementMap do
 
     expect(described_class.new(settlement:).leaflet_points.size).to eq(1)
   end
+
+  describe '#boundary_credit' do
+    let(:polygon) do
+      RGeo::Geographic.spherical_factory(srid: 4326).parse_wkt('MULTIPOLYGON(((0 0,0 1,1 1,1 0,0 0)))')
+    end
+
+    it 'is nil without a recorded source and credits OpenStreetMap once one is recorded', :aggregate_failures do
+      settlement.space.update!(boundary: polygon)
+      expect(map.boundary_credit).to be_nil
+
+      settlement.space.update!(metadata: { 'boundary_source' => { 'osm_type' => 'relation', 'osm_id' => 7 } })
+      expect(map.boundary_credit.attribution).to eq('Boundary: OpenStreetMap')
+    end
+  end
 end

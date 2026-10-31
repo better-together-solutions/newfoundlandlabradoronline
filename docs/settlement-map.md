@@ -26,6 +26,25 @@ behaviour is the `settlement-map` Stimulus controller.
   the entry's `map:` option.
 - Posts that only inherit their community's location have no coordinates of their own and are not shown.
 
+## Boundary credit (decision D3)
+
+OpenStreetMap-derived boundaries stay in this host app, never in the CE gem's boundary packet, and are credited
+wherever they are drawn. The credit is one short link (source and licence together, for example "Boundary:
+OpenStreetMap (ODbL)") shown in Leaflet's attribution control and again as text under the map
+(`#settlement-boundary-credit`). Electoral district boundaries use the same one-link form, "NL Electoral Boundaries
+Commission (OGL-NL)", from the `nl_electoral_boundaries` map layer; the full authority and licence are on the district
+page.
+
+- `Geography::BoundaryCredit` builds the credit: districts from the region version (authority, source URL, licence),
+  settlements from the space's `metadata['boundary_source']` (`osm_type` and `osm_id`). With no recorded source nothing
+  is credited, so a missing credit means the provenance is missing.
+- Backfill for a boundary stored before provenance was recorded: `bin/rails nlo:regions:backfill_boundary_provenance
+  SETTLEMENT=<identifier> OSM_TYPE=relation OSM_ID=<id>` (dry run; add `APPLY=1` to write). It only fills a boundary
+  with no recorded OSM source and only from the object you name. Run it on staging data first; on production it is a
+  data write that needs its own approval.
+- Before loading any new boundary source (Natural Earth, geoBoundaries, Statistics Canada files) check and record its
+  licence. That check has not been done yet.
+
 ## Types and density
 
 Each type has its own colour and Font Awesome icon (`LocatableModels::ONBOARDED[...][:map]`). Pins are clustered by
