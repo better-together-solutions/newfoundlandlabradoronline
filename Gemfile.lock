@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/better-together-org/community-engine-rails.git
-  revision: 62a1becd5474be1df8868b925b9c6787301cc7ed
-  ref: 62a1becd5474be1df8868b925b9c6787301cc7ed
+  revision: 613566df7f16a1d15f57783c5e4bb05ed0ddcd00
+  ref: 613566df7f16a1d15f57783c5e4bb05ed0ddcd00
   specs:
     better_together (0.11.0)
       active_storage_svg_sanitizer
@@ -172,7 +172,7 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
-    addressable (2.9.0)
+    addressable (2.9.1)
       public_suffix (>= 2.0.2, < 8.0)
     anonymous_loader (0.1.5)
       version_gem (~> 1.1, >= 1.1.17)
@@ -261,7 +261,7 @@ GEM
       addressable
       base64
       ssrf_filter (~> 1.5)
-    csv (3.3.6)
+    csv (3.3.7)
     dartsass-sprockets (3.2.1)
       railties (>= 4.0.0)
       sassc-embedded (~> 1.80.1)
@@ -455,7 +455,7 @@ GEM
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
-    io-console (0.9.4)
+    io-console (0.9.5)
     irb (1.18.0)
       pp (>= 0.6.0)
       prism (>= 1.3.0)
@@ -472,18 +472,18 @@ GEM
       railties (>= 4.1)
     jwt (3.3.0)
       base64
-    kaminari (1.3.0)
+    kaminari (1.3.2)
       activesupport (>= 4.1.0)
-      kaminari-actionview (= 1.3.0)
-      kaminari-activerecord (= 1.3.0)
-      kaminari-core (= 1.3.0)
-    kaminari-actionview (1.3.0)
+      kaminari-actionview (= 1.3.2)
+      kaminari-activerecord (= 1.3.2)
+      kaminari-core (= 1.3.2)
+    kaminari-actionview (1.3.2)
       actionview
-      kaminari-core (= 1.3.0)
-    kaminari-activerecord (1.3.0)
+      kaminari-core (= 1.3.2)
+    kaminari-activerecord (1.3.2)
       activerecord
-      kaminari-core (= 1.3.0)
-    kaminari-core (1.3.0)
+      kaminari-core (= 1.3.2)
+    kaminari-core (1.3.2)
     language_server-protocol (3.17.0.6)
     launchy (3.1.1)
       addressable (~> 2.8)
@@ -511,7 +511,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.1020)
+    mime-types-data (3.2026.1027)
     mini_mime (1.1.5)
     minitest (6.0.6)
       drb (~> 2.0)
@@ -811,9 +811,9 @@ GEM
     rubyzip (3.7.0)
     rufus-scheduler (3.9.2)
       fugit (~> 1.1, >= 1.11.1)
-    sass-embedded (1.106.1-aarch64-linux-gnu)
+    sass-embedded (1.107.1-aarch64-linux-gnu)
       google-protobuf (~> 4.31)
-    sass-embedded (1.106.1-x86_64-linux-gnu)
+    sass-embedded (1.107.1-x86_64-linux-gnu)
       google-protobuf (~> 4.31)
     sassc (2.4.0)
       ffi (~> 1.9)
