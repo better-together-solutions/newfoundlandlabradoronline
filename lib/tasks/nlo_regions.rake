@@ -34,6 +34,17 @@ namespace :nlo do
       puts "missing districts: #{result.missing_districts.uniq.join(', ')}" if result.missing_districts.any?
     end
 
+    desc 'Import one settlement boundary from OSM: SETTLEMENT=identifier [APPLY=1] [FORCE=1] (dry run by default)'
+    task import_settlement_boundary: :environment do
+      settlement = BetterTogether::Geography::Settlement.find_by!(identifier: ENV.fetch('SETTLEMENT'))
+      result = NewfoundlandLabradorOnline::Geography::SettlementBoundaryImport.new(
+        settlement:, apply: ENV['APPLY'] == '1', force: ENV['FORCE'] == '1'
+      ).call
+      note = ' (dry run, set APPLY=1 to write)' if result.status == :would_import
+      puts "#{settlement.identifier}: #{result.status}#{note}"
+      result.to_h.except(:status).compact.each { |key, value| puts "  #{key}: #{value}" }
+    end
+
     desc 'Record the OSM source of a settlement boundary: SETTLEMENT=identifier OSM_TYPE=relation OSM_ID=n [APPLY=1]'
     task backfill_boundary_provenance: :environment do
       settlement = BetterTogether::Geography::Settlement.find_by!(identifier: ENV.fetch('SETTLEMENT'))
