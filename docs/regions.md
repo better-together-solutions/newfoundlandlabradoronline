@@ -1,5 +1,7 @@
 # Typed regions, versions and identifiers
 
+Settlements have their own dated status and identifiers: see `municipalities.md`.
+
 Host-side first cut (to be backported to Community Engine). Plan and data sources: management-tool
 `docs/nl-regions-electoral-census-assessment-20261019.md`.
 

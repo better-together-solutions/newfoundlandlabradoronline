@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_31_204754) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_01_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -1024,6 +1024,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_204754) do
     t.index ["identifier"], name: "index_better_together_geography_regions_on_identifier", unique: true
     t.index ["privacy"], name: "by_better_together_geography_regions_privacy"
     t.index ["state_id"], name: "index_better_together_geography_regions_on_state_id"
+  end
+
+  create_table "better_together_geography_settlement_identifiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "settlement_id", null: false
+    t.string "scheme", limit: 50, null: false
+    t.string "value", null: false
+    t.index ["scheme", "value"], name: "by_geography_settlement_identifier_value", unique: true
+    t.index ["settlement_id", "scheme"], name: "by_geography_settlement_identifier_scheme", unique: true
+    t.index ["settlement_id"], name: "idx_on_settlement_id_317ead54f7"
+  end
+
+  create_table "better_together_geography_settlement_statuses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "settlement_id", null: false
+    t.string "municipal_status", limit: 50, null: false
+    t.string "name"
+    t.date "valid_from"
+    t.date "valid_to"
+    t.string "authority", null: false
+    t.string "source_url"
+    t.string "license"
+    t.index ["municipal_status"], name: "by_geography_settlement_municipal_status"
+    t.index ["settlement_id", "valid_from"], name: "by_geography_settlement_status_dates"
   end
 
   create_table "better_together_geography_settlements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -3036,6 +3064,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_204754) do
   add_foreign_key "better_together_geography_regions", "better_together_communities", column: "community_id"
   add_foreign_key "better_together_geography_regions", "better_together_geography_countries", column: "country_id"
   add_foreign_key "better_together_geography_regions", "better_together_geography_states", column: "state_id"
+  add_foreign_key "better_together_geography_settlement_identifiers", "better_together_geography_settlements", column: "settlement_id"
+  add_foreign_key "better_together_geography_settlement_statuses", "better_together_geography_settlements", column: "settlement_id"
   add_foreign_key "better_together_geography_settlements", "better_together_communities", column: "community_id"
   add_foreign_key "better_together_geography_settlements", "better_together_geography_countries", column: "country_id"
   add_foreign_key "better_together_geography_settlements", "better_together_geography_states", column: "state_id"
