@@ -20,6 +20,7 @@ DIAGRAMS = {
   'nlo_civic_roles_schema_erd' => %w[BetterTogether::Community BetterTogether::PersonCommunityMembership
                                      NewfoundlandLabradorOnline::MembershipMandate
                                      NewfoundlandLabradorOnline::CommunitySeat
+                                     NewfoundlandLabradorOnline::SeatBoundary
                                      NewfoundlandLabradorOnline::CommunityAssociation
                                      NewfoundlandLabradorOnline::LegislatureDetail]
 }.freeze

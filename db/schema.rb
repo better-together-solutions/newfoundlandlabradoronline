@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_01_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_02_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -2975,6 +2975,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_140000) do
     t.index ["region_id", "valid_from"], name: "index_region_versions_on_region_and_valid_from", unique: true
   end
 
+  create_table "seat_boundaries", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.uuid "community_seat_id", null: false
+    t.geography "boundary", limit: {srid: 4326, type: "multi_polygon", geographic: true}
+    t.string "authority", null: false
+    t.string "source_url"
+    t.string "portal_url"
+    t.string "license"
+    t.string "source_sha256", limit: 64
+    t.date "fetched_on"
+    t.decimal "area_km2", precision: 12, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["boundary"], name: "index_seat_boundaries_on_boundary", using: :gist
+    t.index ["community_seat_id"], name: "index_seat_boundaries_on_community_seat_id", unique: true
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "better_together_activities", "better_together_platforms", column: "platform_id"
@@ -3289,4 +3306,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_140000) do
   add_foreign_key "political_parties", "better_together_geography_states", column: "state_id"
   add_foreign_key "region_identifiers", "better_together_geography_regions", column: "region_id"
   add_foreign_key "region_versions", "better_together_geography_regions", column: "region_id"
+  add_foreign_key "seat_boundaries", "community_seats"
 end

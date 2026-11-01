@@ -110,6 +110,28 @@ Stable ids for DOM contracts: `municipalities-list`, `municipality-page`, `munic
 `settlement-municipal-card`. Contracts: `spec/dom_contracts/municipality_pages_spec.rb`; screenshots:
 `spec/docs_screenshots/municipalities_spec.rb` (output in `docs/screenshots/`).
 
+## Ward boundaries
+
+Ward polygons hang off the council's `CommunitySeat` through `seat_boundaries` (one current boundary per seat, with
+`authority`, `source_url`, `portal_url`, `license`, `source_sha256`, `fetched_on` and a computed `area_km2`; diagram:
+`nlo_civic_roles_schema_erd`).
+
+St. John's publishes its wards on a public ArcGIS layer. The service states no licence, vintage or credit (its metadata
+is unfilled template text), so the packet records `license: null` and the boundary is credited to the City with a link
+to its download portal, so a viewer can get the data themselves. `BoundaryCredit.for_seat_boundary` builds that line
+("Boundary: City of St. John's", linked to `portal_url`).
+
+```bash
+bin/dc-run env WRITE=1 bin/rails nlo:municipal:fetch_ward_packet   # downloads WGS84 GeoJSON, read-only against the City
+bin/dc-run bin/rails nlo:municipal:load_ward_boundaries            # dry run
+APPLY=1 bin/dc-run bin/rails nlo:municipal:load_ward_boundaries    # writes (load councils first)
+```
+
+The packet is `db/data/nl_municipal/st_johns_wards.geojson` (fetched 2026-11-01, five wards, checksum recorded). The
+five ward areas sum to 478.85 km2, matching the City Boundary layer (478.77 km2). The layer's only population field is
+`POP2001`, so the wards may predate the current by-law; compare with the by-law before relying on them for 2025. No
+page draws ward boundaries yet.
+
 ## Not in this phase
 
 Bylaws, meetings and census data follow in later phases.
