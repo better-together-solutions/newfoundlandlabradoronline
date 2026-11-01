@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_01_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_01_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -2742,12 +2742,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_130000) do
     t.datetime "updated_at", null: false
     t.uuid "electoral_contest_id", null: false
     t.string "candidate_name", null: false
-    t.string "party_name", null: false
-    t.integer "votes", null: false
+    t.string "party_name"
+    t.integer "votes"
     t.decimal "vote_share", precision: 5, scale: 2
     t.boolean "elected", default: false, null: false
     t.string "wikipedia_path"
     t.uuid "political_party_id"
+    t.boolean "acclaimed", default: false, null: false
     t.index ["electoral_contest_id", "candidate_name"], name: "index_candidacies_on_contest_and_name", unique: true
     t.index ["electoral_contest_id"], name: "index_candidacies_on_electoral_contest_id"
     t.index ["political_party_id"], name: "index_candidacies_on_political_party_id"
@@ -2798,7 +2799,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_130000) do
     t.string "source_sha256", limit: 64
     t.string "license"
     t.uuid "state_id"
-    t.index ["jurisdiction", "state_id", "held_on"], name: "index_elections_on_jurisdiction_state_held_on", unique: true, nulls_not_distinct: true
+    t.uuid "community_id"
+    t.string "kind", limit: 30, default: "general", null: false
+    t.index ["community_id"], name: "index_elections_on_community_id"
+    t.index ["jurisdiction", "state_id", "community_id", "held_on"], name: "index_elections_on_body_and_held_on", unique: true, nulls_not_distinct: true
     t.index ["state_id"], name: "index_elections_on_state_id"
   end
 
@@ -2807,8 +2811,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_130000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "election_id", null: false
-    t.uuid "region_id", null: false
+    t.uuid "region_id"
     t.decimal "turnout", precision: 5, scale: 2
+    t.string "office", limit: 30, default: "member", null: false
+    t.integer "seats_available", default: 1, null: false
+    t.uuid "community_seat_id"
+    t.index ["community_seat_id"], name: "index_electoral_contests_on_community_seat_id"
+    t.index ["election_id", "office", "community_seat_id"], name: "index_electoral_contests_on_municipal_office", unique: true, where: "(region_id IS NULL)", nulls_not_distinct: true
     t.index ["election_id", "region_id"], name: "index_electoral_contests_on_election_id_and_region_id", unique: true
     t.index ["region_id"], name: "index_electoral_contests_on_region_id"
   end
@@ -3268,8 +3277,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_130000) do
   add_foreign_key "community_associations", "better_together_communities", column: "target_community_id"
   add_foreign_key "community_seats", "better_together_communities", column: "community_id"
   add_foreign_key "community_seats", "better_together_communities", column: "represents_community_id"
+  add_foreign_key "elections", "better_together_communities", column: "community_id"
   add_foreign_key "elections", "better_together_geography_states", column: "state_id"
   add_foreign_key "electoral_contests", "better_together_geography_regions", column: "region_id"
+  add_foreign_key "electoral_contests", "community_seats"
   add_foreign_key "electoral_contests", "elections"
   add_foreign_key "legislature_details", "better_together_communities", column: "community_id"
   add_foreign_key "membership_mandates", "better_together_person_community_memberships", column: "membership_id"

@@ -1,0 +1,100 @@
+{
+  "_comment": "Council election results, names and counts only. Source: the City of Corner Brook notice of results on cornerbrookvotes.com (fetched 2026-11-01). St. John's is not included: no official results notice found yet.",
+  "elections": [
+    {
+      "settlement": "corner-brook",
+      "date": "2025-10-02",
+      "kind": "general",
+      "source_url": "https://cornerbrookvotes.com/election-results/",
+      "contests": [
+        {
+          "office": "mayor",
+          "seats_available": 1,
+          "candidates": [
+            {
+              "name": "Linda Chaisson",
+              "votes": 3498,
+              "elected": true
+            },
+            {
+              "name": "Pamela Gill",
+              "votes": 1062
+            }
+          ]
+        },
+        {
+          "office": "councillor",
+          "seats_available": 6,
+          "candidates": [
+            {
+              "name": "Tony Buckle",
+              "votes": 1200
+            },
+            {
+              "name": "Sherry Dean",
+              "votes": 1955,
+              "elected": true
+            },
+            {
+              "name": "Keith Hobbs",
+              "votes": 1341
+            },
+            {
+              "name": "Pam Keeping",
+              "votes": 2613,
+              "elected": true
+            },
+            {
+              "name": "Eddie Kennedy",
+              "votes": 1706,
+              "elected": true
+            },
+            {
+              "name": "Donna Luther",
+              "votes": 2481,
+              "elected": true
+            },
+            {
+              "name": "Chad Parsons",
+              "votes": 1648
+            },
+            {
+              "name": "Sarah Parsons",
+              "votes": 1668
+            },
+            {
+              "name": "Michelle Payne",
+              "votes": 1637
+            },
+            {
+              "name": "Steve Perchard",
+              "votes": 1889,
+              "elected": true
+            },
+            {
+              "name": "Tarragh Shanahan",
+              "votes": 868
+            },
+            {
+              "name": "Geoff Sparkes",
+              "votes": 1202
+            },
+            {
+              "name": "Tom Stewart",
+              "votes": 1097
+            },
+            {
+              "name": "Randy Warren",
+              "votes": 616
+            },
+            {
+              "name": "Donna Wheeler",
+              "votes": 1720,
+              "elected": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

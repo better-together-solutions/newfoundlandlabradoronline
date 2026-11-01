@@ -65,6 +65,31 @@ fetched 2026-11-01). Corner Brook start dates are the election date and approxim
 recorded, and its 2025 results are not yet verified against an official notice. A person who is both a councillor and
 an MHA has two records for now.
 
+## Municipal elections (phase 3)
+
+The provincial election tables now also hold council contests (diagram: `nlo_elections_schema_erd`).
+
+- `elections` gains `community_id` (the council) and `kind` (general, by_election, plebiscite). Uniqueness is per
+  jurisdiction, state, council and date.
+- `electoral_contests` gains `office` (member, mayor, councillor), `seats_available` and `community_seat_id`;
+  `region_id` is optional for municipal contests, which are unique per election, office and seat.
+- `candidacies` gain `acclaimed`; `party_name` and `votes` are optional for municipal candidates (no NL council has
+  parties; acclaimed candidates have no votes).
+- A contest has `winners` (several for a multi-seat councillor race) and a nil-safe `total_votes`.
+- Municipal elections are excluded from the public provincial elections pages, which assume a region per contest.
+
+`MunicipalElectionLoader` reads `db/data/nl_municipal/elections.json`, finds the council by settlement, writes the
+election, contests and candidacies, and links each elected candidate to the matching office through
+`conferred_by` on the mandate. Elected candidates with no matching office are reported, not guessed.
+
+```bash
+bin/dc-run bin/rails nlo:municipal:load_elections            # dry run
+APPLY=1 bin/dc-run bin/rails nlo:municipal:load_elections    # writes
+```
+
+The packet holds Corner Brook 2025-10-02 (source: cornerbrookvotes.com). St. John's results are not loaded until an
+official notice is found. Load councils first.
+
 ## Not in this phase
 
-Elections, bylaws, meetings and census data follow in later phases.
+Bylaws, meetings and census data follow in later phases.

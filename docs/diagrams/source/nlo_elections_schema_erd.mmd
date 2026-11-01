@@ -38,6 +38,8 @@ erDiagram
     string source_sha256
     string license
     uuid state_id FK
+    uuid community_id FK
+    string kind
   }
   ELECTORAL_CONTESTS {
     uuid id PK
@@ -47,6 +49,9 @@ erDiagram
     uuid election_id FK
     uuid region_id FK
     decimal turnout
+    string office
+    int seats_available
+    uuid community_seat_id FK
   }
   CANDIDACIES {
     uuid id PK
@@ -61,6 +66,7 @@ erDiagram
     bool elected
     string wikipedia_path
     uuid political_party_id FK
+    bool acclaimed
   }
   POLITICAL_PARTIES {
     uuid id PK
