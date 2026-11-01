@@ -6,15 +6,15 @@ module NewfoundlandLabradorOnline
     extend ActiveSupport::Concern
 
     included do
-      has_many :statuses, class_name: 'NewfoundlandLabradorOnline::SettlementStatus', foreign_key: :settlement_id,
+      has_many :statuses, class_name: 'BetterTogether::Geography::SettlementStatus', foreign_key: :settlement_id,
                           inverse_of: :settlement, dependent: :destroy
-      has_many :identifiers, class_name: 'NewfoundlandLabradorOnline::SettlementIdentifier',
+      has_many :identifiers, class_name: 'BetterTogether::Geography::SettlementIdentifier',
                              foreign_key: :settlement_id, inverse_of: :settlement, dependent: :destroy
     end
 
     class_methods do
       def with_identifier(scheme, value)
-        joins(:identifiers).find_by(settlement_identifiers: { scheme:, value: })
+        joins(:identifiers).find_by(better_together_geography_settlement_identifiers: { scheme:, value: })
       end
     end
 

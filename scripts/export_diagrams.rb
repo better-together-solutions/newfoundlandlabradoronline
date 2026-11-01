@@ -11,8 +11,8 @@ DIAGRAMS = {
                                  NewfoundlandLabradorOnline::RegionVersion
                                  NewfoundlandLabradorOnline::RegionIdentifier],
   'nlo_settlements_schema_erd' => %w[BetterTogether::Geography::State BetterTogether::Geography::Settlement
-                                     NewfoundlandLabradorOnline::SettlementStatus
-                                     NewfoundlandLabradorOnline::SettlementIdentifier],
+                                     BetterTogether::Geography::SettlementStatus
+                                     BetterTogether::Geography::SettlementIdentifier],
   'nlo_elections_schema_erd' => %w[BetterTogether::Geography::State BetterTogether::Geography::Region
                                    NewfoundlandLabradorOnline::Election
                                    NewfoundlandLabradorOnline::ElectoralContest NewfoundlandLabradorOnline::Candidacy

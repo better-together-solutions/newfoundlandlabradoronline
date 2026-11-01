@@ -9,7 +9,11 @@ record with a dated history.
 
 ## Dated status
 
-`SettlementStatus` (`settlement_statuses`) records the standing a settlement held over a date range, with the authority
+Both tables and models use the Community Engine naming (`better_together_geography_*`, `BetterTogether::Geography::*`,
+created with `create_bt_table`), so they can move into the gem unchanged. Only the concern that attaches them to
+`Settlement` is host-side.
+
+`BetterTogether::Geography::SettlementStatus` (`better_together_geography_settlement_statuses`) records the standing a settlement held over a date range, with the authority
 and source that say so.
 
 | Field | Meaning |
@@ -24,7 +28,7 @@ with the latest `valid_from` wins.
 
 ## Identifiers
 
-`SettlementIdentifier` (`settlement_identifiers`) holds external ids, unique per scheme and value, one per scheme per
+`BetterTogether::Geography::SettlementIdentifier` (`better_together_geography_settlement_identifiers`) holds external ids, unique per scheme and value, one per scheme per
 settlement: `statcan_csd`, `statcan_dguid`, `nl_open_data_gcl`, `wikidata`, `osm_relation`.
 `Settlement.with_identifier(scheme, value)` finds a settlement by any of them.
 

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe NewfoundlandLabradorOnline::SettlementIdentifier do
+RSpec.describe BetterTogether::Geography::SettlementIdentifier do
   include RequestSpecHelper
 
   before { configure_host_platform }

@@ -25,7 +25,7 @@ erDiagram
     uuid state_id FK
     string privacy
   }
-  SETTLEMENT_STATUSES {
+  BETTER_TOGETHER_GEOGRAPHY_SETTLEMENT_STATUSES {
     uuid id PK
     int lock_version
     datetime created_at
@@ -39,7 +39,7 @@ erDiagram
     string source_url
     string license
   }
-  SETTLEMENT_IDENTIFIERS {
+  BETTER_TOGETHER_GEOGRAPHY_SETTLEMENT_IDENTIFIERS {
     uuid id PK
     int lock_version
     datetime created_at
@@ -49,5 +49,5 @@ erDiagram
     string value
   }
   BETTER_TOGETHER_GEOGRAPHY_STATES ||--o{ BETTER_TOGETHER_GEOGRAPHY_SETTLEMENTS : "settlements"
-  BETTER_TOGETHER_GEOGRAPHY_SETTLEMENTS ||--o{ SETTLEMENT_STATUSES : "statuses"
-  BETTER_TOGETHER_GEOGRAPHY_SETTLEMENTS ||--o{ SETTLEMENT_IDENTIFIERS : "identifiers"
+  BETTER_TOGETHER_GEOGRAPHY_SETTLEMENTS ||--o{ BETTER_TOGETHER_GEOGRAPHY_SETTLEMENT_STATUSES : "statuses"
+  BETTER_TOGETHER_GEOGRAPHY_SETTLEMENTS ||--o{ BETTER_TOGETHER_GEOGRAPHY_SETTLEMENT_IDENTIFIERS : "identifiers"
