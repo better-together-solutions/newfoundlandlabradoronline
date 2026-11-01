@@ -45,7 +45,8 @@ module NewfoundlandLabradorOnline
                                           seat_count: entry['seat_count'], seats: entry.fetch('seats', []),
                                           member_title: entry.fetch('member_title', 'Councillor'))
         @result.councils += 1
-        entry.fetch('officials').each { |official| load_official(settlement, community, official) }
+        source_url = entry['source_url']
+        entry.fetch('officials').each { |official| load_official(settlement, community, official, source_url) }
       end
 
       def find_settlement(entry)
@@ -67,12 +68,12 @@ module NewfoundlandLabradorOnline
                                                source_url: entry['status_source_url'])
       end
 
-      def load_official(settlement, community, official)
+      def load_official(settlement, community, official, source_url)
         person = person_for(settlement, official.fetch('name'))
         writer.hold_office(person:, community:, role: ROLES.fetch(official.fetch('role')),
                            from: official['from'] && Date.parse(official['from']),
                            to: official['to'] && Date.parse(official['to']),
-                           title: official.fetch('title'), seat: seat_for(community, official['seat']))
+                           title: official.fetch('title'), seat: seat_for(community, official['seat']), source_url:)
         @result.offices += 1
       end
 

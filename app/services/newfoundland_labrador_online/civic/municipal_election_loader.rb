@@ -9,7 +9,8 @@ module NewfoundlandLabradorOnline
     # rests on. A dry run (the default) rolls back, so counts are what an apply would do. Idempotent.
     class MunicipalElectionLoader
       DEFAULT_PATH = Rails.root.join('db/data/nl_municipal/elections.json')
-      OFFICE_ROLES = { 'mayor' => 'legislature_head', 'councillor' => 'legislature_member' }.freeze
+      OFFICE_ROLES = { 'mayor' => 'legislature_head', 'deputy_mayor' => 'legislature_deputy_head',
+                       'councillor' => 'legislature_member' }.freeze
       Result = Struct.new(:elections, :contests, :candidacies, :linked, :unlinked, :missing_councils,
                           keyword_init: true)
 

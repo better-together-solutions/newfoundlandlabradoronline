@@ -1,0 +1,104 @@
+<% settlement = @municipality.settlement %>
+<% status = @municipality.status %>
+<% election = @municipality.latest_election %>
+<div class="container py-4" id="municipality-page">
+  <nav aria-label="<%= t('.breadcrumb') %>">
+    <%= link_to t('.all_municipalities'), newfoundland_labrador_online_scoped_municipalities_path(province_code(settlement), locale: I18n.locale), class: 'btn btn-secondary btn-sm mb-3' %>
+  </nav>
+
+  <h1 id="municipality-name"><%= settlement.name %></h1>
+  <p class="text-muted" id="municipality-kind">
+    <span id="municipality-status"><%= status ? t("newfoundland_labrador_online.municipalities.statuses.#{status.municipal_status}") : t('.status_unknown') %></span>
+    &middot; <span id="municipality-province"><%= link_to settlement.state.name, state_page_path(settlement.state) %></span>
+    &middot; <%= link_to t('.settlement_page'), geography_settlement_path(settlement, locale: I18n.locale), id: 'municipality-settlement-link' %>
+  </p>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <section class="card h-100" id="municipality-facts">
+        <div class="card-body">
+          <h2 class="h5 card-title"><%= t('.facts') %></h2>
+          <dl class="row mb-0">
+            <dt class="col-sm-5"><%= t('.council') %></dt>
+            <dd class="col-sm-7" id="municipality-council-name"><%= @municipality.council.name %></dd>
+            <dt class="col-sm-5"><%= t('.seats') %></dt>
+            <dd class="col-sm-7" id="municipality-seats"><%= @municipality.detail.seat_count || t('.unknown') %></dd>
+            <dt class="col-sm-5"><%= t('.csd_code') %></dt>
+            <dd class="col-sm-7" id="municipality-csd"><%= @municipality.csd_code || t('.unknown') %></dd>
+            <dt class="col-sm-5"><%= t('.status_source') %></dt>
+            <dd class="col-sm-7" id="municipality-status-source">
+              <% if status&.source_url.present? %>
+                <%= link_to status.authority.presence || status.source_url, status.source_url, rel: 'noopener' %>
+              <% else %>
+                <%= status&.authority.presence || t('.unknown') %>
+              <% end %>
+            </dd>
+          </dl>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-lg-6">
+      <section class="card h-100" id="municipality-leaders">
+        <div class="card-body">
+          <h2 class="h5 card-title"><%= t('.leaders') %></h2>
+          <dl class="row mb-0">
+            <dt class="col-sm-5"><%= t('.mayor') %></dt>
+            <dd class="col-sm-7" id="council-mayor"><%= @municipality.mayor ? member_mention(@municipality.mayor.person) : t('.vacant') %></dd>
+            <dt class="col-sm-5"><%= t('.deputy_mayor') %></dt>
+            <dd class="col-sm-7" id="council-deputy-mayor"><%= @municipality.deputy_mayor ? member_mention(@municipality.deputy_mayor.person) : t('.vacant') %></dd>
+          </dl>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <section class="card mt-4" id="council-members">
+    <div class="card-body">
+      <h2 class="h5 card-title"><%= t('.councillors') %></h2>
+      <% if @municipality.councillors.any? %>
+        <div class="table-responsive">
+          <table class="table table-sm align-middle mb-0">
+            <thead>
+              <tr>
+                <th scope="col"><%= t('.seat') %></th>
+                <th scope="col"><%= t('.councillor') %></th>
+                <th scope="col"><%= t('.in_office_since') %></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @municipality.councillors.each do |office| %>
+                <tr id="<%= dom_id(office.membership, :office) %>">
+                  <td><%= office.seat&.name || office.title %></td>
+                  <td><%= member_mention(office.person) %></td>
+                  <td><%= office.starts_on ? l(office.starts_on, format: :long) : t('.since_unknown') %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="text-muted mb-0"><%= t('.no_councillors') %></p>
+      <% end %>
+      <p class="small text-muted mt-3 mb-0" id="council-start-note"><%= t('.start_note') %></p>
+      <% if @municipality.source_url.present? %>
+        <p class="small text-muted mb-0" id="council-source"><%= t('.roster_source') %> <%= link_to @municipality.source_url, @municipality.source_url, rel: 'noopener' %></p>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="mt-4" id="municipality-election">
+    <h2 class="h5"><%= t('.latest_election') %></h2>
+    <% if election %>
+      <p class="text-muted">
+        <%= l(election.held_on, format: :long) %> &middot;
+        <%= link_to t('.all_contests', year: election.year), municipal_election_path_for(settlement, election), id: 'municipality-election-link' %>
+      </p>
+      <% election.contests.select { |contest| %w[mayor deputy_mayor].include?(contest.office) }.sort_by { |contest| %w[mayor deputy_mayor].index(contest.office) }.each do |contest| %>
+        <%= render 'newfoundland_labrador_online/municipalities/contest', contest: contest %>
+      <% end %>
+    <% else %>
+      <p class="text-muted"><%= t('.no_election') %></p>
+    <% end %>
+  </section>
+</div>

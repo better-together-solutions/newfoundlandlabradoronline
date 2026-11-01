@@ -61,8 +61,7 @@ APPLY=1 bin/dc-run bin/rails nlo:municipal:load_councils    # writes
 ```
 
 The packet holds Corner Brook (council page, results of 2025-10-02) and St. John's (the city's own council page,
-fetched 2026-11-01). Corner Brook start dates are the election date and approximate. St. John's start dates are not
-recorded, and its 2025 results are not yet verified against an official notice. A person who is both a councillor and
+fetched 2026-11-01). Start dates are the election date and approximate (St. John's 2025-10-08). A person who is both a councillor and
 an MHA has two records for now.
 
 ## Municipal elections (phase 3)
@@ -71,7 +70,7 @@ The provincial election tables now also hold council contests (diagram: `nlo_ele
 
 - `elections` gains `community_id` (the council) and `kind` (general, by_election, plebiscite). Uniqueness is per
   jurisdiction, state, council and date.
-- `electoral_contests` gains `office` (member, mayor, councillor), `seats_available` and `community_seat_id`;
+- `electoral_contests` gains `office` (member, mayor, deputy_mayor, councillor), `seats_available` and `community_seat_id`;
   `region_id` is optional for municipal contests, which are unique per election, office and seat.
 - `candidacies` gain `acclaimed`; `party_name` and `votes` are optional for municipal candidates (no NL council has
   parties; acclaimed candidates have no votes).
@@ -87,8 +86,29 @@ bin/dc-run bin/rails nlo:municipal:load_elections            # dry run
 APPLY=1 bin/dc-run bin/rails nlo:municipal:load_elections    # writes
 ```
 
-The packet holds Corner Brook 2025-10-02 (source: cornerbrookvotes.com). St. John's results are not loaded until an
-official notice is found. Load councils first.
+The packet holds Corner Brook 2025-10-02 (source: cornerbrookvotes.com) and St. John's 2025-10-08 (source: the city's
+published results, with votes per candidate). Load councils first. Contests use the offices `mayor`, `deputy_mayor`
+and `councillor`; each elected candidate is linked to the matching office through `conferred_by`, and the roster's
+`source_url` is stored on each mandate.
+
+## Municipality pages
+
+Public pages live under the electoral routes (`/e/`):
+
+| Route | Page |
+|---|---|
+| `/e/municipalities` and `/e/municipalities/:province` | Directory of municipalities with a council |
+| `/e/municipalities/:province/:settlement` | Facts, mayor, deputy mayor, councillors, latest election |
+| `/e/elections/municipal/:province/:settlement/:year` | Full contest results for one election |
+
+The settlement page also shows a "Municipal government" card linking to its municipality page. Data is read through
+`Civic::Municipality` (current offices come from time-boxed memberships). Start dates equal the election date unless
+the source gives a swearing-in date, and the page says so. Meetings are not shown until phase 3b.
+
+Stable ids for DOM contracts: `municipalities-list`, `municipality-page`, `municipality-leaders`, `council-members`,
+`council-source`, `municipality-election`, `municipal-election-page`, `election-date`, `election-source`,
+`settlement-municipal-card`. Contracts: `spec/dom_contracts/municipality_pages_spec.rb`; screenshots:
+`spec/docs_screenshots/municipalities_spec.rb` (output in `docs/screenshots/`).
 
 ## Not in this phase
 

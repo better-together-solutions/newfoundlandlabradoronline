@@ -95,6 +95,194 @@
           ]
         }
       ]
+    },
+    {
+      "settlement": "st-john-s",
+      "date": "2025-10-08",
+      "kind": "general",
+      "source_url": "https://www.stjohns.ca/your-government/elections/election-results/2025-general-election-results/",
+      "contests": [
+        {
+          "office": "mayor",
+          "seats_available": 1,
+          "candidates": [
+            {
+              "name": "Danny Breen",
+              "votes": 15216,
+              "elected": true
+            },
+            {
+              "name": "Ivy Hanley",
+              "votes": 11603
+            }
+          ]
+        },
+        {
+          "office": "deputy_mayor",
+          "seats_available": 1,
+          "candidates": [
+            {
+              "name": "Ron Ellsworth",
+              "votes": 14787,
+              "elected": true
+            },
+            {
+              "name": "Bianca Lono",
+              "votes": 8636
+            },
+            {
+              "name": "Rigel Penman",
+              "votes": 2435
+            }
+          ]
+        },
+        {
+          "office": "councillor",
+          "seat": "Ward 1",
+          "seats_available": 1,
+          "candidates": [
+            {
+              "name": "Jill Bruce",
+              "acclaimed": true,
+              "elected": true
+            }
+          ]
+        },
+        {
+          "office": "councillor",
+          "seat": "Ward 2",
+          "seats_available": 1,
+          "candidates": [
+            {
+              "name": "Brenda Halley",
+              "votes": 2525,
+              "elected": true
+            },
+            {
+              "name": "Greg Smith",
+              "votes": 1567
+            },
+            {
+              "name": "Todd Perrin",
+              "votes": 471
+            },
+            {
+              "name": "Blair Trainor",
+              "votes": 305
+            },
+            {
+              "name": "Greg Dunne",
+              "votes": 286
+            },
+            {
+              "name": "Philip Barton",
+              "votes": 92
+            }
+          ]
+        },
+        {
+          "office": "councillor",
+          "seat": "Ward 3",
+          "seats_available": 1,
+          "candidates": [
+            {
+              "name": "Greg Noseworthy",
+              "acclaimed": true,
+              "elected": true
+            }
+          ]
+        },
+        {
+          "office": "councillor",
+          "seat": "Ward 4",
+          "seats_available": 1,
+          "candidates": [
+            {
+              "name": "Tom Davis",
+              "votes": 2812,
+              "elected": true
+            },
+            {
+              "name": "Trini Bragg",
+              "votes": 1261
+            }
+          ]
+        },
+        {
+          "office": "councillor",
+          "seat": "Ward 5",
+          "seats_available": 1,
+          "candidates": [
+            {
+              "name": "Donnie Earle",
+              "votes": 3687,
+              "elected": true
+            },
+            {
+              "name": "Carl Ridgeley",
+              "votes": 2545
+            }
+          ]
+        },
+        {
+          "office": "councillor",
+          "seats_available": 4,
+          "candidates": [
+            {
+              "name": "Kate Cadigan",
+              "votes": 16577,
+              "elected": true
+            },
+            {
+              "name": "Lynn Hammond",
+              "votes": 11868,
+              "elected": true
+            },
+            {
+              "name": "Sandy Hickman",
+              "votes": 11837,
+              "elected": true
+            },
+            {
+              "name": "Nikita Ryall",
+              "votes": 10124,
+              "elected": true
+            },
+            {
+              "name": "Art Puddister",
+              "votes": 8235
+            },
+            {
+              "name": "Walter Harding",
+              "votes": 7994
+            },
+            {
+              "name": "Scott Fitzgerald",
+              "votes": 7885
+            },
+            {
+              "name": "Myles Russell",
+              "votes": 6846
+            },
+            {
+              "name": "Paul Combden",
+              "votes": 4551
+            },
+            {
+              "name": "John Barbour",
+              "votes": 3576
+            },
+            {
+              "name": "Wallace Ryan",
+              "votes": 2589
+            },
+            {
+              "name": "Thomas Pouliot",
+              "votes": 402
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -6,7 +6,7 @@ module NewfoundlandLabradorOnline
     self.table_name = 'electoral_contests'
 
     belongs_to :election, class_name: 'NewfoundlandLabradorOnline::Election', inverse_of: :contests
-    OFFICES = %w[member mayor councillor].freeze
+    OFFICES = %w[member mayor deputy_mayor councillor].freeze
 
     # A district contest has a region; a council contest has an office and, for a ward, a seat.
     belongs_to :region, class_name: 'BetterTogether::Geography::Region', optional: true, inverse_of: :contests

@@ -189,6 +189,73 @@ en:
     locations:
       picker:
         tab: Location
+    municipal_elections:
+      show:
+        back: Back to %{name}
+        offices:
+          councillor: Councillors at large
+          deputy_mayor: Deputy mayor
+          mayor: Mayor
+          member: Member
+        source: Results from
+        title: "%{name} municipal election %{year}"
+    municipalities:
+      card:
+        link: Council, officials and elections
+        mayor: 'Mayor: %{name}'
+        title: Municipal government
+      contest:
+        acclaimed: Acclaimed
+        elected: Elected
+        seats:
+          one: "%{count} seat"
+          other: "%{count} seats"
+      index:
+        empty: No municipal councils have been recorded yet.
+        intro: Municipal councils with their officials and election results. Each
+          municipality is also a settlement on the map.
+        last_election: Last election
+        mayor: Mayor
+        municipality: Municipality
+        none: None recorded
+        seats: Council seats
+        status: Status
+        title: Municipalities
+        unknown: Not recorded
+      show:
+        all_contests: All %{year} contests
+        all_municipalities: All municipalities
+        breadcrumb: Breadcrumb
+        council: Council
+        councillor: Councillor
+        councillors: Councillors
+        csd_code: Statistics Canada CSD code
+        deputy_mayor: Deputy mayor
+        facts: Facts
+        in_office_since: In office since
+        latest_election: Latest election
+        leaders: Leadership
+        mayor: Mayor
+        no_councillors: No councillors recorded.
+        no_election: No election results recorded yet.
+        roster_source: Roster from
+        seat: Seat
+        seats: Council seats
+        settlement_page: Settlement page
+        since_unknown: Start date not recorded
+        start_note: Start dates are the election date unless the source gives a swearing-in
+          date.
+        status_source: Status source
+        status_unknown: Status not recorded
+        unknown: Not recorded
+        vacant: Vacant
+      statuses:
+        city: City
+        inuit_community_government: Inuit community government
+        local_service_district: Local service district
+        reserve: Reserve
+        town: Town
+        unincorporated: Unincorporated
     parties:
       index:
         districts: Districts

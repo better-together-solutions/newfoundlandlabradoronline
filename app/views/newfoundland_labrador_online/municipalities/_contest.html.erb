@@ -1,0 +1,29 @@
+<%# locals: (contest:) -%>
+<section class="card mt-3" id="<%= dom_id(contest) %>">
+  <div class="card-body">
+    <h2 class="h6 card-title">
+      <%= contest_title(contest) %>
+      <small class="text-muted"><%= t('newfoundland_labrador_online.municipalities.contest.seats', count: contest.seats_available) %></small>
+    </h2>
+    <div class="table-responsive">
+      <table class="table table-sm mb-0">
+        <tbody>
+          <% contest.candidacies.each do |candidacy| %>
+            <tr id="<%= dom_id(candidacy) %>" class="<%= 'fw-bold' if candidacy.elected %>">
+              <td>
+                <%= candidate_name(candidacy) %>
+                <% if candidacy.acclaimed %>
+                  <span class="badge text-bg-success"><%= t('newfoundland_labrador_online.municipalities.contest.acclaimed') %></span>
+                <% elsif candidacy.elected %>
+                  <span class="badge text-bg-success"><%= t('newfoundland_labrador_online.municipalities.contest.elected') %></span>
+                <% end %>
+              </td>
+              <td class="text-end"><%= number_with_delimiter(candidacy.votes) unless candidacy.acclaimed %></td>
+              <td class="text-end"><%= (share = contest_share(contest, candidacy)) ? "#{share}%" : '' %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
