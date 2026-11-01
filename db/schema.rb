@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_31_204754) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_01_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -2937,6 +2937,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_204754) do
     t.index ["region_id", "valid_from"], name: "index_region_versions_on_region_and_valid_from", unique: true
   end
 
+  create_table "settlement_identifiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "settlement_id", null: false
+    t.string "scheme", limit: 50, null: false
+    t.string "value", null: false
+    t.index ["scheme", "value"], name: "index_settlement_identifiers_on_scheme_and_value", unique: true
+    t.index ["settlement_id", "scheme"], name: "index_settlement_identifiers_on_settlement_and_scheme", unique: true
+    t.index ["settlement_id"], name: "index_settlement_identifiers_on_settlement_id"
+  end
+
+  create_table "settlement_statuses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "settlement_id", null: false
+    t.string "municipal_status", limit: 50, null: false
+    t.string "name"
+    t.date "valid_from"
+    t.date "valid_to"
+    t.string "authority", null: false
+    t.string "source_url"
+    t.string "license"
+    t.index ["municipal_status"], name: "index_settlement_statuses_on_municipal_status"
+    t.index ["settlement_id", "valid_from"], name: "index_settlement_statuses_on_settlement_and_valid_from"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "better_together_activities", "better_together_platforms", column: "platform_id"
@@ -3247,4 +3275,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_204754) do
   add_foreign_key "political_parties", "better_together_geography_states", column: "state_id"
   add_foreign_key "region_identifiers", "better_together_geography_regions", column: "region_id"
   add_foreign_key "region_versions", "better_together_geography_regions", column: "region_id"
+  add_foreign_key "settlement_identifiers", "better_together_geography_settlements", column: "settlement_id"
+  add_foreign_key "settlement_statuses", "better_together_geography_settlements", column: "settlement_id"
 end

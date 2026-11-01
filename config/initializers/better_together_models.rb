@@ -13,8 +13,9 @@ ActiveSupport::Reloader.to_prepare do
   require_dependency 'better_together/person_community_membership'
 
   BetterTogether::Post.include(NewfoundlandLabradorOnline::Post)
-  # Regions: versioned boundaries and external identifiers (the typed subclasses live in app/models).
+  # Regions and settlements: versioned boundaries or dated status, and external identifiers.
   BetterTogether::Geography::Region.include(NewfoundlandLabradorOnline::Region)
+  BetterTogether::Geography::Settlement.include(NewfoundlandLabradorOnline::Settlement)
   # Provinces: the districts, parties and elections scoped to them.
   BetterTogether::Geography::State.include(NewfoundlandLabradorOnline::State)
   BetterTogether::Geography::StatePolicy.prepend(NewfoundlandLabradorOnline::StatePolicy)

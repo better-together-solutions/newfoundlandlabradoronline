@@ -10,6 +10,9 @@ DIAGRAMS = {
   'nlo_regions_schema_erd' => %w[BetterTogether::Geography::State BetterTogether::Geography::Region
                                  NewfoundlandLabradorOnline::RegionVersion
                                  NewfoundlandLabradorOnline::RegionIdentifier],
+  'nlo_settlements_schema_erd' => %w[BetterTogether::Geography::State BetterTogether::Geography::Settlement
+                                     NewfoundlandLabradorOnline::SettlementStatus
+                                     NewfoundlandLabradorOnline::SettlementIdentifier],
   'nlo_elections_schema_erd' => %w[BetterTogether::Geography::State BetterTogether::Geography::Region
                                    NewfoundlandLabradorOnline::Election
                                    NewfoundlandLabradorOnline::ElectoralContest NewfoundlandLabradorOnline::Candidacy
