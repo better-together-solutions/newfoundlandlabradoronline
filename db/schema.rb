@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_01_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_01_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -2838,6 +2838,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_120000) do
     t.uuid "jurisdiction_id"
     t.integer "seat_count"
     t.string "member_title"
+    t.string "body_kind", limit: 30, default: "legislature", null: false
     t.index ["community_id"], name: "index_legislature_details_on_community_id", unique: true
     t.index ["jurisdiction_type", "jurisdiction_id"], name: "index_legislature_details_on_jurisdiction"
   end

@@ -39,6 +39,32 @@ Settlements keep their boundary on the geography space, with `boundary_source` p
 and city GIS boundaries are a follow-up; they will be recorded as a differently sourced boundary, never overwriting a
 sourced one without a flag. Open Data NL dataset 265 holds points only, so it supplies names and ids, not shapes.
 
+## Councils and officials (phase 2)
+
+A council is a `LegislatureCommunity` whose `LegislatureDetail` has level `municipal`, the settlement as jurisdiction
+and a `body_kind`: `council`, `lsd_committee` (elected local service district committee, no council powers) or
+`legislature` (the default, for the House of Assembly). Councils are civic communities, so they stay out of generic
+discovery and the sitemap like other civic types.
+
+Offices use the generic legislature roles: `legislature_head` (title "Mayor" or "Chair"), `legislature_deputy_head`
+(title "Deputy Mayor") and `legislature_member` (title "Councillor", "Ward 3 Councillor"). A deputy mayor holds both the
+deputy role and a councillor role. Wards are `CommunitySeat` records; at-large councillors have no seat.
+
+`Civic::MunicipalCouncil` provisions a council and its seats. `Civic::MunicipalRosterLoader` reads
+`db/data/nl_municipal/councils.json` and creates people (one per settlement and name, identifier
+`nl-municipal-<settlement>-<name>`) and dated memberships. It also records the settlement's Statistics Canada CSD code
+and municipal status. Only names, offices and dates are loaded; no phone numbers or emails.
+
+```bash
+bin/dc-run bin/rails nlo:municipal:load_councils            # dry run, rolled back
+APPLY=1 bin/dc-run bin/rails nlo:municipal:load_councils    # writes
+```
+
+The packet holds Corner Brook (council page, results of 2025-10-02) and St. John's (the city's own council page,
+fetched 2026-11-01). Corner Brook start dates are the election date and approximate. St. John's start dates are not
+recorded, and its 2025 results are not yet verified against an official notice. A person who is both a councillor and
+an MHA has two records for now.
+
 ## Not in this phase
 
-Councils, officials, elections, bylaws, meetings and census data follow in later phases.
+Elections, bylaws, meetings and census data follow in later phases.

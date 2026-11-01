@@ -11,6 +11,10 @@ module NewfoundlandLabradorOnline
         'LegislatureCommunity' => {
           'legislature_member' => { en: 'Member of the legislature', es: 'Miembro de la legislatura',
                                     fr: 'Membre de la législature' },
+          'legislature_head' => { en: 'Head of the legislature', es: 'Jefe de la legislatura',
+                                  fr: "Chef de l'assemblée" },
+          'legislature_deputy_head' => { en: 'Deputy head of the legislature', es: 'Jefe adjunto de la legislatura',
+                                         fr: "Chef adjoint de l'assemblée" },
           'legislature_speaker' => { en: 'Speaker', es: 'Presidente de la cámara', fr: "Président de l'assemblée" },
           'legislature_deputy_speaker' => { en: 'Deputy Speaker', es: 'Vicepresidente de la cámara',
                                             fr: "Vice-président de l'assemblée" },
