@@ -53,6 +53,20 @@
     </div>
   </div>
 
+  <% if @municipality.ward_boundaries.any? %>
+    <% located_map = ward_map(@municipality) %>
+    <section class="mt-4" id="municipality-ward-map" aria-label="<%= t('.ward_map_label', name: settlement.name) %>">
+      <h2 class="h5"><%= t('.ward_map') %></h2>
+      <%= render 'better_together/shared/map', map: located_map, types: [], boundary: nil, cluster: false,
+                 extra_controllers: %w[party-overlay],
+                 attributes: { 'data-party-overlay-overlays-value' => ward_overlays(@municipality, located_map).to_json } %>
+      <p class="small text-muted mt-2 mb-0" id="ward-map-source">
+        <%= t('.ward_map_source') %>
+        <%= link_to @municipality.ward_boundaries.first.authority, @municipality.ward_boundaries.first.portal_url, rel: 'noopener' %>
+      </p>
+    </section>
+  <% end %>
+
   <section class="card mt-4" id="council-members">
     <div class="card-body">
       <h2 class="h5 card-title"><%= t('.councillors') %></h2>

@@ -129,8 +129,9 @@ APPLY=1 bin/dc-run bin/rails nlo:municipal:load_ward_boundaries    # writes (loa
 
 The packet is `db/data/nl_municipal/st_johns_wards.geojson` (fetched 2026-11-01, five wards, checksum recorded). The
 five ward areas sum to 478.85 km2, matching the City Boundary layer (478.77 km2). The layer's only population field is
-`POP2001`, so the wards may predate the current by-law; compare with the by-law before relying on them for 2025. No
-page draws ward boundaries yet.
+`POP2001`, so the wards may predate the current by-law; compare with the by-law before relying on them for 2025. The municipality page draws the wards (id `municipality-ward-map`) between the leadership box and the councillors table
+once boundaries are loaded: one coloured, clickable area per ward (name and councillor in the popup), credited in the map
+attribution and in a source line (`ward-map-source`) that links the City's download portal.
 
 ## Not in this phase
 

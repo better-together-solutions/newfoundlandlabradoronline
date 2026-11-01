@@ -22,6 +22,7 @@ RSpec.describe 'Documentation screenshots for municipalities', :js, type: :featu
     end
     NewfoundlandLabradorOnline::Civic::MunicipalRosterLoader.new(apply: true).call
     NewfoundlandLabradorOnline::Civic::MunicipalElectionLoader.new(apply: true).call
+    NewfoundlandLabradorOnline::Civic::WardBoundaryLoader.new(apply: true).call
   end
 
   # scroll_to centres a target in the frame first, for sections below the fold.
@@ -51,6 +52,13 @@ RSpec.describe 'Documentation screenshots for municipalities', :js, type: :featu
 
     it 'captures the whole page' do
       expect(captured('municipality_show', callouts)).to all(be > 10_000)
+    end
+
+    it 'captures the ward map' do
+      callouts = [{ selector: '#municipality-ward-map', title: 'Ward map and source' }]
+      page.has_css?('#municipality-ward-map path.leaflet-interactive', count: 5, wait: 15)
+
+      expect(captured('municipality_show_ward_map', callouts, scroll_to: '#municipality-ward-map')).to all(be > 10_000)
     end
 
     it 'captures the council table' do

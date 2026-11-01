@@ -38,6 +38,21 @@ RSpec.describe 'Municipality pages', type: :request do
     expect(response.body).to include('Danny Breen', 'Ron Ellsworth', 'Ward 5', '15,216', '56.74%')
   end
 
+  it 'draws the ward map between leaders and councillors once boundaries are loaded', :aggregate_failures do
+    get "/#{locale}/e/municipalities/nl/st-john-s"
+    expect(response.body).not_to include('id="municipality-ward-map"')
+
+    NewfoundlandLabradorOnline::Civic::WardBoundaryLoader.new(apply: true).call
+    get "/#{locale}/e/municipalities/nl/st-john-s"
+
+    body = response.body
+    expect(body).to include('id="municipality-ward-map"', 'id="ward-map-source"', 'City of St. John&#39;s',
+                            'https://map.stjohns.ca/mapsrv/rest/services/Mapcentre/Administrative_Boundaries/MapServer')
+    expect(body.index('id="municipality-leaders"')).to be < body.index('id="municipality-ward-map"')
+    expect(body.index('id="municipality-ward-map"')).to be < body.index('id="council-members"')
+    expect(body.scan('data-party-overlay-overlays-value').size).to eq(1)
+  end
+
   it 'shows every contest of a municipal election, marking acclamations', :aggregate_failures do
     get "/#{locale}/e/elections/municipal/nl/st-john-s/2025"
 

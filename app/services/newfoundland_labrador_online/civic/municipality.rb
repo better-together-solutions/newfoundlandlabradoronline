@@ -61,6 +61,13 @@ module NewfoundlandLabradorOnline
                                         .sort_by { |office| sort_key(office) }
       end
 
+      # Ward boundaries on the council's seats, in seat order (empty when none has been loaded).
+      def ward_boundaries
+        @ward_boundaries ||= SeatBoundary.joins(:community_seat).where(community_seats: { community_id: council.id })
+                                         .where.not(boundary: nil).includes(:community_seat)
+                                         .sort_by { |boundary| boundary.community_seat.position }
+      end
+
       # The council's elections, newest first, each with its contests loaded.
       def elections
         @elections ||= Election.where(community: council).latest_first

@@ -249,6 +249,9 @@ en:
         status_unknown: Status not recorded
         unknown: Not recorded
         vacant: Vacant
+        ward_map: Wards
+        ward_map_label: Map of %{name} wards
+        ward_map_source: Ward boundaries from the
       statuses:
         city: City
         inuit_community_government: Inuit community government

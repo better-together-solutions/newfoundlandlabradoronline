@@ -250,6 +250,9 @@ fr:
         status_unknown: Statut non consigné
         unknown: Non consigné
         vacant: Vacant
+        ward_map: Quartiers
+        ward_map_label: Carte des quartiers de %{name}
+        ward_map_source: Limites des quartiers fournies par la
       statuses:
         city: Ville
         inuit_community_government: Gouvernement communautaire inuit

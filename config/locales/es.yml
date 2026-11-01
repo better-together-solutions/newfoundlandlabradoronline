@@ -250,6 +250,9 @@ es:
         status_unknown: Estatus sin registrar
         unknown: Sin registrar
         vacant: Vacante
+        ward_map: Distritos municipales
+        ward_map_label: Mapa de los distritos municipales de %{name}
+        ward_map_source: Límites de los distritos tomados de la
       statuses:
         city: Ciudad
         inuit_community_government: Gobierno comunitario inuit
