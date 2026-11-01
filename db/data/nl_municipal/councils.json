@@ -1,0 +1,175 @@
+{
+  "_comment": "Municipal councils for the exemplar cities. Names, offices and dates only; no contact details. Start dates for Corner Brook are the 2025-10-02 election date (approximate). St. John's start dates are not recorded: the roster is the city's own Mayor and Council page fetched 2026-11-01 and the 2025 results are not yet verified against an official notice.",
+  "councils": [
+    {
+      "settlement": "corner-brook",
+      "statcan_csd": "1005018",
+      "municipal_status": "city",
+      "status_authority": "Municipal Directory, Department of Municipal and Community Affairs (as of 2026-03-16)",
+      "status_source_url": "https://www.gov.nl.ca/mca/files/Newfoundland-and-Labrador-Directory-of-Towns-ICGs-and-Cities-as-of-March-16-2026.pdf",
+      "council_name": "Corner Brook City Council",
+      "body_kind": "council",
+      "seat_count": 7,
+      "member_title": "Councillor",
+      "source_url": "https://www.cornerbrook.com/corner-brook-city-council/",
+      "as_of": "2026-11-01",
+      "seats": [],
+      "officials": [
+        {
+          "name": "Linda Chaisson",
+          "role": "head",
+          "title": "Mayor",
+          "from": "2025-10-02"
+        },
+        {
+          "name": "Pam Keeping",
+          "role": "deputy_head",
+          "title": "Deputy Mayor",
+          "from": "2025-10-02"
+        },
+        {
+          "name": "Pam Keeping",
+          "role": "member",
+          "title": "Councillor",
+          "from": "2025-10-02"
+        },
+        {
+          "name": "Donna Luther",
+          "role": "member",
+          "title": "Councillor",
+          "from": "2025-10-02"
+        },
+        {
+          "name": "Donna Wheeler",
+          "role": "member",
+          "title": "Councillor",
+          "from": "2025-10-02"
+        },
+        {
+          "name": "Steve Perchard",
+          "role": "member",
+          "title": "Councillor",
+          "from": "2025-10-02"
+        },
+        {
+          "name": "Sherry Dean",
+          "role": "member",
+          "title": "Councillor",
+          "from": "2025-10-02"
+        },
+        {
+          "name": "Eddie Kennedy",
+          "role": "member",
+          "title": "Councillor",
+          "from": "2025-10-02"
+        }
+      ]
+    },
+    {
+      "settlement": "st-john-s",
+      "municipal_status": "city",
+      "status_authority": "Municipal Directory, Department of Municipal and Community Affairs (as of 2026-03-16)",
+      "status_source_url": "https://www.gov.nl.ca/mca/files/Newfoundland-and-Labrador-Directory-of-Towns-ICGs-and-Cities-as-of-March-16-2026.pdf",
+      "council_name": "St. John's City Council",
+      "body_kind": "council",
+      "seat_count": 11,
+      "member_title": "Councillor",
+      "source_url": "https://www.stjohns.ca/your-government/mayor-and-council/",
+      "as_of": "2026-11-01",
+      "seats": [
+        {
+          "name": "Ward 1",
+          "kind": "at_large",
+          "position": 1
+        },
+        {
+          "name": "Ward 2",
+          "kind": "at_large",
+          "position": 2
+        },
+        {
+          "name": "Ward 3",
+          "kind": "at_large",
+          "position": 3
+        },
+        {
+          "name": "Ward 4",
+          "kind": "at_large",
+          "position": 4
+        },
+        {
+          "name": "Ward 5",
+          "kind": "at_large",
+          "position": 5
+        }
+      ],
+      "officials": [
+        {
+          "name": "Danny Breen",
+          "role": "head",
+          "title": "Mayor"
+        },
+        {
+          "name": "Ron Ellsworth",
+          "role": "deputy_head",
+          "title": "Deputy Mayor"
+        },
+        {
+          "name": "Ron Ellsworth",
+          "role": "member",
+          "title": "Councillor"
+        },
+        {
+          "name": "Jill Bruce",
+          "role": "member",
+          "title": "Ward 1 Councillor",
+          "seat": "Ward 1"
+        },
+        {
+          "name": "Brenda Halley",
+          "role": "member",
+          "title": "Ward 2 Councillor",
+          "seat": "Ward 2"
+        },
+        {
+          "name": "Greg Noseworthy",
+          "role": "member",
+          "title": "Ward 3 Councillor",
+          "seat": "Ward 3"
+        },
+        {
+          "name": "Tom Davis",
+          "role": "member",
+          "title": "Ward 4 Councillor",
+          "seat": "Ward 4"
+        },
+        {
+          "name": "Donnie Earle",
+          "role": "member",
+          "title": "Ward 5 Councillor",
+          "seat": "Ward 5"
+        },
+        {
+          "name": "Kate Cadigan",
+          "role": "member",
+          "title": "Councillor-at-Large"
+        },
+        {
+          "name": "Lynn Hammond",
+          "role": "member",
+          "title": "Councillor-at-Large"
+        },
+        {
+          "name": "Sandy Hickman",
+          "role": "member",
+          "title": "Councillor-at-Large"
+        },
+        {
+          "name": "Nikita Ryall",
+          "role": "member",
+          "title": "Councillor-at-Large"
+        }
+      ]
+    }
+  ]
+}
