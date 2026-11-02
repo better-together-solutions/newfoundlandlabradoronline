@@ -5,11 +5,6 @@ module NewfoundlandLabradorOnline
   module MunicipalitiesHelper
     WARD_COLORS = %w[#e07b39 #3b8ea5 #7a9e3f #a259a2 #c9a227].freeze
 
-    # The council's public social accounts, shown with the municipality's contact details.
-    def municipality_social_accounts(municipality)
-      municipality.council.social_media_accounts.privacy_public.order(:platform_name).to_a
-    end
-
     def ward_map(municipality)
       identifier = "wards-#{municipality.settlement.identifier}"
       NewfoundlandLabradorOnline::WardMap.new(identifier:)

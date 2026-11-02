@@ -25,9 +25,9 @@ namespace :nlo do
       puts "Missing councils: #{result.missing_councils.join(', ')}" if result.missing_councils.any?
     end
 
-    desc 'Load municipal social accounts from db/data/nl_municipal onto council contacts (dry run unless APPLY=1)'
-    task load_social_accounts: :environment do
-      loader = NewfoundlandLabradorOnline::Civic::MunicipalSocialAccountLoader
+    desc 'Load municipal organisational contact details from db/data/nl_municipal (dry run unless APPLY=1)'
+    task load_contacts: :environment do
+      loader = NewfoundlandLabradorOnline::Civic::MunicipalContactLoader
       path = ENV['PACKET'] ? Pathname.new(ENV['PACKET']) : loader::DEFAULT_PATH
       apply = ENV['APPLY'] == '1'
       result = loader.new(path:, apply:).call

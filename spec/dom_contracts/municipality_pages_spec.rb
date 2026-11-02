@@ -38,17 +38,18 @@ RSpec.describe 'Municipality pages', type: :request do
     expect(response.body).to include('Danny Breen', 'Ron Ellsworth', 'Ward 5', '15,216', '56.74%')
   end
 
-  it 'shows the council social accounts as contact details once loaded', :aggregate_failures do
+  it 'shows the council contact details through the CE partials once loaded', :aggregate_failures do
     get "/#{locale}/e/municipalities/nl/corner-brook"
     expect(response.body).not_to include('id="municipality-contact"')
 
-    NewfoundlandLabradorOnline::Civic::MunicipalSocialAccountLoader.new(apply: true).call
+    NewfoundlandLabradorOnline::Civic::MunicipalContactLoader.new(apply: true).call
     get "/#{locale}/e/municipalities/nl/corner-brook"
 
     body = response.body
-    expect(body).to include('id="municipality-contact"', 'id="municipality-social-accounts"',
-                            'href="https://www.youtube.com/@cityofcornerbrook6478"', 'rel="noopener noreferrer"',
-                            'fa-youtube', 'aria-hidden="true"', '(opens in a new tab)')
+    expect(body).to include('id="municipality-contact"', 'contactable-addresses', 'contactable-phone-numbers',
+                            'contactable-email-addresses', 'contactable-social-media-links', '5 Park Street',
+                            'A2H 6E1', 'href="tel:709-637-1500"', 'Report an issue (24/7)', 'city.hall@cornerbrook.com',
+                            'href="https://www.youtube.com/@cityofcornerbrook6478"', 'rel="noopener"')
     expect(body.index('id="municipality-leaders"')).to be < body.index('id="municipality-contact"')
     expect(body.index('id="municipality-contact"')).to be < body.index('id="council-members"')
   end

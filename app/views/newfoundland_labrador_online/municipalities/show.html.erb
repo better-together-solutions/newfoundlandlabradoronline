@@ -69,23 +69,12 @@
     </section>
   <% end %>
 
-  <% social_accounts = municipality_social_accounts(@municipality) %>
-  <% if social_accounts.any? %>
+  <% contact_details = render_contact_details(@municipality.council) %>
+  <% if strip_tags(contact_details).squish.present? %>
     <section class="card mt-4" id="municipality-contact">
       <div class="card-body">
         <h2 class="h5 card-title"><%= t('.contact') %></h2>
-        <ul class="list-unstyled mb-0" id="municipality-social-accounts">
-          <% social_accounts.each do |account| %>
-            <li id="<%= dom_id(account, :social) %>">
-              <%= link_to account.url, rel: 'noopener noreferrer', target: '_blank',
-                          class: 'd-inline-flex align-items-center gap-2' do %>
-                <i class="<%= social_media_icon_class(account.platform_name) %>" aria-hidden="true"></i>
-                <span><%= account.platform_name %><% if account.handle.present? %> <span class="text-muted"><%= account.handle %></span><% end %></span>
-                <span class="visually-hidden"><%= t('.opens_new_tab') %></span>
-              <% end %>
-            </li>
-          <% end %>
-        </ul>
+        <%= contact_details %>
       </div>
     </section>
   <% end %>

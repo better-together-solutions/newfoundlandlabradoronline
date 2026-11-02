@@ -1,11 +1,37 @@
 {
-  "accounts": [
+  "contacts": [
     {
       "settlement": "corner-brook",
-      "platform": "YouTube",
-      "handle": "@cityofcornerbrook6478",
-      "url": "https://www.youtube.com/@cityofcornerbrook6478",
-      "source_url": "https://www.youtube.com/@cityofcornerbrook6478"
+      "source_url": "https://www.cornerbrook.com/contact/",
+      "addresses": [
+        {
+          "label": "main",
+          "line1": "City of Corner Brook, 5 Park Street",
+          "line2": "P.O. Box 1080",
+          "city_name": "Corner Brook",
+          "state_province_name": "Newfoundland and Labrador",
+          "postal_code": "A2H 6E1",
+          "country_name": "Canada",
+          "physical": true,
+          "postal": true,
+          "primary_flag": true
+        }
+      ],
+      "phone_numbers": [
+        { "number": "709-637-1500", "label": "work", "primary_flag": true },
+        { "number": "709-637-1666", "label": "Report an issue (24/7)" },
+        { "number": "709-637-1625", "label": "fax" }
+      ],
+      "email_addresses": [
+        { "email": "city.hall@cornerbrook.com", "label": "work", "primary_flag": true },
+        { "email": "tourism@cornerbrook.com", "label": "Tourism" },
+        { "email": "business@cornerbrook.com", "label": "Business" }
+      ],
+      "social_media_accounts": [
+        { "platform_name": "Facebook", "handle": "CityofCornerBrook", "url": "https://www.facebook.com/CityofCornerBrook/" },
+        { "platform_name": "Instagram", "handle": "cornerbrooknl", "url": "https://www.instagram.com/cornerbrooknl" },
+        { "platform_name": "YouTube", "handle": "@cityofcornerbrook6478", "url": "https://www.youtube.com/@cityofcornerbrook6478" }
+      ]
     }
   ]
 }

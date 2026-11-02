@@ -4,11 +4,16 @@ require 'json'
 
 module NewfoundlandLabradorOnline
   module Civic
-    # Attaches a municipality's public social accounts (CE SocialMediaAccount) to its council's contact detail, from
-    # an offline packet (db/data/nl_municipal). A dry run (the default) rolls everything back, so the counts are what
-    # an apply would do. Idempotent: accounts are matched on council and platform.
-    class MunicipalSocialAccountLoader
-      DEFAULT_PATH = Rails.root.join('db/data/nl_municipal/social_accounts.json')
+    # Loads a municipality's published organisational contact details (addresses, phone numbers, email addresses and
+    # social accounts, all CE records) onto its council's contact detail, from an offline packet
+    # (db/data/nl_municipal). Organisation details only, never individual staff or councillors. A dry run (the
+    # default) rolls everything back, so the counts are what an apply would do. Idempotent: each record is matched on
+    # its natural key, and a changed value updates in place. Everything loaded is public.
+    class MunicipalContactLoader
+      DEFAULT_PATH = Rails.root.join('db/data/nl_municipal/contact_details.json')
+      # Association on the contact detail => the attribute that identifies a record within it.
+      KINDS = { 'addresses' => 'line1', 'phone_numbers' => 'number', 'email_addresses' => 'email',
+                'social_media_accounts' => 'platform_name' }.freeze
       Result = Struct.new(:created, :updated, :unchanged, :missing_councils, keyword_init: true)
 
       def initialize(path: DEFAULT_PATH, apply: false)
@@ -18,9 +23,9 @@ module NewfoundlandLabradorOnline
       end
 
       def call
-        entries = JSON.parse(File.read(@path)).fetch('accounts')
+        entries = JSON.parse(File.read(@path)).fetch('contacts')
         ActiveRecord::Base.transaction do
-          Civic.in_platform_zone { entries.each { |entry| load_account(entry) } }
+          Civic.in_platform_zone { entries.each { |entry| load_contact(entry) } }
           raise ActiveRecord::Rollback unless @apply
         end
         @result
@@ -28,24 +33,28 @@ module NewfoundlandLabradorOnline
 
       private
 
-      def load_account(entry)
-        council = council_for(entry.fetch('settlement'))
-        return @result.missing_councils << entry.fetch('settlement') unless council
+      def load_contact(entry)
+        slug = entry.fetch('settlement')
+        council = council_for(slug)
+        return @result.missing_councils << slug unless council
 
-        accounts = council.contact_detail.social_media_accounts
-        account = accounts.find_or_initialize_by(platform_name: entry.fetch('platform'))
-        label = "#{entry.fetch('settlement')}/#{account.platform_name}"
-        account.assign_attributes(handle: entry['handle'], url: entry.fetch('url'), privacy: 'public')
-        record(account, label)
+        KINDS.each do |kind, key|
+          entry.fetch(kind, []).each { |attrs| upsert(council.contact_detail.public_send(kind), key, attrs, slug) }
+        end
       end
 
-      def record(account, label)
-        bucket = if account.new_record? then :created
-                 elsif account.changed? then :updated
-                 else :unchanged
-                 end
-        account.save! unless bucket == :unchanged
-        @result[bucket] << label
+      def upsert(records, key, attrs, slug)
+        record = records.find_or_initialize_by(key => attrs.fetch(key))
+        record.assign_attributes(attrs.merge('privacy' => 'public'))
+        bucket = bucket_for(record)
+        record.save! unless bucket == :unchanged
+        @result[bucket] << "#{slug}/#{attrs.fetch(key)}"
+      end
+
+      def bucket_for(record)
+        return :created if record.new_record?
+
+        record.changed? ? :updated : :unchanged
       end
 
       def council_for(slug)
