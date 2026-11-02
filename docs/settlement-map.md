@@ -75,3 +75,11 @@ can be a sealed module namespace. Scripts are served from this origin, so no CSP
 
 500 items per type. Items inside the stored boundary but not placed in the settlement by the address hierarchy
 resolver are not found yet; run the hierarchy resolution or add a containment query when boundaries exist.
+
+## Framing and pins
+
+- The settlement map fits the whole drawn boundary (with any pins) through the `fit-boundary` Stimulus controller.
+  CE's map controller zooms to a lone pin, which cut larger boundaries off (St. John's); the controller refits after
+  the map is ready. `spec/features/settlement_map_fit_spec.rb` checks the visible bounds contain the boundary.
+- Listing maps (`listing_map` helper) draw no pins when the records are drawn as coloured areas (`overlay_for`), as on
+  the district map. Pass `pins: true` to bring them back, or `pins: false` to hide them on any listing.

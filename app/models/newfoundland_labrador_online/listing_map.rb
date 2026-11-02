@@ -9,10 +9,16 @@ module NewfoundlandLabradorOnline
     MIN_PART_SHARE = 0.0005
     COORDINATE_DECIMALS = 3 # about 100 m, enough for an overview map and a fraction of the payload
 
-    attr_accessor :records, :url_for, :popup_body, :tolerance, :overlay_for
+    attr_accessor :records, :url_for, :popup_body, :tolerance, :overlay_for, :pins
+
+    # Pins are hidden when the records are drawn as coloured areas (the pins would sit on top of the polygons), unless
+    # pins is set explicitly to true. Set pins to false to hide them on any listing.
+    def pins?
+      pins.nil? ? overlay_for.nil? : pins
+    end
 
     def leaflet_points
-      @leaflet_points ||= records.filter_map { |record| point_for(record) }
+      @leaflet_points ||= pins? ? records.filter_map { |record| point_for(record) } : []
     end
 
     def spaces

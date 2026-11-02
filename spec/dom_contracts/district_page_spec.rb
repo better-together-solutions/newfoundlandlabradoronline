@@ -75,24 +75,24 @@ RSpec.describe 'Electoral district page DOM contract', type: :request do
   end
 
   context 'with the listing map' do
-    let(:points) do
+    let(:points) { JSON.parse(map_value('better_together--map-spaces')) }
+    let(:overlays) { JSON.parse(map_value('party-overlay-overlays')) }
+
+    def map_value(name)
       get "/#{locale}/e/districts/provincial/nl"
-      JSON.parse(CGI.unescapeHTML(response.body[/data-better_together--map-spaces-value="([^"]*)"/, 1]))
-    end
-    let(:popup) { points.first['popup_html'] }
-
-    it 'has a pin per district' do
-      expect(points.size).to eq(2)
+      CGI.unescapeHTML(response.body[/data-#{name}-value="([^"]*)"/, 1])
     end
 
-    it 'titles and describes each pin in its popup' do
-      expect(popup).to include('<h3', '/e/districts/provincial/nl/nl-ped-corner-brook', 'km²',
-                               'Provincial electoral district')
+    it 'draws no pins over the coloured areas' do
+      expect(points).to eq([])
     end
 
-    it 'draws the outlines' do
-      points
-      expect(response.body).to include('data-party-overlay-overlays-value')
+    it 'draws an area per district' do
+      expect(overlays.size).to eq(2)
+    end
+
+    it 'titles and describes each area in its popup' do
+      expect(overlays.pluck('popup').join).to include('/e/districts/provincial/nl/nl-ped-corner-brook', 'km²')
     end
   end
 

@@ -7,17 +7,17 @@ module NewfoundlandLabradorOnline
 
     # kind names the listing ('districts', 'settlements'); url_for maps a record to its page; popup_body maps a record
     # to the HTML under the popup title (the default shows the record type and a description excerpt). overlay_for maps
-    # a record to { color:, popup: } to draw its area filled in that colour.
+    # a record to { color:, popup: } to draw its area filled in that colour; those maps show no pins unless pins: true.
+    # pins: false hides the pins on any listing.
     # rubocop:disable-next Metrics/ParameterLists
-    def listing_map(records, kind:, url_for: nil, popup_body: nil, tolerance: DEFAULT_TOLERANCE, overlay_for: nil)
+    def listing_map(records, kind:, url_for: nil, popup_body: nil, tolerance: DEFAULT_TOLERANCE, overlay_for: nil,
+                    pins: nil)
       list = records.to_a
       ActiveRecord::Associations::Preloader.new(records: list, associations: :space).call
       NewfoundlandLabradorOnline::ListingMap.find_or_initialize_by(identifier: "listing-#{kind}").tap do |map|
-        map.records = list
-        map.tolerance = tolerance
-        map.url_for = url_for || ->(record) { polymorphic_path(record, locale: I18n.locale) }
-        map.popup_body = popup_body || method(:default_popup_body)
-        map.overlay_for = overlay_for
+        map.assign_attributes(records: list, tolerance:, overlay_for:, pins:,
+                              url_for: url_for || ->(record) { polymorphic_path(record, locale: I18n.locale) },
+                              popup_body: popup_body || method(:default_popup_body))
       end
     end
 
