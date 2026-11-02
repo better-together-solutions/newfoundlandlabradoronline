@@ -10,7 +10,7 @@ RSpec.describe NewfoundlandLabradorOnline::Civic::WardBoundaryLoader do
     NewfoundlandLabradorOnline::Civic::MunicipalRosterLoader.new(path: roster_path, apply: true).call
   end
 
-  after { Dir[Rails.root.join('tmp/ward_spec_*.json')].each { |file| FileUtils.rm_f(file) } }
+  after { Dir[Rails.root.join("tmp/ward_spec_#{Process.pid}_*.json")].each { |file| FileUtils.rm_f(file) } }
 
   let!(:settlement) { create(:geography_settlement, identifier: 'st-john-s', name: "St. John's") }
   let(:square) do
@@ -24,7 +24,9 @@ RSpec.describe NewfoundlandLabradorOnline::Civic::WardBoundaryLoader do
   end
 
   def write(packet)
-    Rails.root.join("tmp/ward_spec_#{SecureRandom.hex(4)}.json").tap { |file| File.write(file, packet.to_json) }
+    Rails.root.join("tmp/ward_spec_#{Process.pid}_#{SecureRandom.hex(4)}.json").tap do |file|
+      File.write(file, packet.to_json)
+    end
   end
 
   def packet(sha: 'a' * 64, seat: 'Ward 1')

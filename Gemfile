@@ -124,6 +124,8 @@ group :test do
   gem 'rubocop-rails'
   gem 'rubocop-rspec'
   gem 'rubocop-rspec_rails'
+  # Run specs across CPUs with one database per worker (prspec)
+  gem 'parallel_rspec'
   # RSpec for unit testing
   gem 'rspec'
   gem 'rspec-rebound'

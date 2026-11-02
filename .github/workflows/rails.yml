@@ -9,6 +9,7 @@ on: push
 jobs:
   rspec:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     services:
       postgres:
         image: postgis/postgis:latest
@@ -29,8 +30,13 @@ jobs:
           --health-retries 5
     env:
       RAILS_ENV: test
-      DATABASE_URL: "postgis://rails:password@localhost:5432/rails_test"
+      # config/database.yml appends the prspec worker number to the test database name, so
+      # connect by parts here: a DATABASE_URL would pin every worker to one shared database.
+      DB_HOST: localhost
+      DB_USERNAME: rails
+      DB_PASSWORD: password
       REDIS_URL: "redis://localhost:6379"
+      WORKERS: 4
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -45,12 +51,28 @@ jobs:
         run: google-chrome --version && chromedriver --version
       - name: Install libvips
         run: sudo apt-get update && sudo apt-get install -y -o Acquire::Retries=3 libvips42
-      # Add or replace database setup steps here
-      - name: Set up database schema
-        run: rm -f tmp/pids/server.pid && bundle exec rails db:schema:load
-      # Add or replace test runners here
-      - name: Run tests
-        run: rm -f tmp/pids/server.pid && bundle exec rspec
+      # Test data is disposable: trade durability for speed (all three settings reload on SIGHUP).
+      - name: Tune Postgres for tests
+        run: |
+          PGPASSWORD=password psql -h localhost -U rails -d postgres \
+            -c "ALTER SYSTEM SET fsync = off" \
+            -c "ALTER SYSTEM SET synchronous_commit = off" \
+            -c "ALTER SYSTEM SET full_page_writes = off" \
+            -c "SELECT pg_reload_conf()"
+      # One database per prspec worker: <name>_test, <name>_test2, ... each loaded from db/schema.rb.
+      # One process per worker, because db:parallel:prepare purges from a process that already holds
+      # a session on the first worker's database and fails with "being accessed by other users".
+      - name: Prepare parallel test databases
+        run: |
+          rm -f tmp/pids/server.pid
+          pids=()
+          for n in "" $(seq 2 "$WORKERS"); do
+            TEST_ENV_NUMBER=$n bundle exec rails db:create db:schema:load &
+            pids+=($!)
+          done
+          for pid in "${pids[@]}"; do wait "$pid"; done
+      - name: Run tests in parallel
+        run: rm -f tmp/pids/server.pid && bundle exec prspec spec
 
   rubocop:
     runs-on: ubuntu-latest
