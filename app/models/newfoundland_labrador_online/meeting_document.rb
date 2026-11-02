@@ -13,7 +13,7 @@ module NewfoundlandLabradorOnline
     validates :kind, inclusion: { in: KINDS }
     validates :format, inclusion: { in: FORMATS }
     validates :title, :url, presence: true
-    validates :url, format: { with: %r{\Ahttps://}, message: 'must be an https URL' }
+    validates :url, format: { with: %r{\Ahttps://\S+\z}, message: 'must be an https URL' }
     validates :url, uniqueness: { scope: %i[meeting_id kind format] }
   end
 end

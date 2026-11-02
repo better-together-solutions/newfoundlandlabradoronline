@@ -201,6 +201,7 @@ en:
         title: "%{name} municipal election %{year}"
     municipal_meetings:
       index:
+        all_meetings: All %{name} council meetings
         cancelled: Cancelled
         documents:
           additional: Additional document

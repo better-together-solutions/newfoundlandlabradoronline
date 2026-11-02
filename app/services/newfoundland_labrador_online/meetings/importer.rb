@@ -25,6 +25,8 @@ module NewfoundlandLabradorOnline
         council = council_community
         return missing(council) unless council
 
+        @settlement = council_settlement
+
         @meetings.each { |meeting| import(council, meeting) }
         @result
       end
@@ -36,11 +38,15 @@ module NewfoundlandLabradorOnline
         @result
       end
 
-      def council_community
-        settlement = BetterTogether::Geography::Settlement.friendly.find(@config.fetch('council'))
-        Civic::Municipality.for(settlement)&.council
+      def council_settlement
+        BetterTogether::Geography::Settlement.friendly.find(@config.fetch('council'))
       rescue ActiveRecord::RecordNotFound
         nil
+      end
+
+      def council_community
+        settlement = council_settlement
+        settlement && Civic::Municipality.for(settlement)&.council
       end
 
       def import(council, data)
@@ -55,17 +61,18 @@ module NewfoundlandLabradorOnline
       def write(council, data, meeting, checksum)
         Meeting.transaction do
           meeting ||= Meeting.new(source: @source_key, source_id: data[:source_id])
-          meeting.update!(attributes_for(council, data, checksum))
+          meeting.update!(attributes_for(council, data, checksum, meeting.details))
           sync_documents(meeting, data[:documents])
           meeting.update!(event: write_event(meeting, council, data))
         end
       end
 
-      def attributes_for(council, data, checksum)
+      def attributes_for(council, data, checksum, details)
         body = @config.fetch('bodies').fetch(data[:body_type]) { unknown_body(data[:body_type]) }
         { body: council, kind: body['kind'], body_key: body['key'], title: data[:title], starts_at: data[:starts_at],
           location: data[:location], status: status_for(data), portal_url: data[:portal_url],
-          source_checksum: checksum, fetched_at: Time.current }
+          source_checksum: checksum, fetched_at: Time.current,
+          details: details.merge('video_urls' => data[:video_urls]) }
       end
 
       def unknown_body(type)
@@ -91,17 +98,61 @@ module NewfoundlandLabradorOnline
         platform = BetterTogether::Platform.find_by!(host: true)
         event = BetterTogether::Event.find_or_initialize_by(platform:, source_id: "#{@source_key}:#{data[:source_id]}")
         event.assign_attributes(event_attributes(meeting, data))
+        event.attachment_block_ids = video_block_ids(platform, meeting)
+        locate(event)
         event.event_hosts.build(host: council) if event.new_record?
         event.save!
         event.categories = [category_for(platform, data[:body_type])]
         event
       end
 
+      # Located at the council's city hall when the source configures an address (its geocoded point must fall inside
+      # the settlement boundary), else at the settlement itself, so the event lists under the settlement either way.
+      def locate(event)
+        address = @config['address']
+        if address
+          event.address_data = address.to_json
+        else
+          event.settlement_identifier = @settlement.identifier
+        end
+      end
+
+      # The settlement name leads the title so the event reads as a council meeting in any event list.
       def event_attributes(meeting, data)
-        { name: meeting.title.presence || data[:body_type], starts_at: meeting.starts_at,
+        { name: "#{@settlement.name}: #{meeting.title.presence || data[:body_type]}", starts_at: meeting.starts_at,
           duration_minutes: DEFAULT_DURATION_MINUTES, timezone: @config.fetch('time_zone'), privacy: 'public',
           status: meeting.cancelled? ? 'cancelled' : 'confirmed', source_updated_at: Time.current,
-          description: meeting.location.to_s }
+          description: description_html(meeting) }
+      end
+
+      # The meeting card (an Action Text attachment, so it carries the location and portal documents) and a link to
+      # the council's full meeting list. A recording is attached as a video block after this text (see video_block_ids).
+      def description_html(meeting)
+        card = ActionText::Attachment.from_attachable(meeting).to_html
+        "#{card}<p><a href=\"#{listing_path}\">#{ERB::Util.h(listing_label)}</a></p>"
+      end
+
+      def listing_path
+        code = Province.code_for(@settlement.state)
+        Rails.application.routes.url_helpers.newfoundland_labrador_online_municipality_meetings_path(
+          code, @settlement, locale: I18n.default_locale
+        )
+      end
+
+      def listing_label
+        I18n.t('newfoundland_labrador_online.municipal_meetings.index.all_meetings', name: @settlement.name)
+      end
+
+      # One platform video block per meeting recording, reused on every import.
+      def video_block_ids(platform, meeting)
+        url = Array(meeting.details['video_urls']).first
+        return [] unless url
+
+        block = BetterTogether::Content::VideoBlock.find_or_initialize_by(platform:,
+                                                                          id: meeting.details['video_block_id'])
+        block.update!(video_url: url, caption: meeting.title) unless block.persisted? && block.video_url == url
+        meeting.update!(details: meeting.details.merge('video_block_id' => block.id))
+        [block.id]
       end
 
       def category_for(platform, body_type)

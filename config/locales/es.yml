@@ -202,6 +202,7 @@ es:
         title: Elección municipal de %{name}, %{year}
     municipal_meetings:
       index:
+        all_meetings: Todas las reuniones del concejo de %{name}
         cancelled: Cancelada
         documents:
           additional: Documento adicional

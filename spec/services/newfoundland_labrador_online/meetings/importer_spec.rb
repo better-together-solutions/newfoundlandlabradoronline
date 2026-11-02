@@ -40,6 +40,49 @@ RSpec.describe NewfoundlandLabradorOnline::Meetings::Importer do
     expect(event.event_hosts.map(&:host)).to eq([council])
   end
 
+  it 'puts the settlement name first in the event title' do
+    import_meetings
+
+    expect(meeting.event.name).to eq('Corner Brook: Regular Council Meeting')
+  end
+
+  it 'describes the event with documents and a link to all council meetings, and embeds the recording',
+     :aggregate_failures do
+    import_meetings
+    event = meeting.event.reload
+    html = event.description.body.to_s
+
+    expect(html).to include('Council Chambers', 'DocumentId=103', '/en/e/municipalities/nl/corner-brook/meetings',
+                            'All Corner Brook council meetings')
+    video = event.description.body.attachables.grep(BetterTogether::Content::VideoBlock).sole
+    expect(video.attachment_embed_url).to eq('https://www.youtube-nocookie.com/embed/abc123xyz00')
+  end
+
+  it 'embeds the meeting as an attachment whose rendering does not link back to the event', :aggregate_failures do
+    import_meetings
+    body = meeting.event.reload.description.body
+
+    expect(body.attachables).to include(meeting)
+    expect(body.to_s).to include('meeting-attachment')
+    expect(body.to_s).not_to include("/events/#{meeting.event.slug}")
+    expect(body.to_trix_html).to include('meeting-embed-preview')
+  end
+
+  it 'locates the event at the settlement so it lists under the settlement events', :aggregate_failures do
+    import_meetings
+
+    expect(meeting.event.settlement_identifier).to eq(settlement.identifier)
+    expect(BetterTogether::Event.located_in(settlement)).to include(meeting.event)
+  end
+
+  it 'reuses the video block on later imports' do
+    import_meetings
+    changed = fixture_meetings.map { |m| m[:source_id].end_with?('001') ? m.merge(location: 'Room 5') : m }
+    import_meetings(meetings: changed)
+
+    expect(BetterTogether::Content::VideoBlock.count).to eq(1)
+  end
+
   it 'tags events with a meeting category per body, with icon and colour', :aggregate_failures do
     import_meetings
 

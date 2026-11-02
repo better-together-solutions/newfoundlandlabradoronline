@@ -49,11 +49,10 @@ RSpec.describe 'Documentation screenshots for council meetings', :js, type: :fea
   it 'captures the council as host on its event page' do
     meeting = NewfoundlandLabradorOnline::Meeting.find_by!(source_id: '11111111-aaaa-4aaa-8aaa-000000000001')
     visit better_together.event_path(meeting.event, locale:)
-    sel = '.municipality-host-card'
+    callouts = [{ selector: '#event-description', title: 'Documents, all-meetings link and the recording' },
+                { selector: '.municipality-host-card', title: 'Council host card links to the municipality page' }]
 
-    callouts = [{ selector: sel, title: 'Council host card links to the municipality page' }]
-
-    expect(captured('council_meeting_event_host', callouts, scroll_to: sel)).to all(be > 10_000)
+    expect(captured('council_meeting_event_host', callouts, scroll_to: '.municipality-host-card')).to all(be > 10_000)
   end
 end
 # rubocop:enable RSpec/MultipleExpectations

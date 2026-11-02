@@ -32,7 +32,7 @@ ActiveSupport::Reloader.to_prepare do
   # Video and image blocks are accepted in rich text and rendered while public (CE's attachable registry); the
   # scrubber keeps the video iframe.
   BetterTogether::ContentSecurity::AttachableRegistry.register(
-    'BetterTogether::Content::VideoBlock', 'BetterTogether::Content::Image'
+    'BetterTogether::Content::VideoBlock', 'BetterTogether::Content::Image', 'NewfoundlandLabradorOnline::Meeting'
   )
   ActionText::ContentHelper.scrubber = BetterTogether::ContentSecurity::VideoEmbedScrubber.new
 end
