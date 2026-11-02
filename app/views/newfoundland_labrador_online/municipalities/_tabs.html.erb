@@ -1,0 +1,10 @@
+<ul class="nav nav-tabs mb-4" id="municipality-tabs">
+  <li class="nav-item">
+    <%= link_to t('newfoundland_labrador_online.municipalities.show.tab_overview'), newfoundland_labrador_online_municipality_path(province_code(settlement), settlement, locale: I18n.locale),
+                class: "nav-link #{'active' if active == :overview}", id: 'municipality-tab-overview', 'aria-current': (active == :overview ? 'page' : nil) %>
+  </li>
+  <li class="nav-item">
+    <%= link_to t('newfoundland_labrador_online.municipalities.show.tab_meetings'), newfoundland_labrador_online_municipality_meetings_path(province_code(settlement), settlement, locale: I18n.locale),
+                class: "nav-link #{'active' if active == :meetings}", id: 'municipality-tab-meetings', 'aria-current': (active == :meetings ? 'page' : nil) %>
+  </li>
+</ul>

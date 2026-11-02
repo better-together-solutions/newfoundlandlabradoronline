@@ -1,0 +1,18 @@
+<%# locals: (host:, size: 32, show_name: true)%>
+<%# NLO override of the gem partial: a municipal council links to its municipality page (the electoral side), not to the generic community page. %>
+<% council_settlement = host.try(:municipal_settlement) %>
+<% host_path = council_settlement && main_app.newfoundland_labrador_online_municipality_path(NewfoundlandLabradorOnline::Province.code_for(council_settlement.state), council_settlement, locale: I18n.locale) %>
+<% host_href = host_path || (policy(host).show? ? polymorphic_path(host) : nil) %>
+
+<span class="position-relative event-host d-inline-flex align-items-center gap-1 <%= dom_class(host, :host) %>" id="<%= dom_id(host, :host) %>" role="img" aria-label="<%= t('better_together.events.hosted_by') %>: <%= host.name %>">
+  <%= community_mark_tag(host, size: size, class: 'event-host-avatar', alt: host.name) %>
+  <% if show_name %>
+    <a class="text-decoration-none text-muted small stretched-link" href="<%= host_href %>" title="<%= t('better_together.events.hosted_by') %>: <%= host.name %>">
+      <%= host.name %>
+    </a>
+  <% else %>
+    <a class="stretched-link visually-hidden" href="<%= host_href %>">
+      <%= host.name %>
+    </a>
+  <% end %>
+</span>

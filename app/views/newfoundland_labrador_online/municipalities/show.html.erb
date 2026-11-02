@@ -13,6 +13,8 @@
     &middot; <%= link_to t('.settlement_page'), geography_settlement_path(settlement, locale: I18n.locale), id: 'municipality-settlement-link' %>
   </p>
 
+  <%= render 'newfoundland_labrador_online/municipalities/tabs', settlement: settlement, active: :overview %>
+
   <div class="row g-4">
     <div class="col-lg-6">
       <section class="card h-100" id="municipality-facts">

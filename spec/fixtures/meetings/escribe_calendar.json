@@ -1,0 +1,19 @@
+{"d":[
+ {"ID":"11111111-aaaa-4aaa-8aaa-000000000001","MeetingName":"Regular Council Meeting","MeetingType":"Regular Meeting",
+  "StartDate":"2026/10/26 19:00:07","EndDate":"2026/10/26 19:00:07","Location":"Council Chambers",
+  "Url":"https://pub-example.escribemeetings.com/Meeting.aspx?Id=11111111-aaaa-4aaa-8aaa-000000000001&Agenda=Agenda&lang=English",
+  "HasVideo":true,
+  "MeetingDocumentLink":[
+   {"Title":"Agenda Cover","Type":"AgendaCover","Format":".pdf","Url":"/FileStream.ashx?DocumentId=101"},
+   {"Title":"Agenda","Type":"Agenda","Format":".pdf","Url":"/FileStream.ashx?DocumentId=102"},
+   {"Title":"Minutes","Type":"PostMinutes","Format":".pdf","Url":"/FileStream.ashx?DocumentId=103"},
+   {"Title":"Minutes","Type":"PostMinutes","Format":"HTML","Url":"Meeting.aspx?Id=11111111-aaaa-4aaa-8aaa-000000000001&Agenda=PostMinutes&lang=English"},
+   {"Title":"Video","Type":"Video","Format":"Video","Url":"https://www.youtube.com/watch?v=abc123xyz00"},
+   {"Title":"Odd","Type":"Unknown","Format":".pdf","Url":"/FileStream.ashx?DocumentId=999"}]},
+ {"ID":"11111111-aaaa-4aaa-8aaa-000000000002","MeetingName":"Committee of the Whole - CANCELLED","MeetingType":"Committee of the Whole",
+  "StartDate":"2026/11/09 18:30:00","EndDate":"2026/11/09 18:30:00","Location":null,
+  "Url":"","HasVideo":false,"MeetingDocumentLink":[]},
+ {"ID":"11111111-aaaa-4aaa-8aaa-000000000003","MeetingName":"Planning &amp; Works","MeetingType":"Committee of the Whole",
+  "StartDate":"2026/09/14 18:30:00","EndDate":"2026/09/14 18:30:00","Location":"Room 2","Url":null,"HasVideo":false,
+  "MeetingDocumentLink":[{"Title":"Agenda","Type":"Agenda","Format":".pdf","Url":"http://insecure.example/x.pdf"}]}
+]}

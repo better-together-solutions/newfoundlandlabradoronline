@@ -51,6 +51,9 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
                                       as: :newfoundland_labrador_online_scoped_municipalities, constraints: province
       get 'municipalities/:province/:id', to: "#{municipalities}#show", as: :newfoundland_labrador_online_municipality,
                                           constraints: province
+      get 'municipalities/:province/:id/meetings', to: 'newfoundland_labrador_online/municipal_meetings#index',
+                                                   as: :newfoundland_labrador_online_municipality_meetings,
+                                                   constraints: province
       get 'elections/municipal/:province/:settlement/:year',
           to: 'newfoundland_labrador_online/municipal_elections#show',
           as: :newfoundland_labrador_online_municipal_election,

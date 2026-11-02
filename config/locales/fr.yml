@@ -200,6 +200,22 @@ fr:
           member: Membre
         source: Résultats tirés de
         title: Élection municipale de %{name}, %{year}
+    municipal_meetings:
+      index:
+        cancelled: Annulée
+        documents:
+          additional: Document supplémentaire
+          agenda: Ordre du jour
+          agenda_package: Dossier de l'ordre du jour
+          minutes: Procès-verbal
+        filter_label: Filtrer les réunions par type
+        filtered_empty: Aucune réunion ne correspond aux types sélectionnés.
+        heading: Réunions du conseil
+        none: Aucune réunion du conseil n'a encore été enregistrée.
+        opens_new_tab: "(s'ouvre dans un nouvel onglet)"
+        source: Les ordres du jour, les dossiers et les procès-verbaux sont publiés
+          par la municipalité sur son portail eScribe et s'ouvrent là-bas.
+        upcoming: À venir
     municipalities:
       card:
         link: Conseil, élus et élections
@@ -248,6 +264,8 @@ fr:
           donne une date d’assermentation.
         status_source: Source du statut
         status_unknown: Statut non consigné
+        tab_meetings: Réunions du conseil
+        tab_overview: Aperçu
         unknown: Non consigné
         vacant: Vacant
         ward_map: Quartiers

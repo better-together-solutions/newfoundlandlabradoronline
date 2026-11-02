@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_02_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_02_200000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -400,6 +400,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_100000) do
     t.string "icon", default: "fas fa-icons", null: false
     t.uuid "platform_id"
     t.string "privacy", limit: 50, default: "public", null: false
+    t.string "color"
     t.index ["identifier", "type", "platform_id"], name: "idx_bt_categories_on_identifier_type_platform_id", unique: true, where: "(platform_id IS NOT NULL)"
     t.index ["platform_id"], name: "index_better_together_categories_on_platform_id"
     t.index ["privacy"], name: "by_better_together_categories_privacy"
@@ -2852,6 +2853,42 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_100000) do
     t.index ["jurisdiction_type", "jurisdiction_id"], name: "index_legislature_details_on_jurisdiction"
   end
 
+  create_table "meeting_documents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "meeting_id", null: false
+    t.string "kind", null: false
+    t.string "format", null: false
+    t.string "title", null: false
+    t.string "url", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["meeting_id", "kind", "format", "url"], name: "idx_meeting_documents_unique", unique: true
+    t.index ["meeting_id"], name: "index_meeting_documents_on_meeting_id"
+  end
+
+  create_table "meetings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.uuid "body_id", null: false
+    t.uuid "event_id"
+    t.string "kind", default: "council", null: false
+    t.string "source", null: false
+    t.string "source_id", null: false
+    t.string "body_key"
+    t.string "title", null: false
+    t.datetime "starts_at", null: false
+    t.string "location"
+    t.string "status", default: "scheduled", null: false
+    t.string "portal_url"
+    t.jsonb "details", default: {}, null: false
+    t.string "source_checksum", limit: 64
+    t.datetime "fetched_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["body_id", "starts_at"], name: "index_meetings_on_body_id_and_starts_at"
+    t.index ["body_id"], name: "index_meetings_on_body_id"
+    t.index ["event_id"], name: "index_meetings_on_event_id", unique: true
+    t.index ["source", "source_id"], name: "index_meetings_on_source_and_source_id", unique: true
+  end
+
   create_table "membership_mandates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "lock_version", default: 0, null: false
     t.datetime "created_at", null: false
@@ -3300,6 +3337,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_100000) do
   add_foreign_key "electoral_contests", "community_seats"
   add_foreign_key "electoral_contests", "elections"
   add_foreign_key "legislature_details", "better_together_communities", column: "community_id"
+  add_foreign_key "meeting_documents", "meetings", on_delete: :cascade
+  add_foreign_key "meetings", "better_together_communities", column: "body_id"
+  add_foreign_key "meetings", "better_together_events", column: "event_id", on_delete: :nullify
   add_foreign_key "membership_mandates", "better_together_person_community_memberships", column: "membership_id"
   add_foreign_key "noticed_notifications", "better_together_platforms", column: "platform_id"
   add_foreign_key "political_parties", "better_together_communities", column: "community_id"
