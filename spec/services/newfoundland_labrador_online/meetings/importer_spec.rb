@@ -56,6 +56,9 @@ RSpec.describe NewfoundlandLabradorOnline::Meetings::Importer do
                             'All Corner Brook council meetings')
     video = event.description.body.attachables.grep(BetterTogether::Content::VideoBlock).sole
     expect(video.attachment_embed_url).to eq('https://www.youtube-nocookie.com/embed/abc123xyz00')
+    expect(video).to be_privacy_public
+    expect(event.description.body.to_s).to include('youtube-nocookie.com/embed/abc123xyz00')
+    expect(event.description.body.to_s).not_to include('under review')
   end
 
   it 'embeds the meeting as an attachment whose rendering does not link back to the event', :aggregate_failures do
