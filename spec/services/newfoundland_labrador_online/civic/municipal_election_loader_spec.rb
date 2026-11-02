@@ -11,7 +11,7 @@ RSpec.describe NewfoundlandLabradorOnline::Civic::MunicipalElectionLoader do
     NewfoundlandLabradorOnline::Civic::MunicipalRosterLoader.new(path: write(roster), apply: true).call
   end
 
-  after { Dir[Rails.root.join('tmp/municipal_spec_*.json')].each { |file| FileUtils.rm_f(file) } }
+  after { Dir[Rails.root.join("tmp/municipal_spec_#{Process.pid}_*.json")].each { |file| FileUtils.rm_f(file) } }
 
   let(:settlement) { create(:geography_settlement, name: 'Testville') }
   let(:roster) do
@@ -32,7 +32,9 @@ RSpec.describe NewfoundlandLabradorOnline::Civic::MunicipalElectionLoader do
   end
 
   def write(packet)
-    Rails.root.join("tmp/municipal_spec_#{SecureRandom.hex(4)}.json").tap { |file| File.write(file, packet.to_json) }
+    Rails.root.join("tmp/municipal_spec_#{Process.pid}_#{SecureRandom.hex(4)}.json").tap do |file|
+      File.write(file, packet.to_json)
+    end
   end
 
   def run(apply)
