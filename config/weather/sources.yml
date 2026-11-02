@@ -1,0 +1,18 @@
+# Weather sources and the settlements they cover. `adapter` is a key in BetterTogether::Weather::Registry.
+# `locations` maps a settlement identifier to the source's place code (`external_ref`), the climate station used
+# for history (`observation_station_ref`), and an optional `precip_station_ref` for stations that report no
+# precipitation (Corner Brook's automatic station reports none; no secondary station is chosen yet).
+environment_canada:
+  adapter: environment_canada
+  enabled: true
+  config:
+    language: en
+  locations:
+    corner-brook:
+      external_ref: NL/s0000221
+      observation_station_ref: '8401298'
+      time_zone: America/St_Johns
+    st-john-s:
+      external_ref: NL/s0000280
+      observation_station_ref: '8403505'
+      time_zone: America/St_Johns

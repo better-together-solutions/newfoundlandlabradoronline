@@ -11,7 +11,9 @@ gem 'aws-sdk-s3', require: false
 # Use the published version of better_together for production
 gem 'better_together', '~> 0.11.0',
     github: 'better-together-org/community-engine-rails',
-    ref: '47989ccfda0ce003bec7cdea7078aab7f17bf27f'
+    # Temporary: pinned to the head of community-engine-rails PR #2070 (settlement weather UI) until it merges.
+    # After the merge, repin to the merge commit on main.
+    ref: '1283e2e765d3d342f06878a3b2dba8b1a201c378'
 
 # Use the local development version of better_together
 # gem 'better_together', path: '/community-engine'

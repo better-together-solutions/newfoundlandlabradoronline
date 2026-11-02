@@ -14,6 +14,7 @@ development:
     - [platform_sync, 3]   # Federation platform sync queue
     - [low_priority, 3]   # Low priority work (boundary imports, notification cache warming)
     - [webhooks, 3]   # Outbound webhook delivery
+    - [weather, 3]   # Weather refresh and history backfill
 
 test:
   <<: *default
@@ -27,6 +28,7 @@ test:
     - [platform_sync, 3]   # Federation platform sync queue
     - [low_priority, 3]   # Low priority work (boundary imports, notification cache warming)
     - [webhooks, 3]   # Outbound webhook delivery
+    - [weather, 3]   # Weather refresh and history backfill
 
 production:
   <<: *default
@@ -40,3 +42,4 @@ production:
     - [newfoundland_labrador_online_production_platform_sync, 3]   # Federation platform sync queue
     - [newfoundland_labrador_online_production_low_priority, 3]   # Low priority work (boundary imports, notification cache warming)
     - [newfoundland_labrador_online_production_webhooks, 3]   # Outbound webhook delivery
+    - [newfoundland_labrador_online_production_weather, 3]   # Weather refresh and history backfill
