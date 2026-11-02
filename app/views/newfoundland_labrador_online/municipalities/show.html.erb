@@ -69,6 +69,16 @@
     </section>
   <% end %>
 
+  <% contact_details = render_contact_details(@municipality.council) %>
+  <% if strip_tags(contact_details).squish.present? %>
+    <section class="card mt-4" id="municipality-contact">
+      <div class="card-body">
+        <h2 class="h5 card-title"><%= t('.contact') %></h2>
+        <%= contact_details %>
+      </div>
+    </section>
+  <% end %>
+
   <section class="card mt-4" id="council-members">
     <div class="card-body">
       <h2 class="h5 card-title"><%= t('.councillors') %></h2>

@@ -71,8 +71,18 @@ RSpec.describe NewfoundlandLabradorOnline::Meetings::Importer do
     expect(body.to_trix_html).to include('meeting-embed-preview')
   end
 
-  it 'locates the event at the settlement so it lists under the settlement events', :aggregate_failures do
+  it 'locates the event at city hall when the source has an address', :aggregate_failures do
     import_meetings
+
+    address = meeting.event.location.location
+    expect(meeting.event.location.name).to eq('City Hall')
+    expect(address).to have_attributes(line1: '5 Park Street', postal_code: 'A2H 6E1', city_name: 'Corner Brook')
+  end
+
+  it 'locates the event at the settlement so it lists under the settlement events without an address',
+     :aggregate_failures do
+    config = meeting_config.except('address')
+    described_class.new(source_key: 'cornerbrook', config:, meetings: fixture_meetings, apply: true).call
 
     expect(meeting.event.settlement_identifier).to eq(settlement.identifier)
     expect(BetterTogether::Event.located_in(settlement)).to include(meeting.event)

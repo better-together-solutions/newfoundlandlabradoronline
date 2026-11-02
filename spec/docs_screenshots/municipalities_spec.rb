@@ -41,6 +41,15 @@ RSpec.describe 'Documentation screenshots for municipalities', :js, type: :featu
     expect(captured('municipalities_index', callouts)).to all(be > 10_000)
   end
 
+  it 'captures the Corner Brook contact details with phone, email, address and social accounts' do
+    NewfoundlandLabradorOnline::Civic::MunicipalContactLoader.new(apply: true).call
+    visit "/#{locale}/e/municipalities/nl/corner-brook"
+
+    callouts = [{ selector: '#municipality-contact', title: 'City hall contact details from the CE partials' }]
+
+    expect(captured('municipality_contact', callouts, scroll_to: '#municipality-contact')).to all(be > 10_000)
+  end
+
   context 'with the St. John\'s municipality page' do
     let(:callouts) do
       [['#municipality-facts', 'Facts and status source'], ['#municipality-leaders', 'Mayor and deputy mayor'],

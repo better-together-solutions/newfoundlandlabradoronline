@@ -25,6 +25,17 @@ namespace :nlo do
       puts "Missing councils: #{result.missing_councils.join(', ')}" if result.missing_councils.any?
     end
 
+    desc 'Load municipal organisational contact details from db/data/nl_municipal (dry run unless APPLY=1)'
+    task load_contacts: :environment do
+      loader = NewfoundlandLabradorOnline::Civic::MunicipalContactLoader
+      path = ENV['PACKET'] ? Pathname.new(ENV['PACKET']) : loader::DEFAULT_PATH
+      apply = ENV['APPLY'] == '1'
+      result = loader.new(path:, apply:).call
+      puts "#{apply ? 'Applied' : 'Dry run'}: created=#{result.created.size} updated=#{result.updated.size} " \
+           "unchanged=#{result.unchanged.size}"
+      puts "Missing councils: #{result.missing_councils.join(', ')}" if result.missing_councils.any?
+    end
+
     desc 'Download ward polygons from the City of St. John\'s service into the offline packet (dry unless WRITE=1)'
     task fetch_ward_packet: :environment do
       fetcher = NewfoundlandLabradorOnline::Civic::WardBoundaryFetcher.new(write: ENV['WRITE'] == '1')
