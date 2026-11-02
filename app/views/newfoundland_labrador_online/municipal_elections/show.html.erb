@@ -1,0 +1,13 @@
+<% settlement = @municipality.settlement %>
+<div class="container py-4" id="municipal-election-page">
+  <nav><%= link_to t('.back', name: settlement.name), municipality_path_for(settlement) %></nav>
+  <h1 id="election-name" class="my-3"><%= t('.title', name: settlement.name, year: @election.year) %></h1>
+  <p class="text-muted" id="election-date"><%= l(@election.held_on, format: :long) %></p>
+  <% if @election.source_url.present? %>
+    <p class="small text-muted" id="election-source"><%= t('.source') %> <%= link_to @election.source_url, @election.source_url, rel: 'noopener' %></p>
+  <% end %>
+
+  <% @contests.each do |contest| %>
+    <%= render 'newfoundland_labrador_online/municipalities/contest', contest: contest %>
+  <% end %>
+</div>

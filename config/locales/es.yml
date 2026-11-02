@@ -190,6 +190,76 @@ es:
     locations:
       picker:
         tab: Ubicación
+    municipal_elections:
+      show:
+        back: Volver a %{name}
+        offices:
+          councillor: Concejales generales
+          deputy_mayor: Vicealcalde
+          mayor: Alcalde
+          member: Miembro
+        source: Resultados tomados de
+        title: Elección municipal de %{name}, %{year}
+    municipalities:
+      card:
+        link: Concejo, cargos electos y elecciones
+        mayor: 'Alcalde: %{name}'
+        title: Gobierno municipal
+      contest:
+        acclaimed: Elegido por aclamación
+        elected: Elegido
+        seats:
+          one: "%{count} escaño"
+          other: "%{count} escaños"
+      index:
+        empty: Todavía no se ha registrado ningún concejo municipal.
+        intro: Concejos municipales con sus cargos electos y los resultados electorales.
+          Cada municipio es también una localidad en el mapa.
+        last_election: Última elección
+        mayor: Alcalde
+        municipality: Municipio
+        none: Ninguna registrada
+        seats: Escaños del concejo
+        status: Estatus
+        title: Municipios
+        unknown: Sin registrar
+      show:
+        all_contests: Todas las contiendas de %{year}
+        all_municipalities: Todos los municipios
+        breadcrumb: Ruta de navegación
+        council: Concejo
+        councillor: Concejal
+        councillors: Concejales
+        csd_code: Código CSD de Statistics Canada
+        deputy_mayor: Vicealcalde
+        facts: Datos
+        in_office_since: En el cargo desde
+        latest_election: Última elección
+        leaders: Dirección
+        mayor: Alcalde
+        no_councillors: No hay concejales registrados.
+        no_election: Todavía no hay resultados electorales registrados.
+        roster_source: Lista tomada de
+        seat: Escaño
+        seats: Escaños del concejo
+        settlement_page: Página de la localidad
+        since_unknown: Fecha de inicio sin registrar
+        start_note: Las fechas de inicio son las de la elección, salvo que la fuente
+          indique la fecha de toma de posesión.
+        status_source: Fuente del estatus
+        status_unknown: Estatus sin registrar
+        unknown: Sin registrar
+        vacant: Vacante
+        ward_map: Distritos municipales
+        ward_map_label: Mapa de los distritos municipales de %{name}
+        ward_map_source: Límites de los distritos tomados de la
+      statuses:
+        city: Ciudad
+        inuit_community_government: Gobierno comunitario inuit
+        local_service_district: Distrito de servicios locales
+        reserve: Reserva
+        town: Municipio
+        unincorporated: Sin constituir en municipio
     parties:
       index:
         districts: Distritos

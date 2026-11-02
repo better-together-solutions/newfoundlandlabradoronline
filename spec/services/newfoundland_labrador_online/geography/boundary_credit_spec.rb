@@ -11,6 +11,20 @@ RSpec.describe NewfoundlandLabradorOnline::Geography::BoundaryCredit do
     BetterTogether::Geography::Space.new(boundary:, metadata: { 'boundary_source' => source }.compact)
   end
 
+  describe '.for_seat_boundary' do
+    let(:boundary) do
+      NewfoundlandLabradorOnline::SeatBoundary.new(authority: "City of St. John's", source_url: 'https://example.test/2',
+                                                   portal_url: 'https://example.test')
+    end
+
+    it 'credits the authority and links the download portal', :aggregate_failures do
+      credit = described_class.for_seat_boundary(boundary)
+
+      expect(credit.to_h).to eq(attribution: "Boundary: City of St. John's", attribution_url: 'https://example.test')
+      expect(described_class.for_seat_boundary(nil)).to be_nil
+    end
+  end
+
   describe '.for_version' do
     let(:version) do
       NewfoundlandLabradorOnline::RegionVersion.new(authority: 'Electoral Boundaries Commission',

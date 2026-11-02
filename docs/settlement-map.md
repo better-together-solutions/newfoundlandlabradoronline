@@ -41,6 +41,13 @@ page.
   SETTLEMENT=<identifier> OSM_TYPE=relation OSM_ID=<id>` (dry run; add `APPLY=1` to write). It only fills a boundary
   with no recorded OSM source and only from the object you name. Run it on staging data first; on production it is a
   data write that needs its own approval.
+- Single settlement import: `bin/rails nlo:regions:import_settlement_boundary SETTLEMENT=<identifier>` (dry run; add
+  `APPLY=1` to write, `FORCE=1` to replace an existing boundary). It makes one Nominatim request for "name, province,
+  country" (CE's batch import searches the bare name, which can match another place of the same name), accepts only an
+  administrative boundary polygon that covers the settlement's own point, and records the same `boundary_source` so the
+  credit appears. St. John's dry run (2026-11-01): OSM relation 2805426, 522.7 km2, covers the settlement point; it
+  covers 99% of the City's own ward area (478.9 km2, 3.8 km2 of the City area falls outside it), the difference being
+  mostly coastal water.
 - Before loading any new boundary source (Natural Earth, geoBoundaries, Statistics Canada files) check and record its
   licence. That check has not been done yet.
 

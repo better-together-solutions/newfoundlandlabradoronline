@@ -11,6 +11,9 @@ module NewfoundlandLabradorOnline
     has_many :mandates, as: :seat, class_name: 'NewfoundlandLabradorOnline::MembershipMandate',
                         dependent: :restrict_with_error
 
+    has_one :boundary_record, class_name: 'NewfoundlandLabradorOnline::SeatBoundary', dependent: :destroy,
+                              inverse_of: :community_seat
+
     validates :name, presence: true, uniqueness: { scope: :community_id }
     validates :kind, inclusion: { in: KINDS }
     validates :represents_community, presence: true, if: -> { kind == 'representing' }

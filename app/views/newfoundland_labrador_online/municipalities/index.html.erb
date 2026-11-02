@@ -1,0 +1,36 @@
+<div class="container py-4" id="municipalities-index">
+  <h1><%= t('.title') %></h1>
+  <p class="text-muted"><%= t('.intro') %></p>
+
+  <% if @municipalities.any? %>
+    <div class="table-responsive">
+      <table class="table align-middle" id="municipalities-list">
+        <thead>
+          <tr>
+            <th scope="col"><%= t('.municipality') %></th>
+            <th scope="col"><%= t('.status') %></th>
+            <th scope="col"><%= t('.mayor') %></th>
+            <th scope="col" class="text-end"><%= t('.seats') %></th>
+            <th scope="col"><%= t('.last_election') %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @municipalities.each do |municipality| %>
+            <% settlement = municipality.settlement %>
+            <% status = municipality.status %>
+            <% election = municipality.latest_election %>
+            <tr id="municipality-<%= settlement.identifier %>">
+              <th scope="row"><%= link_to settlement.name, municipality_path_for(settlement) %></th>
+              <td><%= status ? t("newfoundland_labrador_online.municipalities.statuses.#{status.municipal_status}") : t('.unknown') %></td>
+              <td><%= municipality.mayor&.person&.name || t('.unknown') %></td>
+              <td class="text-end"><%= municipality.detail.seat_count %></td>
+              <td><%= election ? link_to(election.year, municipal_election_path_for(settlement, election)) : t('.none') %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="text-muted"><%= t('.empty') %></p>
+  <% end %>
+</div>

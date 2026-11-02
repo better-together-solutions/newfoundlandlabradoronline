@@ -14,11 +14,17 @@ module NewfoundlandLabradorOnline
 
     delegate :membership, to: :mandate, allow_nil: true
 
+    def municipal?
+      electoral_contest&.election&.municipal?
+    end
+
     # The person this candidacy elected, once a mandate rests on it.
     def member
       mandate&.membership&.member
     end
 
-    validates :candidate_name, :party_name, :votes, presence: true
+    validates :candidate_name, presence: true
+    validates :party_name, presence: true, unless: :municipal?
+    validates :votes, presence: true, unless: :acclaimed?
   end
 end

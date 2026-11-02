@@ -26,10 +26,10 @@ module NewfoundlandLabradorOnline
 
       # Any office on a body (a council's mayor or councillor): kind, title and seat are on the mandate. A start of
       # nil records "not known" and leaves the membership open at the start.
-      # attributes: to:, kind:, title:, seat:
+      # attributes: to:, kind:, title:, seat:, source_url:
       def hold_office(person:, community:, role:, from: nil, **attributes)
         write(person, community, role, [from, attributes[:to]],
-              { kind: 'elected' }.merge(attributes.slice(:kind, :title, :seat)))
+              { kind: 'elected' }.merge(attributes.slice(:kind, :title, :seat, :source_url)))
       end
 
       # extra: start_reason:, end_reason:, source_url:

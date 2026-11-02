@@ -45,6 +45,17 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
       get 'parties/:jurisdiction/:province/:id', to: "#{parties}#show", as: :newfoundland_labrador_online_party,
                                                  constraints: { jurisdiction: /provincial/ }.merge(province)
 
+      municipalities = 'newfoundland_labrador_online/municipalities'
+      get 'municipalities', to: "#{municipalities}#index", as: :newfoundland_labrador_online_municipalities
+      get 'municipalities/:province', to: "#{municipalities}#index",
+                                      as: :newfoundland_labrador_online_scoped_municipalities, constraints: province
+      get 'municipalities/:province/:id', to: "#{municipalities}#show", as: :newfoundland_labrador_online_municipality,
+                                          constraints: province
+      get 'elections/municipal/:province/:settlement/:year',
+          to: 'newfoundland_labrador_online/municipal_elections#show',
+          as: :newfoundland_labrador_online_municipal_election,
+          constraints: { year: /\d{4}/, **province }
+
       elections = 'newfoundland_labrador_online/elections'
       get 'elections', to: "#{elections}#index", as: :newfoundland_labrador_online_elections
       get 'elections/:jurisdiction', to: "#{elections}#index", as: :newfoundland_labrador_online_jurisdiction_elections,

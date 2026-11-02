@@ -18,8 +18,11 @@ module NewfoundlandLabradorOnline
       end
     end
 
+    # Uses the preloaded statuses when there are some (listings), otherwise one query.
     def status_on(date)
-      statuses.on(date).latest_first.first
+      return statuses.on(date).latest_first.first unless statuses.loaded?
+
+      statuses.select { |status| status.in_force_on?(date) }.min_by(&:recency_key)
     end
 
     def current_status
@@ -27,7 +30,9 @@ module NewfoundlandLabradorOnline
     end
 
     def identifier_for(scheme)
-      identifiers.find_by(scheme:)&.value
+      return identifiers.find_by(scheme:)&.value unless identifiers.loaded?
+
+      identifiers.find { |identifier| identifier.scheme == scheme }&.value
     end
   end
 end

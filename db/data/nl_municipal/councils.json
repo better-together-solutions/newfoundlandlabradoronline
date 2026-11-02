@@ -75,7 +75,7 @@
       "seat_count": 11,
       "member_title": "Councillor",
       "source_url": "https://www.stjohns.ca/your-government/mayor-and-council/",
-      "as_of": "2026-11-01",
+      "as_of": "2026-11-02",
       "seats": [
         {
           "name": "Ward 1",
@@ -107,67 +107,73 @@
         {
           "name": "Danny Breen",
           "role": "head",
-          "title": "Mayor"
+          "title": "Mayor",
+          "from": "2025-10-08"
         },
         {
           "name": "Ron Ellsworth",
           "role": "deputy_head",
-          "title": "Deputy Mayor"
-        },
-        {
-          "name": "Ron Ellsworth",
-          "role": "member",
-          "title": "Councillor"
+          "title": "Deputy Mayor",
+          "from": "2025-10-08"
         },
         {
           "name": "Jill Bruce",
           "role": "member",
           "title": "Ward 1 Councillor",
-          "seat": "Ward 1"
+          "seat": "Ward 1",
+          "from": "2025-10-08"
         },
         {
           "name": "Brenda Halley",
           "role": "member",
           "title": "Ward 2 Councillor",
-          "seat": "Ward 2"
+          "seat": "Ward 2",
+          "from": "2025-10-08"
         },
         {
           "name": "Greg Noseworthy",
           "role": "member",
           "title": "Ward 3 Councillor",
-          "seat": "Ward 3"
+          "seat": "Ward 3",
+          "from": "2025-10-08"
         },
         {
           "name": "Tom Davis",
           "role": "member",
           "title": "Ward 4 Councillor",
-          "seat": "Ward 4"
+          "seat": "Ward 4",
+          "from": "2025-10-08"
         },
         {
           "name": "Donnie Earle",
           "role": "member",
           "title": "Ward 5 Councillor",
-          "seat": "Ward 5"
+          "seat": "Ward 5",
+          "from": "2025-10-08"
         },
         {
           "name": "Kate Cadigan",
           "role": "member",
-          "title": "Councillor-at-Large"
+          "title": "Councillor-at-Large",
+          "from": "2025-10-08"
         },
         {
           "name": "Lynn Hammond",
           "role": "member",
-          "title": "Councillor-at-Large"
+          "title": "Councillor-at-Large",
+          "from": "2025-10-08"
         },
         {
           "name": "Sandy Hickman",
           "role": "member",
-          "title": "Councillor-at-Large"
+          "title": "Councillor-at-Large",
+          "from": "2025-10-08"
         },
         {
           "name": "Nikita Ryall",
           "role": "member",
-          "title": "Councillor-at-Large"
+          "title": "Councillor-at-Large",
+          "from": "2025-10-08"
         }
       ]
     }

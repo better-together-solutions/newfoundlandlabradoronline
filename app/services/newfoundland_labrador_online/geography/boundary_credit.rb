@@ -27,6 +27,13 @@ module NewfoundlandLabradorOnline
         Credit.new(attribution: version.authority, attribution_url: version.source_url, licence: version.license)
       end
 
+      def self.for_seat_boundary(boundary)
+        return unless boundary&.authority.present?
+
+        url = boundary.portal_url || boundary.source_url
+        Credit.new(attribution: "Boundary: #{boundary.authority}", attribution_url: url, licence: boundary.license)
+      end
+
       def self.for_space(space)
         source = space&.metadata&.dig('boundary_source')
         return unless space&.boundary.present? && osm_source?(source)
