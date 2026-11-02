@@ -7,7 +7,7 @@ module NewfoundlandLabradorOnline
 
     def ward_map(municipality)
       identifier = "wards-#{municipality.settlement.identifier}"
-      NewfoundlandLabradorOnline::WardMap.find_or_initialize_by(identifier:)
+      NewfoundlandLabradorOnline::WardMap.new(identifier:)
                                          .tap { |map| map.seat_boundaries = municipality.ward_boundaries }
     end
 

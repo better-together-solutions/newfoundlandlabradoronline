@@ -13,14 +13,43 @@ module NewfoundlandLabradorOnline
 
       ROLE_ORDER = %w[legislature_head legislature_deputy_head legislature_member].freeze
 
-      # Settlements that have a municipal council, with their council and detail loaded.
+      # Settlements that have a municipal council, for a listing: council, status, mayor and elections are loaded
+      # for all of them in a fixed number of queries. These instances carry only the mayor, not the full council,
+      # and elections without contests; use `for` for a page that needs more.
       def self.listed
         councils = municipal_councils
-        ids = councils.map { |c| jurisdiction_id(c) }
-        settlements = BetterTogether::Geography::Settlement.where(id: ids).index_by(&:id)
+        settlements = listed_settlements(councils.map { |c| jurisdiction_id(c) })
+        primed = { mayors: mayors_by_council(councils), elections: listed_elections(councils) }
         councils.filter_map do |council|
           settlement = settlements[jurisdiction_id(council)]
-          new(settlement, council:) if settlement
+          settlement && primed_for(settlement, council, primed)
+        end
+      end
+
+      def self.primed_for(settlement, council, primed)
+        new(settlement, council:).tap do |municipality|
+          municipality.prime(mayor: primed[:mayors][council.id], elections: primed[:elections][council.id])
+        end
+      end
+
+      def self.listed_elections(councils)
+        Election.where(community_id: councils.map(&:id)).latest_first.group_by(&:community_id)
+                .tap { |grouped| grouped.default = [] }
+      end
+
+      def self.listed_settlements(ids)
+        BetterTogether::Geography::Settlement.where(id: ids).includes(:statuses, :state,
+                                                                      :string_translations).index_by(&:id)
+      end
+
+      def self.mayors_by_council(councils)
+        memberships = BetterTogether::PersonCommunityMembership
+                      .where(joinable_id: councils.map(&:id)).held_on(Time.current)
+                      .joins(:role).where(better_together_roles: { identifier: 'legislature_head' })
+                      .includes(:role, :mandate, member: Roster::PERSON_PRELOAD).to_a
+        memberships.to_h do |m|
+          [m.joinable_id,
+           Office.new(membership: m, person: m.member, role: m.role&.identifier, title: m.mandate&.title)]
         end
       end
 
@@ -51,7 +80,13 @@ module NewfoundlandLabradorOnline
       def csd_code = settlement.identifier_for('statcan_csd')
       def detail = council.legislature_detail
 
-      def mayor = offices.find(&:head?)
+      # Listings hand over the mayor and the elections ahead of time (see `listed`).
+      def prime(mayor:, elections:)
+        @mayor = mayor
+        @elections = elections
+      end
+
+      def mayor = defined?(@mayor) ? @mayor : offices.find(&:head?)
       def deputy_mayor = offices.find(&:deputy?)
       def councillors = offices.reject { |office| office.head? || office.deputy? }
 
