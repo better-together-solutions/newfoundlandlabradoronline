@@ -1,0 +1,5 @@
+<%# locals: (meeting:, in_gallery: false) -%>
+<%# The event it sits in is the page already, so the card does not link back to it. -%>
+<ul class="list-unstyled meeting-attachment mb-3">
+  <%= render partial: 'newfoundland_labrador_online/municipal_meetings/meeting', locals: { meeting:, link_event: false } %>
+</ul>

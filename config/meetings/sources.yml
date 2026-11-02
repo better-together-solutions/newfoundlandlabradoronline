@@ -1,0 +1,24 @@
+# Sources of public meetings, one per body. `adapter` names a class in NewfoundlandLabradorOnline::Meetings.
+# `council` is the settlement slug of the municipal council the meetings belong to. `bodies` maps the source's
+# meeting type to a category (icon and colour are starting values, to be checked for contrast).
+cornerbrook:
+  adapter: escribe
+  portal: https://pub-cornerbrook.escribemeetings.com
+  council: corner-brook
+  time_zone: America/St_Johns
+  first_year: 2019
+  # address: {line1: ..., city_name: Corner Brook, state_province_name: Newfoundland and Labrador, postal_code: ..., country_name: Canada}
+  # Optional city hall address; left unset until verified. Events are located at the settlement without it.
+  bodies:
+    'Regular Meeting':
+      key: regular
+      kind: council
+      name: Regular Council Meeting
+      icon: fas fa-landmark
+      color: '#0072B2'
+    'Committee of the Whole':
+      key: committee_of_the_whole
+      kind: council
+      name: Committee of the Whole
+      icon: fas fa-users
+      color: '#D55E00'

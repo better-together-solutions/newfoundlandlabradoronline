@@ -1,0 +1,36 @@
+<% settlement = @municipality.settlement %>
+<div class="container py-4" id="municipality-meetings-page">
+  <nav aria-label="<%= t('newfoundland_labrador_online.municipalities.show.breadcrumb') %>">
+    <%= link_to t('newfoundland_labrador_online.municipalities.show.all_municipalities'), newfoundland_labrador_online_scoped_municipalities_path(province_code(settlement), locale: I18n.locale), class: 'btn btn-secondary btn-sm mb-3' %>
+  </nav>
+
+  <h1 id="municipality-name"><%= settlement.name %></h1>
+  <%= render 'newfoundland_labrador_online/municipalities/tabs', settlement: settlement, active: :meetings %>
+
+  <section id="council-meetings" data-controller="meeting-filter" aria-labelledby="council-meetings-heading">
+    <h2 class="h4" id="council-meetings-heading"><%= t('.heading') %></h2>
+
+    <% if @categories.any? %>
+      <div class="d-flex flex-wrap gap-2 mb-3" id="meeting-filters" role="group" aria-label="<%= t('.filter_label') %>">
+        <% @categories.each do |category| %>
+          <button type="button" class="btn btn-sm meeting-filter-chip" id="meeting-filter-<%= category.identifier %>"
+                  aria-pressed="true" data-category="<%= category.identifier %>"
+                  data-meeting-filter-target="toggle" data-action="meeting-filter#toggle"
+                  style="--chip-bg: <%= category.chip_color %>; --chip-fg: <%= category.chip_text_color %>;">
+            <i class="<%= category.icon %>" aria-hidden="true"></i> <%= category.name %>
+          </button>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @meetings.empty? %>
+      <p class="text-muted" id="meetings-none"><%= t('.none') %></p>
+    <% else %>
+      <ol class="list-unstyled" id="meetings-timeline">
+        <%= render partial: 'newfoundland_labrador_online/municipal_meetings/meeting', collection: @meetings, as: :meeting %>
+      </ol>
+      <p class="text-muted" id="meetings-filtered-empty" data-meeting-filter-target="empty" hidden><%= t('.filtered_empty') %></p>
+    <% end %>
+    <p class="small text-muted mt-3" id="meetings-source"><%= t('.source') %></p>
+  </section>
+</div>

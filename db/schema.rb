@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_02_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_02_200004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -108,6 +108,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_100000) do
     t.index ["contact_detail_id"], name: "index_better_together_addresses_on_contact_detail_id"
     t.index ["platform_id"], name: "index_better_together_addresses_on_platform_id"
     t.index ["privacy"], name: "by_better_together_addresses_privacy"
+  end
+
+  create_table "better_together_agent_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "robot_id"
+    t.uuid "platform_id"
+    t.uuid "operator_id", null: false
+    t.uuid "community_id"
+    t.uuid "granted_by_id"
+    t.string "scopes", default: [], null: false, array: true
+    t.datetime "expires_at"
+    t.datetime "revoked_at"
+    t.index "robot_id, platform_id, COALESCE(community_id, '00000000-0000-0000-0000-000000000000'::uuid)", name: "idx_bt_agent_grants_one_open", unique: true, where: "(revoked_at IS NULL)"
+    t.index ["community_id"], name: "idx_bt_agent_grants_community"
+    t.index ["granted_by_id"], name: "idx_bt_agent_grants_granted_by"
+    t.index ["operator_id"], name: "idx_bt_agent_grants_operator"
+    t.index ["platform_id"], name: "idx_bt_agent_grants_platform"
+    t.index ["robot_id"], name: "idx_bt_agent_grants_robot"
   end
 
   create_table "better_together_agent_job_results", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -400,6 +420,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_100000) do
     t.string "icon", default: "fas fa-icons", null: false
     t.uuid "platform_id"
     t.string "privacy", limit: 50, default: "public", null: false
+    t.string "color"
     t.index ["identifier", "type", "platform_id"], name: "idx_bt_categories_on_identifier_type_platform_id", unique: true, where: "(platform_id IS NOT NULL)"
     t.index ["platform_id"], name: "index_better_together_categories_on_platform_id"
     t.index ["privacy"], name: "by_better_together_categories_privacy"
@@ -1706,8 +1727,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_100000) do
     t.boolean "confidential", default: true, null: false
     t.uuid "owner_id"
     t.uuid "platform_id"
+    t.uuid "robot_id"
+    t.uuid "community_id"
+    t.datetime "last_used_at"
+    t.datetime "rotated_at"
+    t.index ["community_id"], name: "index_better_together_oauth_applications_on_community_id"
     t.index ["owner_id"], name: "index_bt_oauth_apps_on_owner_id"
     t.index ["platform_id"], name: "index_better_together_oauth_applications_on_platform_id"
+    t.index ["robot_id"], name: "index_better_together_oauth_applications_on_robot_id"
     t.index ["uid"], name: "index_bt_oauth_apps_on_uid", unique: true
   end
 
@@ -2852,6 +2879,42 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_100000) do
     t.index ["jurisdiction_type", "jurisdiction_id"], name: "index_legislature_details_on_jurisdiction"
   end
 
+  create_table "meeting_documents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "meeting_id", null: false
+    t.string "kind", null: false
+    t.string "format", null: false
+    t.string "title", null: false
+    t.string "url", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["meeting_id", "kind", "format", "url"], name: "idx_meeting_documents_unique", unique: true
+    t.index ["meeting_id"], name: "index_meeting_documents_on_meeting_id"
+  end
+
+  create_table "meetings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "lock_version", default: 0, null: false
+    t.uuid "body_id", null: false
+    t.uuid "event_id"
+    t.string "kind", default: "council", null: false
+    t.string "source", null: false
+    t.string "source_id", null: false
+    t.string "body_key"
+    t.string "title", null: false
+    t.datetime "starts_at", null: false
+    t.string "location"
+    t.string "status", default: "scheduled", null: false
+    t.string "portal_url"
+    t.jsonb "details", default: {}, null: false
+    t.string "source_checksum", limit: 64
+    t.datetime "fetched_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["body_id", "starts_at"], name: "index_meetings_on_body_id_and_starts_at"
+    t.index ["body_id"], name: "index_meetings_on_body_id"
+    t.index ["event_id"], name: "index_meetings_on_event_id", unique: true
+    t.index ["source", "source_id"], name: "index_meetings_on_source_and_source_id", unique: true
+  end
+
   create_table "membership_mandates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "lock_version", default: 0, null: false
     t.datetime "created_at", null: false
@@ -2997,6 +3060,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_100000) do
   add_foreign_key "better_together_activities", "better_together_platforms", column: "platform_id"
   add_foreign_key "better_together_addresses", "better_together_contact_details", column: "contact_detail_id"
   add_foreign_key "better_together_addresses", "better_together_platforms", column: "platform_id"
+  add_foreign_key "better_together_agent_grants", "better_together_communities", column: "community_id", on_delete: :cascade
+  add_foreign_key "better_together_agent_grants", "better_together_people", column: "granted_by_id", on_delete: :nullify
+  add_foreign_key "better_together_agent_grants", "better_together_people", column: "operator_id", on_delete: :cascade
+  add_foreign_key "better_together_agent_grants", "better_together_platforms", column: "platform_id"
+  add_foreign_key "better_together_agent_grants", "better_together_robots", column: "robot_id"
   add_foreign_key "better_together_agent_job_results", "better_together_fleet_nodes", column: "fleet_node_id", on_delete: :nullify
   add_foreign_key "better_together_agreement_participants", "better_together_agreements", column: "agreement_id"
   add_foreign_key "better_together_agreement_participants", "better_together_people", column: "person_id"
@@ -3169,8 +3237,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_100000) do
   add_foreign_key "better_together_oauth_access_tokens", "better_together_oauth_applications", column: "application_id"
   add_foreign_key "better_together_oauth_access_tokens", "better_together_platforms", column: "platform_id"
   add_foreign_key "better_together_oauth_access_tokens", "better_together_users", column: "resource_owner_id"
+  add_foreign_key "better_together_oauth_applications", "better_together_communities", column: "community_id", on_delete: :cascade
   add_foreign_key "better_together_oauth_applications", "better_together_people", column: "owner_id"
   add_foreign_key "better_together_oauth_applications", "better_together_platforms", column: "platform_id"
+  add_foreign_key "better_together_oauth_applications", "better_together_robots", column: "robot_id", on_delete: :cascade
   add_foreign_key "better_together_pages", "better_together_communities", column: "community_id"
   add_foreign_key "better_together_pages", "better_together_navigation_areas", column: "sidebar_nav_id"
   add_foreign_key "better_together_pages", "better_together_people", column: "creator_id"
@@ -3300,6 +3370,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_100000) do
   add_foreign_key "electoral_contests", "community_seats"
   add_foreign_key "electoral_contests", "elections"
   add_foreign_key "legislature_details", "better_together_communities", column: "community_id"
+  add_foreign_key "meeting_documents", "meetings", on_delete: :cascade
+  add_foreign_key "meetings", "better_together_communities", column: "body_id"
+  add_foreign_key "meetings", "better_together_events", column: "event_id", on_delete: :nullify
   add_foreign_key "membership_mandates", "better_together_person_community_memberships", column: "membership_id"
   add_foreign_key "noticed_notifications", "better_together_platforms", column: "platform_id"
   add_foreign_key "political_parties", "better_together_communities", column: "community_id"

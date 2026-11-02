@@ -1,0 +1,29 @@
+// Toggle chips for the council meetings filter. Pressed = filled with the category colour (text colour chosen for
+// 4.5:1 contrast in the view); not pressed = outlined, so the state never depends on colour alone.
+.meeting-filter-chip {
+  background: #fff;
+  border: 2px solid var(--chip-bg);
+  color: #111;
+
+  &[aria-pressed='true'] {
+    background: var(--chip-bg);
+    color: var(--chip-fg);
+  }
+
+  &[aria-pressed='false'] {
+    text-decoration: line-through;
+  }
+
+  &:focus-visible {
+    outline: 3px solid #111;
+    outline-offset: 2px;
+  }
+}
+
+.meeting-category-badge {
+  font-weight: 600;
+}
+
+.meeting-row[hidden] {
+  display: none;
+}

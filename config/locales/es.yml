@@ -200,6 +200,23 @@ es:
           member: Miembro
         source: Resultados tomados de
         title: Elección municipal de %{name}, %{year}
+    municipal_meetings:
+      index:
+        all_meetings: Todas las reuniones del concejo de %{name}
+        cancelled: Cancelada
+        documents:
+          additional: Documento adicional
+          agenda: Orden del día
+          agenda_package: Paquete de la orden del día
+          minutes: Acta
+        filter_label: Filtrar reuniones por tipo
+        filtered_empty: Ninguna reunión coincide con los tipos seleccionados.
+        heading: Reuniones del concejo
+        none: Todavía no se han registrado reuniones del concejo.
+        opens_new_tab: "(se abre en una pestaña nueva)"
+        source: Las órdenes del día, los paquetes y las actas las publica el municipio
+          en su portal eScribe y se abren allí.
+        upcoming: Próxima
     municipalities:
       card:
         link: Concejo, cargos electos y elecciones
@@ -248,6 +265,8 @@ es:
           indique la fecha de toma de posesión.
         status_source: Fuente del estatus
         status_unknown: Estatus sin registrar
+        tab_meetings: Reuniones del concejo
+        tab_overview: Resumen
         unknown: Sin registrar
         vacant: Vacante
         ward_map: Distritos municipales

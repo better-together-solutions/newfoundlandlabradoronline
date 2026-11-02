@@ -1,0 +1,31 @@
+<%# link_event: false when embedded in the event's own description (Action Text attachment). -%>
+<% link_event = local_assigns.fetch(:link_event, true) %>
+<% category = meeting.category %>
+<li class="card mb-2 meeting-row" id="<%= dom_id(meeting) %>" data-meeting-filter-target="row"
+    data-category="<%= category&.identifier %>">
+  <div class="card-body py-2">
+    <div class="d-flex flex-wrap align-items-center gap-2">
+      <time class="fw-semibold" datetime="<%= meeting.starts_at.iso8601 %>"><%= l(meeting.starts_at.in_time_zone('America/St_Johns'), format: :long) %></time>
+      <% if category %>
+        <span class="badge meeting-category-badge" style="background: <%= category.chip_color %>; color: <%= category.chip_text_color %>;">
+          <i class="<%= category.icon %>" aria-hidden="true"></i> <%= category.name %>
+        </span>
+      <% end %>
+      <% if meeting.cancelled? %>
+        <span class="badge text-bg-dark meeting-cancelled"><%= t('newfoundland_labrador_online.municipal_meetings.index.cancelled') %></span>
+      <% elsif !meeting.held? %>
+        <span class="badge text-bg-info meeting-upcoming"><%= t('newfoundland_labrador_online.municipal_meetings.index.upcoming') %></span>
+      <% end %>
+    </div>
+    <p class="mb-1"><%= link_event && meeting.event ? link_to(meeting.title, better_together.event_path(meeting.event, locale: I18n.locale)) : meeting.title %><% if meeting.location.present? %> <span class="text-muted">&middot; <%= meeting.location %></span><% end %></p>
+    <ul class="list-inline mb-0 meeting-documents">
+      <% meeting.documents.sort_by { |doc| [NewfoundlandLabradorOnline::MeetingDocument::KINDS.index(doc.kind), doc.format] }.each do |doc| %>
+        <li class="list-inline-item small">
+          <%= link_to doc.url, rel: 'noopener', target: '_blank' do %>
+            <%= t("newfoundland_labrador_online.municipal_meetings.index.documents.#{doc.kind}") %> (<%= doc.format.upcase %>)<span class="visually-hidden"> <%= t('newfoundland_labrador_online.municipal_meetings.index.opens_new_tab') %></span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</li>

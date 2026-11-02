@@ -199,6 +199,23 @@ en:
           member: Member
         source: Results from
         title: "%{name} municipal election %{year}"
+    municipal_meetings:
+      index:
+        all_meetings: All %{name} council meetings
+        cancelled: Cancelled
+        documents:
+          additional: Additional document
+          agenda: Agenda
+          agenda_package: Agenda package
+          minutes: Minutes
+        filter_label: Filter meetings by type
+        filtered_empty: No meetings match the selected types.
+        heading: Council meetings
+        none: No council meetings have been recorded yet.
+        opens_new_tab: "(opens in a new tab)"
+        source: Agendas, packages and minutes are published by the municipality on
+          its eScribe portal and open there.
+        upcoming: Upcoming
     municipalities:
       card:
         link: Council, officials and elections
@@ -247,6 +264,8 @@ en:
           date.
         status_source: Status source
         status_unknown: Status not recorded
+        tab_meetings: Council meetings
+        tab_overview: Overview
         unknown: Not recorded
         vacant: Vacant
         ward_map: Wards
