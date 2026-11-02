@@ -136,3 +136,19 @@ attribution and in a source line (`ward-map-source`) that links the City's downl
 ## Not in this phase
 
 Bylaws, meetings and census data follow in later phases.
+
+## Settlement weather
+
+Settlement pages show current conditions and a Weather tab (forecast and 14 day history) from the Community Engine
+weather feature, using Environment and Climate Change Canada data. This app only configures it:
+
+- `config/weather/sources.yml` lists the source and the settlements it covers (Corner Brook, St. John's).
+- `bin/rails nlo:weather:load_locations` creates them (dry run; set `APPLY=1` to write). Creating a location queues
+  its first refresh and history backfill, so the `weather` Sidekiq queue must be running.
+- `_about_extra` renders the condensed current conditions card above the live image card.
+- Set `WEATHER_CONTACT` (used in the request User-Agent) on the production app before enabling locations.
+- Corner Brook's automatic station reports no precipitation, so its precipitation chart is hidden until a secondary
+  station is configured.
+
+The CE gem is temporarily pinned to the head of community-engine-rails PR #2070. Repin to the main merge commit
+once it merges.
