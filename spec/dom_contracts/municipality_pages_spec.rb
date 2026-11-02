@@ -38,6 +38,21 @@ RSpec.describe 'Municipality pages', type: :request do
     expect(response.body).to include('Danny Breen', 'Ron Ellsworth', 'Ward 5', '15,216', '56.74%')
   end
 
+  it 'shows the council social accounts as contact details once loaded', :aggregate_failures do
+    get "/#{locale}/e/municipalities/nl/corner-brook"
+    expect(response.body).not_to include('id="municipality-contact"')
+
+    NewfoundlandLabradorOnline::Civic::MunicipalSocialAccountLoader.new(apply: true).call
+    get "/#{locale}/e/municipalities/nl/corner-brook"
+
+    body = response.body
+    expect(body).to include('id="municipality-contact"', 'id="municipality-social-accounts"',
+                            'href="https://www.youtube.com/@cityofcornerbrook6478"', 'rel="noopener noreferrer"',
+                            'fa-youtube', 'aria-hidden="true"', '(opens in a new tab)')
+    expect(body.index('id="municipality-leaders"')).to be < body.index('id="municipality-contact"')
+    expect(body.index('id="municipality-contact"')).to be < body.index('id="council-members"')
+  end
+
   it 'draws the ward map between leaders and councillors once boundaries are loaded', :aggregate_failures do
     get "/#{locale}/e/municipalities/nl/st-john-s"
     expect(response.body).not_to include('id="municipality-ward-map"')

@@ -41,6 +41,15 @@ RSpec.describe 'Documentation screenshots for municipalities', :js, type: :featu
     expect(captured('municipalities_index', callouts)).to all(be > 10_000)
   end
 
+  it 'captures the Corner Brook contact details with the YouTube account' do
+    NewfoundlandLabradorOnline::Civic::MunicipalSocialAccountLoader.new(apply: true).call
+    visit "/#{locale}/e/municipalities/nl/corner-brook"
+
+    callouts = [{ selector: '#municipality-social-accounts', title: 'Public YouTube channel with icon and text' }]
+
+    expect(captured('municipality_contact', callouts, scroll_to: '#municipality-contact')).to all(be > 10_000)
+  end
+
   context 'with the St. John\'s municipality page' do
     let(:callouts) do
       [['#municipality-facts', 'Facts and status source'], ['#municipality-leaders', 'Mayor and deputy mayor'],

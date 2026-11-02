@@ -259,6 +259,7 @@ en:
         all_contests: All %{year} contests
         all_municipalities: All municipalities
         breadcrumb: Breadcrumb
+        contact: Contact
         council: Council
         councillor: Councillor
         councillors: Councillors
@@ -271,6 +272,7 @@ en:
         mayor: Mayor
         no_councillors: No councillors recorded.
         no_election: No election results recorded yet.
+        opens_new_tab: "(opens in a new tab)"
         roster_source: Roster from
         seat: Seat
         seats: Council seats

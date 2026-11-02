@@ -260,6 +260,7 @@ es:
         all_contests: Todas las contiendas de %{year}
         all_municipalities: Todos los municipios
         breadcrumb: Ruta de navegación
+        contact: Contacto
         council: Concejo
         councillor: Concejal
         councillors: Concejales
@@ -272,6 +273,7 @@ es:
         mayor: Alcalde
         no_councillors: No hay concejales registrados.
         no_election: Todavía no hay resultados electorales registrados.
+        opens_new_tab: "(se abre en una pestaña nueva)"
         roster_source: Lista tomada de
         seat: Escaño
         seats: Escaños del concejo
