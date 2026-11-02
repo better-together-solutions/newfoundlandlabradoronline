@@ -57,6 +57,21 @@ erDiagram
     string kind
     int position
   }
+  SEAT_BOUNDARIES {
+    uuid id PK
+    int lock_version
+    uuid community_seat_id FK
+    geography boundary
+    string authority
+    string source_url
+    string portal_url
+    string license
+    string source_sha256
+    date fetched_on
+    decimal area_km2
+    datetime created_at
+    datetime updated_at
+  }
   COMMUNITY_ASSOCIATIONS {
     uuid id PK
     int lock_version
@@ -91,3 +106,4 @@ erDiagram
   BETTER_TOGETHER_COMMUNITIES ||--o{ COMMUNITY_ASSOCIATIONS : "incoming_associations"
   BETTER_TOGETHER_PERSON_COMMUNITY_MEMBERSHIPS ||--o| MEMBERSHIP_MANDATES : "mandate"
   COMMUNITY_SEATS ||--o{ MEMBERSHIP_MANDATES : "mandates"
+  COMMUNITY_SEATS ||--o| SEAT_BOUNDARIES : "boundary_record"

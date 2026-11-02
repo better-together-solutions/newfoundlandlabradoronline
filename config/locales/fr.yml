@@ -190,6 +190,76 @@ fr:
     locations:
       picker:
         tab: Lieu
+    municipal_elections:
+      show:
+        back: Retour à %{name}
+        offices:
+          councillor: Conseillers généraux
+          deputy_mayor: Maire suppléant
+          mayor: Maire
+          member: Membre
+        source: Résultats tirés de
+        title: Élection municipale de %{name}, %{year}
+    municipalities:
+      card:
+        link: Conseil, élus et élections
+        mayor: 'Maire : %{name}'
+        title: Gouvernement municipal
+      contest:
+        acclaimed: Élu par acclamation
+        elected: Élu
+        seats:
+          one: "%{count} siège"
+          other: "%{count} sièges"
+      index:
+        empty: Aucun conseil municipal n’a encore été consigné.
+        intro: Conseils municipaux, avec leurs élus et les résultats des élections.
+          Chaque municipalité est aussi une localité sur la carte.
+        last_election: Dernière élection
+        mayor: Maire
+        municipality: Municipalité
+        none: Aucune consignée
+        seats: Sièges au conseil
+        status: Statut
+        title: Municipalités
+        unknown: Non consigné
+      show:
+        all_contests: Toutes les courses de %{year}
+        all_municipalities: Toutes les municipalités
+        breadcrumb: Fil d’Ariane
+        council: Conseil
+        councillor: Conseiller
+        councillors: Conseillers
+        csd_code: Code de SDR de Statistique Canada
+        deputy_mayor: Maire suppléant
+        facts: Faits
+        in_office_since: En fonction depuis
+        latest_election: Dernière élection
+        leaders: Direction
+        mayor: Maire
+        no_councillors: Aucun conseiller consigné.
+        no_election: Aucun résultat d’élection consigné pour le moment.
+        roster_source: Liste tirée de
+        seat: Siège
+        seats: Sièges au conseil
+        settlement_page: Page de la localité
+        since_unknown: Date de début non consignée
+        start_note: Les dates de début sont celles de l’élection, sauf si la source
+          donne une date d’assermentation.
+        status_source: Source du statut
+        status_unknown: Statut non consigné
+        unknown: Non consigné
+        vacant: Vacant
+        ward_map: Quartiers
+        ward_map_label: Carte des quartiers de %{name}
+        ward_map_source: Limites des quartiers fournies par la
+      statuses:
+        city: Ville
+        inuit_community_government: Gouvernement communautaire inuit
+        local_service_district: District de services locaux
+        reserve: Réserve
+        town: Municipalité
+        unincorporated: Non constitué en municipalité
     parties:
       index:
         districts: Circonscriptions

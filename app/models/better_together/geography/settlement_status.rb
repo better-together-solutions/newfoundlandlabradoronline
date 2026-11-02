@@ -20,6 +20,15 @@ module BetterTogether
       }
       scope :current, -> { on(Time.zone.today) }
 
+      def in_force_on?(date)
+        (valid_from.nil? || valid_from <= date) && (valid_to.nil? || valid_to >= date)
+      end
+
+      # Sorts the latest start first and unrecorded starts last, as `latest_first` does in SQL.
+      def recency_key
+        valid_from ? [0, -valid_from.jd] : [1, 0]
+      end
+
       def incorporated?
         INCORPORATED.include?(municipal_status)
       end

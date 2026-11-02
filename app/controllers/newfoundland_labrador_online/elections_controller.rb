@@ -31,7 +31,7 @@ module NewfoundlandLabradorOnline
     private
 
     def scoped_elections
-      elections = policy_scope(NewfoundlandLabradorOnline::Election)
+      elections = policy_scope(NewfoundlandLabradorOnline::Election).where.not(jurisdiction: 'municipal')
       elections = elections.where(jurisdiction: params[:jurisdiction]) if params[:jurisdiction]
       @province ? elections.where(state: @province) : elections
     end

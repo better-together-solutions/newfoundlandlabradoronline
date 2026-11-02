@@ -1,0 +1,20 @@
+<%# locals: (settlement:) -%>
+<%# Shown on a settlement page when the settlement has a municipal council. -%>
+<% municipality = NewfoundlandLabradorOnline::Civic::Municipality.for(settlement) %>
+<% if municipality && settlement.state %>
+  <% code = NewfoundlandLabradorOnline::Province.code_for(settlement.state) %>
+  <section class="card mb-3" id="settlement-municipal-card">
+    <div class="card-body">
+      <h2 class="h5 card-title"><%= t('newfoundland_labrador_online.municipalities.card.title') %></h2>
+      <p class="mb-2">
+        <%= municipality.council.name %>
+        <% if municipality.mayor %>
+          <span class="text-muted">&middot; <%= t('newfoundland_labrador_online.municipalities.card.mayor', name: municipality.mayor.person.name) %></span>
+        <% end %>
+      </p>
+      <%= link_to t('newfoundland_labrador_online.municipalities.card.link'),
+                  newfoundland_labrador_online_municipality_path(code, settlement, locale: I18n.locale),
+                  class: 'btn btn-secondary btn-sm', id: 'settlement-municipal-link' %>
+    </div>
+  </section>
+<% end %>
