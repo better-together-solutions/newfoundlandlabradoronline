@@ -82,6 +82,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   scope path: BetterTogether.route_scope_path do
     scope 'api', defaults: { format: :json } do
       put 'v1/geography_regions/:id/generated_cover', to: 'newfoundland_labrador_online/api/v1/district_covers#update'
+      post 'v1/meeting_recordings', to: 'newfoundland_labrador_online/api/v1/meeting_recordings#create'
     end
   end
 
