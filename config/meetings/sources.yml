@@ -7,8 +7,14 @@ cornerbrook:
   council: corner-brook
   time_zone: America/St_Johns
   first_year: 2019
-  # address: {line1: ..., city_name: Corner Brook, state_province_name: Newfoundland and Labrador, postal_code: ..., country_name: Canada}
-  # Optional city hall address; left unset until verified. Events are located at the settlement without it.
+  # City hall (https://www.cornerbrook.com/contact/). Optional: without an address, events are located at the settlement.
+  address:
+    name: City Hall
+    line1: 5 Park Street
+    city_name: Corner Brook
+    state_province_name: Newfoundland and Labrador
+    postal_code: A2H 6E1
+    country_name: Canada
   bodies:
     'Regular Meeting':
       key: regular
