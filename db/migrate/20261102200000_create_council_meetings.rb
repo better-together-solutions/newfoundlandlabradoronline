@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-# Public meetings of civic bodies (councils first) with the documents the host publishes, and the colour column that
-# meeting categories use (a no-op once the Community Engine gem ships it).
+# Public meetings of civic bodies (councils first) with the documents the host publishes. The category colour column
+# meeting categories use comes from the Community Engine gem's own migration.
 class CreateCouncilMeetings < ActiveRecord::Migration[8.1]
   def up
-    add_column :better_together_categories, :color, :string unless column_exists?(:better_together_categories, :color)
     create_meetings unless table_exists?(:meetings)
     create_meeting_documents unless table_exists?(:meeting_documents)
   end
