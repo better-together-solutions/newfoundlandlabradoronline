@@ -46,12 +46,12 @@ module NewfoundlandLabradorOnline
 
     # Simplified GeoJSON of the settlement boundary, or nil when it has none.
     def boundary
-      id = settlement_space&.id
-      return unless id
+      return @boundary if defined?(@boundary)
 
+      id = settlement_space&.id
       simplified = Arel.sql('ST_AsGeoJSON(ST_SimplifyPreserveTopology(boundary::geometry, 0.0001))')
-      json = BetterTogether::Geography::Space.where(id:).where.not(boundary: nil).pick(simplified)
-      json && JSON.parse(json)
+      json = id && BetterTogether::Geography::Space.where(id:).where.not(boundary: nil).pick(simplified)
+      @boundary = json && JSON.parse(json)
     end
 
     # Who the drawn boundary is credited to (a BoundaryCredit::Credit), or nil when its source is unknown.
