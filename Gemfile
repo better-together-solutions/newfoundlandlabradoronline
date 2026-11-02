@@ -11,9 +11,7 @@ gem 'aws-sdk-s3', require: false
 # Use the published version of better_together for production
 gem 'better_together', '~> 0.11.0',
     github: 'better-together-org/community-engine-rails',
-    # Pinned to the head of community-engine-rails PR #2075 (render_contact_details markup fix). Re-pin to its
-    # merge commit on main once merged.
-    ref: 'a1e09e507c7a0e484b6bbc0532280b47ffbecebf'
+    ref: '795627de2b886090173d221b4142cbd28ede4027'
 
 # Use the local development version of better_together
 # gem 'better_together', path: '/community-engine'
