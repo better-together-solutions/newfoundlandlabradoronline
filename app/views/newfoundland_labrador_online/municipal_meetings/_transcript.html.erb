@@ -1,0 +1,20 @@
+<%# locals: (meeting:, caption:) -%>
+<% if caption %>
+  <section id="meeting-transcript" aria-labelledby="meeting-transcript-heading" class="mb-4">
+    <h2 class="h5" id="meeting-transcript-heading"><%= t('newfoundland_labrador_online.municipal_meetings.show.transcript') %></h2>
+    <details id="meeting-transcript-details">
+      <summary><%= t('newfoundland_labrador_online.municipal_meetings.show.transcript_summary', language: caption.language) %></summary>
+      <% if caption.automatic? %>
+        <p class="small text-muted" id="meeting-transcript-notice"><%= t('newfoundland_labrador_online.municipal_meetings.show.automatic_notice') %></p>
+      <% end %>
+      <p class="small">
+        <%= link_to t('newfoundland_labrador_online.municipal_meetings.show.download'), newfoundland_labrador_online_municipality_meeting_transcript_path(province_code(@municipality.settlement), @municipality.settlement, meeting, locale: I18n.locale), id: 'meeting-transcript-download' %>
+      </p>
+      <ol class="list-unstyled meeting-cues" id="meeting-cues">
+        <% caption.cues.each do |cue| %>
+          <li class="meeting-cue"><time class="text-muted me-2"><%= Time.at(cue['start_ms'] / 1000).utc.strftime('%H:%M:%S') %></time><%= cue['text'] %></li>
+        <% end %>
+      </ol>
+    </details>
+  </section>
+<% end %>

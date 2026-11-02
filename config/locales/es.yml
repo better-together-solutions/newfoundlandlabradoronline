@@ -214,9 +214,25 @@ es:
         heading: Reuniones del concejo
         none: Todavía no se han registrado reuniones del concejo.
         opens_new_tab: "(se abre en una pestaña nueva)"
+        recording_and_transcript: Grabación y transcripción
         source: Las órdenes del día, los paquetes y las actas las publica el municipio
           en su portal eScribe y se abren allí.
         upcoming: Próxima
+      show:
+        all_meetings: Todas las reuniones del consejo de %{name}
+        automatic_notice: Estos subtítulos se generaron automáticamente y pueden contener
+          errores, sobre todo en nombres y mociones. El acta es el registro oficial.
+        documents: Orden del día y actas
+        download: Descargar la transcripción (texto)
+        no_documents: No se han publicado documentos para esta reunión.
+        no_recording: No se ha publicado ninguna grabación de esta reunión.
+        recording: Grabación
+        scheduled: Programada para %{time}.
+        transcript: Transcripción
+        transcript_summary: 'Mostrar la transcripción (subtítulos, idioma: %{language})'
+        video_title: 'Grabación de la reunión del consejo: %{title}'
+        watch_live: Ver en directo
+        watch_on_provider: Ver en YouTube (se abre en una pestaña nueva)
     municipalities:
       card:
         link: Concejo, cargos electos y elecciones

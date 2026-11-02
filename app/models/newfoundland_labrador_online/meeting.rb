@@ -16,6 +16,8 @@ module NewfoundlandLabradorOnline
     belongs_to :event, class_name: 'BetterTogether::Event', optional: true
     has_many :documents, class_name: 'NewfoundlandLabradorOnline::MeetingDocument', dependent: :destroy,
                          inverse_of: :meeting
+    has_many :recordings, class_name: 'NewfoundlandLabradorOnline::MeetingRecording', dependent: :destroy,
+                          inverse_of: :meeting
 
     validates :kind, inclusion: { in: KINDS }
     validates :status, inclusion: { in: STATUSES }

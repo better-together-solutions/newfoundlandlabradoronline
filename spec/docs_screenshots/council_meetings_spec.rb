@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-# rubocop:disable RSpec/MultipleExpectations
+# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 # Documentation screenshots for the council meetings tab (desktop and mobile, plain and annotated).
 #
 #   RUN_DOCS_SCREENSHOTS=1 ./bin/dc-run bundle exec rspec spec/docs_screenshots/council_meetings_spec.rb
@@ -46,6 +46,26 @@ RSpec.describe 'Documentation screenshots for council meetings', :js, type: :fea
     expect(captured('council_meetings_filtered', callouts, scroll_to: '#council-meetings')).to all(be > 10_000)
   end
 
+  def enrich_first_meeting_for(meeting)
+    vtt = Rails.root.join('spec/fixtures/meetings/youtube_auto.vtt').read
+    NewfoundlandLabradorOnline::Meetings::RecordingEnricher.new(
+      metadata: { 'abc123xyz00' => { 'live_status' => 'was_live', 'duration' => 1740,
+                                     'captions' => { 'en' => { 'source' => 'youtube_auto', 'vtt' => vtt } } } },
+      apply: true
+    ).call
+    visit "/#{locale}/e/municipalities/nl/corner-brook/meetings/#{meeting.id}"
+  end
+
+  it 'captures the meeting page with the recording and the open transcript' do
+    meeting = NewfoundlandLabradorOnline::Meeting.find_by!(source_id: '11111111-aaaa-4aaa-8aaa-000000000001')
+    enrich_first_meeting_for(meeting)
+    find('#meeting-transcript-details summary').click
+    callouts = [{ selector: '#meeting-recording', title: 'Privacy-enhanced player with a watch link' },
+                { selector: '#meeting-transcript', title: 'Collapsed transcript with timestamps, marked automatic' }]
+
+    expect(captured('council_meeting_page', callouts, scroll_to: '#meeting-transcript')).to all(be > 10_000)
+  end
+
   it 'captures the council as host on its event page' do
     meeting = NewfoundlandLabradorOnline::Meeting.find_by!(source_id: '11111111-aaaa-4aaa-8aaa-000000000001')
     visit better_together.event_path(meeting.event, locale:)
@@ -55,4 +75,4 @@ RSpec.describe 'Documentation screenshots for council meetings', :js, type: :fea
     expect(captured('council_meeting_event_host', callouts, scroll_to: '.municipality-host-card')).to all(be > 10_000)
   end
 end
-# rubocop:enable RSpec/MultipleExpectations
+# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

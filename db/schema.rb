@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_02_200004) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_02_300000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -2891,6 +2891,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_200004) do
     t.index ["meeting_id"], name: "index_meeting_documents_on_meeting_id"
   end
 
+  create_table "meeting_recordings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "meeting_id", null: false
+    t.string "provider", null: false
+    t.string "provider_ref", null: false
+    t.string "watch_url", null: false
+    t.string "embed_url", null: false
+    t.string "live_status", default: "past", null: false
+    t.string "match_method", default: "source_link", null: false
+    t.datetime "scheduled_for"
+    t.datetime "published_at"
+    t.integer "duration_seconds"
+    t.datetime "fetched_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["meeting_id", "provider", "provider_ref"], name: "idx_meeting_recordings_unique", unique: true
+    t.index ["meeting_id"], name: "index_meeting_recordings_on_meeting_id"
+  end
+
   create_table "meetings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "lock_version", default: 0, null: false
     t.uuid "body_id", null: false
@@ -3006,6 +3024,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_200004) do
     t.index ["community_id"], name: "index_political_parties_on_community_id", unique: true
     t.index ["jurisdiction", "state_id", "identifier"], name: "index_political_parties_on_jurisdiction_state_identifier", unique: true, nulls_not_distinct: true
     t.index ["state_id"], name: "index_political_parties_on_state_id"
+  end
+
+  create_table "recording_captions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "recording_id", null: false
+    t.string "language", null: false
+    t.string "format", default: "vtt", null: false
+    t.string "source", null: false
+    t.text "body", null: false
+    t.jsonb "cues", default: [], null: false
+    t.string "raw_checksum", limit: 64, null: false
+    t.datetime "fetched_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recording_id", "language"], name: "index_recording_captions_on_recording_id_and_language", unique: true
+    t.index ["recording_id"], name: "index_recording_captions_on_recording_id"
   end
 
   create_table "region_identifiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -3371,12 +3404,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_200004) do
   add_foreign_key "electoral_contests", "elections"
   add_foreign_key "legislature_details", "better_together_communities", column: "community_id"
   add_foreign_key "meeting_documents", "meetings", on_delete: :cascade
+  add_foreign_key "meeting_recordings", "meetings", on_delete: :cascade
   add_foreign_key "meetings", "better_together_communities", column: "body_id"
   add_foreign_key "meetings", "better_together_events", column: "event_id", on_delete: :nullify
   add_foreign_key "membership_mandates", "better_together_person_community_memberships", column: "membership_id"
   add_foreign_key "noticed_notifications", "better_together_platforms", column: "platform_id"
   add_foreign_key "political_parties", "better_together_communities", column: "community_id"
   add_foreign_key "political_parties", "better_together_geography_states", column: "state_id"
+  add_foreign_key "recording_captions", "meeting_recordings", column: "recording_id", on_delete: :cascade
   add_foreign_key "region_identifiers", "better_together_geography_regions", column: "region_id"
   add_foreign_key "region_versions", "better_together_geography_regions", column: "region_id"
   add_foreign_key "seat_boundaries", "community_seats"
