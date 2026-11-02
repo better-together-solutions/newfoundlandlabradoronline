@@ -1,0 +1,36 @@
+<% settlement = @municipality.settlement %>
+<% category = @meeting.category %>
+<div class="container py-4" id="municipality-meeting-page">
+  <nav aria-label="<%= t('newfoundland_labrador_online.municipalities.show.breadcrumb') %>">
+    <%= link_to t('.all_meetings', name: settlement.name), newfoundland_labrador_online_municipality_meetings_path(province_code(settlement), settlement, locale: I18n.locale), class: 'btn btn-secondary btn-sm mb-3', id: 'meeting-back-link' %>
+  </nav>
+
+  <h1 id="meeting-title"><%= settlement.name %>: <%= @meeting.title %></h1>
+  <p class="lead" id="meeting-when">
+    <time datetime="<%= @meeting.starts_at.iso8601 %>"><%= l(@meeting.starts_at.in_time_zone('America/St_Johns'), format: :long) %></time>
+    <% if @meeting.location.present? %><span class="text-muted">&middot; <%= @meeting.location %></span><% end %>
+    <% if category %>
+      <span class="badge meeting-category-badge" style="background: <%= category.chip_color %>; color: <%= category.chip_text_color %>;">
+        <i class="<%= category.icon %>" aria-hidden="true"></i> <%= category.name %>
+      </span>
+    <% end %>
+    <% if @meeting.cancelled? %><span class="badge text-bg-dark meeting-cancelled"><%= t('newfoundland_labrador_online.municipal_meetings.index.cancelled') %></span><% end %>
+  </p>
+
+  <%= render 'newfoundland_labrador_online/municipal_meetings/recording', meeting: @meeting, recording: @recording %>
+
+  <section id="meeting-documents" aria-labelledby="meeting-documents-heading" class="mb-4">
+    <h2 class="h5" id="meeting-documents-heading"><%= t('.documents') %></h2>
+    <% if @meeting.documents.any? %>
+      <ul class="list-unstyled meeting-documents">
+        <% @meeting.documents.sort_by { |doc| [NewfoundlandLabradorOnline::MeetingDocument::KINDS.index(doc.kind), doc.format] }.each do |doc| %>
+          <li><%= link_to doc.url, rel: 'noopener', target: '_blank' do %><%= t("newfoundland_labrador_online.municipal_meetings.index.documents.#{doc.kind}") %> (<%= doc.format.upcase %>)<span class="visually-hidden"> <%= t('newfoundland_labrador_online.municipal_meetings.index.opens_new_tab') %></span><% end %></li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="text-muted" id="meeting-documents-none"><%= t('.no_documents') %></p>
+    <% end %>
+  </section>
+
+  <%= render 'newfoundland_labrador_online/municipal_meetings/transcript', meeting: @meeting, caption: @caption %>
+</div>

@@ -11,7 +11,7 @@ module NewfoundlandLabradorOnline
 
       # Block ids to attach to the event description, empty when the meeting has no recording.
       def ids
-        url = Array(@meeting.details['video_urls']).first
+        url = @meeting.recordings.min_by(&:created_at)&.watch_url
         return [] unless url
 
         block = BetterTogether::Content::VideoBlock.find_or_initialize_by(platform: @platform, id: block_id)

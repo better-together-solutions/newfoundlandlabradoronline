@@ -17,5 +17,14 @@ namespace :nlo do
       end.join(' ')}"
       puts "Missing council: #{result.missing_bodies.join(', ')}" if result.missing_bodies.any?
     end
+
+    desc 'Apply recording metadata and captions (METADATA=tmp/recordings.json); dry run unless APPLY=1'
+    task enrich: :environment do
+      metadata = JSON.parse(Rails.root.join(ENV.fetch('METADATA')).read)
+      apply = ENV['APPLY'] == '1'
+      result = NewfoundlandLabradorOnline::Meetings::RecordingEnricher.new(metadata:, apply:).call
+      puts "#{apply ? 'Applied' : 'Dry run'}: #{result.counts.map { |k, v| "#{k}=#{v}" }.join(' ')}"
+      puts "No recording for: #{result.unmatched.join(', ')}" if result.unmatched.any?
+    end
   end
 end

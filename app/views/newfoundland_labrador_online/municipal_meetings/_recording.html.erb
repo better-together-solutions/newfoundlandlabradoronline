@@ -1,0 +1,18 @@
+<%# locals: (meeting:, recording:) -%>
+<section id="meeting-recording" aria-labelledby="meeting-recording-heading" class="mb-4">
+  <h2 class="h5" id="meeting-recording-heading"><%= t('newfoundland_labrador_online.municipal_meetings.show.recording') %></h2>
+  <% if recording.nil? %>
+    <p class="text-muted" id="meeting-recording-none"><%= t('newfoundland_labrador_online.municipal_meetings.show.no_recording') %></p>
+  <% elsif recording.upcoming? || recording.live? %>
+    <p id="meeting-recording-<%= recording.live_status %>">
+      <% if recording.scheduled_for %><%= t('newfoundland_labrador_online.municipal_meetings.show.scheduled', time: l(recording.scheduled_for.in_time_zone('America/St_Johns'), format: :long)) %><% end %>
+      <%= link_to t('newfoundland_labrador_online.municipal_meetings.show.watch_live'), recording.watch_url, rel: 'noopener', target: '_blank', class: 'btn btn-primary btn-sm', id: 'meeting-watch-live' %>
+    </p>
+  <% else %>
+    <div class="ratio ratio-16x9 mb-2" id="meeting-video">
+      <iframe src="<%= recording.embed_url %>" title="<%= t('newfoundland_labrador_online.municipal_meetings.show.video_title', title: meeting.title) %>"
+              allow="encrypted-media; picture-in-picture; web-share" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div>
+    <p class="small"><%= link_to t('newfoundland_labrador_online.municipal_meetings.show.watch_on_provider'), recording.watch_url, rel: 'noopener', target: '_blank', id: 'meeting-watch-link' %></p>
+  <% end %>
+</section>

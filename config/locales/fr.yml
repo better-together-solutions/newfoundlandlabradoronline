@@ -214,9 +214,26 @@ fr:
         heading: Réunions du conseil
         none: Aucune réunion du conseil n'a encore été enregistrée.
         opens_new_tab: "(s'ouvre dans un nouvel onglet)"
+        recording_and_transcript: Enregistrement et transcription
         source: Les ordres du jour, les dossiers et les procès-verbaux sont publiés
           par la municipalité sur son portail eScribe et s'ouvrent là-bas.
         upcoming: À venir
+      show:
+        all_meetings: Toutes les réunions du conseil de %{name}
+        automatic_notice: Ces sous-titres ont été générés automatiquement et peuvent
+          contenir des erreurs, surtout pour les noms et les motions. Le procès-verbal
+          est le document officiel.
+        documents: Ordre du jour et procès-verbaux
+        download: Télécharger la transcription (texte)
+        no_documents: Aucun document n'a été publié pour cette réunion.
+        no_recording: Aucun enregistrement n'a été publié pour cette réunion.
+        recording: Enregistrement
+        scheduled: Prévue le %{time}.
+        transcript: Transcription
+        transcript_summary: 'Afficher la transcription (sous-titres, langue : %{language})'
+        video_title: 'Enregistrement de la réunion du conseil : %{title}'
+        watch_live: Regarder en direct
+        watch_on_provider: Regarder sur YouTube (s'ouvre dans un nouvel onglet)
     municipalities:
       card:
         link: Conseil, élus et élections

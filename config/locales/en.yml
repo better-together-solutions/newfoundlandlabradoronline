@@ -213,9 +213,25 @@ en:
         heading: Council meetings
         none: No council meetings have been recorded yet.
         opens_new_tab: "(opens in a new tab)"
+        recording_and_transcript: Recording and transcript
         source: Agendas, packages and minutes are published by the municipality on
           its eScribe portal and open there.
         upcoming: Upcoming
+      show:
+        all_meetings: All %{name} council meetings
+        automatic_notice: These captions were generated automatically and may contain
+          errors, especially names and motions. The minutes are the official record.
+        documents: Agenda and minutes
+        download: Download the transcript (text)
+        no_documents: No documents have been published for this meeting.
+        no_recording: No recording has been published for this meeting.
+        recording: Recording
+        scheduled: Scheduled for %{time}.
+        transcript: Transcript
+        transcript_summary: 'Show the transcript (captions, language: %{language})'
+        video_title: 'Recording of the council meeting: %{title}'
+        watch_live: Watch live
+        watch_on_provider: Watch on YouTube (opens in a new tab)
     municipalities:
       card:
         link: Council, officials and elections

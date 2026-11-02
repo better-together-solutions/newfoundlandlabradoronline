@@ -63,6 +63,7 @@ module NewfoundlandLabradorOnline
           meeting ||= Meeting.new(source: @source_key, source_id: data[:source_id])
           meeting.update!(attributes_for(council, data, checksum, meeting.details))
           sync_documents(meeting, data[:documents])
+          RecordingSync.new(meeting, data[:video_urls]).call
           meeting.update!(event: write_event(meeting, council, data))
         end
       end
