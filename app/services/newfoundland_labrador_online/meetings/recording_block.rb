@@ -1,0 +1,28 @@
+# frozen_string_literal: true
+
+module NewfoundlandLabradorOnline
+  module Meetings
+    # The platform video block holding a meeting's recording, created once and reused on every import.
+    class RecordingBlock
+      def initialize(platform, meeting)
+        @platform = platform
+        @meeting = meeting
+      end
+
+      # Block ids to attach to the event description, empty when the meeting has no recording.
+      def ids
+        url = Array(@meeting.details['video_urls']).first
+        return [] unless url
+
+        block = BetterTogether::Content::VideoBlock.find_or_initialize_by(platform: @platform, id: block_id)
+        block.update!(video_url: url, caption: @meeting.title) unless block.persisted? && block.video_url == url
+        @meeting.update!(details: @meeting.details.merge('video_block_id' => block.id))
+        [block.id]
+      end
+
+      private
+
+      def block_id = @meeting.details['video_block_id']
+    end
+  end
+end
