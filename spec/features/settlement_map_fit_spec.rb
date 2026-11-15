@@ -31,8 +31,17 @@ RSpec.describe 'Settlement map fit', :js, type: :feature do
   it 'frames the whole boundary' do
     visit "/#{I18n.default_locale}/g/settlements/wide-town"
     page.has_css?('#settlement-map .leaflet-interactive', wait: 15)
-    south, west, north, east = page.evaluate_script(visible)
+    # Leaflet animates fitBounds, so read the bounds only once the zoom animation has settled.
+    framed = false
+    deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 10
+    loop do
+      south, west, north, east = page.evaluate_script(visible)
+      framed = [south <= 48.7, west <= -58.4, north >= 49.2, east >= -57.5]
+      break if framed.all? || Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
 
-    expect([south <= 48.7, west <= -58.4, north >= 49.2, east >= -57.5]).to eq([true] * 4)
+      sleep 0.2
+    end
+
+    expect(framed).to eq([true] * 4)
   end
 end
