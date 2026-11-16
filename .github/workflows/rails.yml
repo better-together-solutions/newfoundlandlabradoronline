@@ -65,6 +65,10 @@ jobs:
       - name: Prepare parallel test databases
         run: |
           rm -f tmp/pids/server.pid
+          # Rails writes tmp/local_secret.txt on first boot; parallel boots race and one can read it
+          # empty ("secret_key_base must be a type of String, got: \"\""). Create it once, first.
+          mkdir -p tmp
+          [ -s tmp/local_secret.txt ] || ruby -rsecurerandom -e 'File.binwrite("tmp/local_secret.txt", SecureRandom.hex(64))'
           pids=()
           for n in "" $(seq 2 "$WORKERS"); do
             TEST_ENV_NUMBER=$n bundle exec rails db:create db:schema:load &
