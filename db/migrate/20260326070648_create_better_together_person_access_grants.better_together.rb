@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This migration comes from better_together (originally 20260312234000)
 class CreateBetterTogetherPersonAccessGrants < ActiveRecord::Migration[7.2]
   def change
     unless table_exists?(:better_together_person_access_grants)
@@ -27,6 +26,7 @@ class CreateBetterTogetherPersonAccessGrants < ActiveRecord::Migration[7.2]
                 unique: true,
                 name: 'index_bt_person_access_grants_on_link_and_people'
     end
-    add_index :better_together_person_access_grants, :status unless index_name_exists?(:better_together_person_access_grants, 'index_better_together_person_access_grants_on_status')
+    add_index :better_together_person_access_grants, :status unless index_name_exists?(:better_together_person_access_grants,
+                                                                                       'index_better_together_person_access_grants_on_status')
   end
 end

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This migration comes from better_together (originally 20260606002001)
 # Phase 5 — Backfill platform_id for all newly scoped model families.
 #
 # Tables with a real derivable owner are backfilled via join first, falling
@@ -64,8 +63,6 @@ class BackfillPlatformIdPhase5 < ActiveRecord::Migration[7.2] # rubocop:disable 
     end
   end
 
-  CONTENT_BLOCKS_INDEX_PREDICATE = "platform_id IS NOT NULL AND identifier != ''"
-
   private
 
   def repair_content_blocks_identifier_platform_index
@@ -77,7 +74,7 @@ class BackfillPlatformIdPhase5 < ActiveRecord::Migration[7.2] # rubocop:disable 
     remove_index :better_together_content_blocks, name: index_name, if_exists: true
     add_index :better_together_content_blocks, %i[identifier platform_id], unique: true,
                                                                            name: index_name,
-                                                                           where: CONTENT_BLOCKS_INDEX_PREDICATE,
+                                                                           where: "platform_id IS NOT NULL AND identifier != ''",
                                                                            if_not_exists: true
   end
 
@@ -99,7 +96,7 @@ class BackfillPlatformIdPhase5 < ActiveRecord::Migration[7.2] # rubocop:disable 
     end
   end
 
-  def backfill_from_creator(table, owner_column, host_platform_id) # rubocop:disable Metrics/MethodLength
+  def backfill_from_creator(table, owner_column, host_platform_id)
     return unless table_exists?(table) && column_exists?(table, :platform_id)
 
     execute <<~SQL
@@ -120,7 +117,7 @@ class BackfillPlatformIdPhase5 < ActiveRecord::Migration[7.2] # rubocop:disable 
     SQL
   end
 
-  def backfill_calls_for_interest(host_platform_id) # rubocop:disable Metrics/MethodLength
+  def backfill_calls_for_interest(host_platform_id)
     table = 'better_together_calls_for_interest'
     return unless table_exists?(table) && column_exists?(table, :platform_id)
 

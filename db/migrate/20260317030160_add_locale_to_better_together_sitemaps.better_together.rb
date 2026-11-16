@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This migration comes from better_together (originally 20260112104047)
 # Migration to add locale column to better_together_sitemaps table for multi-locale support
 class AddLocaleToBetterTogetherSitemaps < ActiveRecord::Migration[7.1]
   def change

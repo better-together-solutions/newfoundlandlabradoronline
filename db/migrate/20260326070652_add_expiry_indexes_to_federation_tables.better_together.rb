@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This migration comes from better_together (originally 20260314000001)
 # Add indexes on expires_at and revoked_at for federation tables.
 # These columns are used in current_active scopes on every request; without
 # indexes, every scope evaluation does a full table scan.
@@ -27,9 +26,9 @@ class AddExpiryIndexesToFederationTables < ActiveRecord::Migration[7.1]
     end
 
     # PersonLink — queried when resolving federation identity
-    unless index_name_exists?(:better_together_person_links, 'index_bt_person_links_on_revoked_at')
-      add_index :better_together_person_links, :revoked_at,
-                name: 'index_bt_person_links_on_revoked_at'
-    end
+    return if index_name_exists?(:better_together_person_links, 'index_bt_person_links_on_revoked_at')
+
+    add_index :better_together_person_links, :revoked_at,
+              name: 'index_bt_person_links_on_revoked_at'
   end
 end

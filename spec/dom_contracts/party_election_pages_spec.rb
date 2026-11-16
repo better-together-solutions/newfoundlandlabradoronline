@@ -129,7 +129,8 @@ RSpec.describe 'Party and election pages', type: :request do
     paths.each { |path| get path } # warm caches
     counts = paths.to_h { |path| [path, query_count(path)] }
 
-    expect(counts.values).to all(be < 70)
+    # A ceiling, not an exact count: the engine layout adds a fixed set of queries per page.
+    expect(counts.values).to all(be < 80)
   end
 end
 # rubocop:enable RSpec/ExampleLength

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This migration comes from better_together (originally 20260317221000)
 # Adds a BCrypt digest column for inbound OAuth client secret verification.
 #
 # The existing AR-encrypted `oauth_client_secret` remains for outbound use
@@ -13,8 +12,12 @@
 # immediately verifiable via the new path.
 class AddOauthClientSecretDigestToBetterTogetherPlatformConnections < ActiveRecord::Migration[7.2]
   def up
-    add_column :better_together_platform_connections,
-               :oauth_client_secret_digest, :string unless column_exists?(:better_together_platform_connections, :oauth_client_secret_digest)
+    unless column_exists?(:better_together_platform_connections, :oauth_client_secret_digest)
+      add_column :better_together_platform_connections,
+                 :oauth_client_secret_digest, :string
+    end
+
+    return unless table_has_rows?(:better_together_platform_connections)
 
     require 'bcrypt'
 
@@ -36,6 +39,7 @@ class AddOauthClientSecretDigestToBetterTogetherPlatformConnections < ActiveReco
   end
 
   def down
-    remove_column :better_together_platform_connections, :oauth_client_secret_digest if column_exists?(:better_together_platform_connections, :oauth_client_secret_digest)
+    remove_column :better_together_platform_connections, :oauth_client_secret_digest if column_exists?(:better_together_platform_connections,
+                                                                                                       :oauth_client_secret_digest)
   end
 end
