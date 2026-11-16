@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This migration comes from better_together (originally 20260215000003)
 # Creates the webhook_deliveries table for tracking outbound webhook delivery attempts
 class CreateBetterTogetherWebhookDeliveries < ActiveRecord::Migration[7.2]
   def change

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This migration comes from better_together (originally 20260124011954)
 # Migration to create recurrences table for polymorphic recurring events
 # Supports Events, CalendarEntries, Tasks, and any other schedulable resources
 class CreateBetterTogetherRecurrences < ActiveRecord::Migration[7.2]

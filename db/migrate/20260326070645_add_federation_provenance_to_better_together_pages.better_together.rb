@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This migration comes from better_together (originally 20260312220000)
 class AddFederationProvenanceToBetterTogetherPages < ActiveRecord::Migration[7.2]
   def change
     unless column_exists?(:better_together_pages, :platform_id)
@@ -10,11 +9,11 @@ class AddFederationProvenanceToBetterTogetherPages < ActiveRecord::Migration[7.2
     add_column :better_together_pages, :source_updated_at, :datetime unless column_exists?(:better_together_pages, :source_updated_at)
     add_column :better_together_pages, :last_synced_at, :datetime unless column_exists?(:better_together_pages, :last_synced_at)
 
-    unless index_name_exists?(:better_together_pages, 'index_bt_pages_on_platform_and_source_id')
-      add_index :better_together_pages, %i[platform_id source_id],
-                unique: true,
-                where: '(source_id IS NOT NULL)',
-                name: 'index_bt_pages_on_platform_and_source_id'
-    end
+    return if index_name_exists?(:better_together_pages, 'index_bt_pages_on_platform_and_source_id')
+
+    add_index :better_together_pages, %i[platform_id source_id],
+              unique: true,
+              where: '(source_id IS NOT NULL)',
+              name: 'index_bt_pages_on_platform_and_source_id'
   end
 end

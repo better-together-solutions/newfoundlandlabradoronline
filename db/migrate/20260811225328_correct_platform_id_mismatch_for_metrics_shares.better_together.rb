@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This migration comes from better_together (originally 20260717140200)
 # Metrics::Share.platform_id is NOT NULL, populated at creation time from the
 # *viewer's* current platform context (SharesController -> TrackShareJob), not
 # from the content actually shared. For federated/cross-platform content this
@@ -15,7 +14,7 @@ class CorrectPlatformIdMismatchForMetricsShares < ActiveRecord::Migration[7.2]
     'BetterTogether::Event' => 'better_together_events'
   }.freeze
 
-  def up # rubocop:disable Metrics/MethodLength
+  def up
     return unless column_exists?(:better_together_metrics_shares, :platform_id)
 
     CONTENT_TYPES.each do |type, owner_table|
