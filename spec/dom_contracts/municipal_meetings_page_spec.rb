@@ -6,9 +6,13 @@ require 'rails_helper'
 # Stable identifiers for the council meetings tab of a municipality page and for the council host chip.
 RSpec.describe 'Municipal meetings page', type: :request do
   include RequestSpecHelper
+  include ActiveSupport::Testing::TimeHelpers
 
   let(:locale) { I18n.default_locale }
   let(:meeting) { NewfoundlandLabradorOnline::Meeting.find_by!(source_id: '11111111-aaaa-4aaa-8aaa-000000000001') }
+
+  # The fixture meetings are dated autumn 2026; freeze the clock so the upcoming-events list never rots.
+  around { |example| travel_to(Time.zone.parse('2026-10-01 12:00')) { example.run } }
 
   before do
     configure_host_platform.update!(privacy: 'public')
