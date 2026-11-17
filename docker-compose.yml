@@ -9,6 +9,7 @@
 
 volumes:
   nlo-bundler-gems:
+    name: newfoundlandlabradoronline_nlo-bundler-gems
   nlo-db-data:
   nlo-redis:
 
