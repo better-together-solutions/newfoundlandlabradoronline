@@ -44,6 +44,16 @@ ignore_unused:
   - "better_together.shared.map.**" # used by the shared map partial copied from CE (until the CE pin includes it)
   - "better_together.community_subtypes.*" # read by BetterTogether::CommunitySubtype.community_subtype_label
   - "actions.*"
+  # Keys looked up with an interpolated segment, e.g. t("...kinds.#{election.jurisdiction}"). i18n-tasks 1.2 no longer
+  # infers these as used, so each family is listed here.
+  - "newfoundland_labrador_online.elections.index.kinds.*"
+  - "newfoundland_labrador_online.elections.index.titles.*"
+  - "newfoundland_labrador_online.elections.show.kinds.*"
+  - "newfoundland_labrador_online.municipal_elections.show.offices.*"
+  - "newfoundland_labrador_online.municipal_meetings.index.documents.*"
+  - "newfoundland_labrador_online.municipalities.statuses.*"
+  - "newfoundland_labrador_online.parties.index.titles.*"
+  - "newfoundland_labrador_online.states.show.tabs.*"
   - "globals.**"
   - "date.**"
   - "datetime.**"
