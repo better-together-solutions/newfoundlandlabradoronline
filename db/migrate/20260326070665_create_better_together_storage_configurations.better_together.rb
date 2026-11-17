@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This migration comes from better_together (originally 20260321000001)
 # Creates storage_configurations table and adds active storage config FK to platforms.
 #
 # Each platform can have many storage configurations; platforms.storage_configuration_id
@@ -34,12 +33,12 @@ class CreateBetterTogetherStorageConfigurations < ActiveRecord::Migration[7.2]
 
     # Add nullable FK on platforms pointing to the active storage configuration.
     # Deferred constraint avoids chicken-and-egg issue when creating platform + config together.
-    unless column_exists?(:better_together_platforms, :storage_configuration_id)
-      add_reference :better_together_platforms,
-                    :storage_configuration,
-                    type: :uuid,
-                    null: true,
-                    foreign_key: { to_table: :better_together_storage_configurations, deferrable: :deferred }
-    end
+    return if column_exists?(:better_together_platforms, :storage_configuration_id)
+
+    add_reference :better_together_platforms,
+                  :storage_configuration,
+                  type: :uuid,
+                  null: true,
+                  foreign_key: { to_table: :better_together_storage_configurations, deferrable: :deferred }
   end
 end

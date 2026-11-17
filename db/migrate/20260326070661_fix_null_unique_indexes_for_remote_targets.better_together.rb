@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This migration comes from better_together (originally 20260317000001)
 # PostgreSQL does not consider NULL values equal in unique indexes, so the composite
 # unique index on person_links (platform_connection_id, source_person_id, target_person_id)
 # and person_access_grants (person_link_id, grantor_person_id, grantee_person_id) both
@@ -51,18 +50,22 @@ class FixNullUniqueIndexesForRemoteTargets < ActiveRecord::Migration[7.2]
     end
 
     # Remote grantee
-    unless index_name_exists?(:better_together_person_access_grants, 'index_bt_person_access_grants_remote_grantee_unique')
-      add_index :better_together_person_access_grants,
-                %i[person_link_id grantor_person_id remote_grantee_identifier],
-                unique: true,
-                where: 'grantee_person_id IS NULL',
-                name: 'index_bt_person_access_grants_remote_grantee_unique'
-    end
+    return if index_name_exists?(:better_together_person_access_grants, 'index_bt_person_access_grants_remote_grantee_unique')
+
+    add_index :better_together_person_access_grants,
+              %i[person_link_id grantor_person_id remote_grantee_identifier],
+              unique: true,
+              where: 'grantee_person_id IS NULL',
+              name: 'index_bt_person_access_grants_remote_grantee_unique'
   end
 
   def down
-    remove_index :better_together_person_links, name: 'index_bt_person_links_local_target_unique' if index_name_exists?(:better_together_person_links, 'index_bt_person_links_local_target_unique')
-    remove_index :better_together_person_links, name: 'index_bt_person_links_remote_target_unique' if index_name_exists?(:better_together_person_links, 'index_bt_person_links_remote_target_unique')
+    remove_index :better_together_person_links, name: 'index_bt_person_links_local_target_unique' if index_name_exists?(
+      :better_together_person_links, 'index_bt_person_links_local_target_unique'
+    )
+    remove_index :better_together_person_links, name: 'index_bt_person_links_remote_target_unique' if index_name_exists?(
+      :better_together_person_links, 'index_bt_person_links_remote_target_unique'
+    )
     unless index_name_exists?(:better_together_person_links, 'index_bt_person_links_on_connection_and_people')
       add_index :better_together_person_links,
                 %i[platform_connection_id source_person_id target_person_id],
@@ -70,15 +73,21 @@ class FixNullUniqueIndexesForRemoteTargets < ActiveRecord::Migration[7.2]
                 name: 'index_bt_person_links_on_connection_and_people'
     end
 
-    remove_index :better_together_person_access_grants,
-                 name: 'index_bt_person_access_grants_local_grantee_unique' if index_name_exists?(:better_together_person_access_grants, 'index_bt_person_access_grants_local_grantee_unique')
-    remove_index :better_together_person_access_grants,
-                 name: 'index_bt_person_access_grants_remote_grantee_unique' if index_name_exists?(:better_together_person_access_grants, 'index_bt_person_access_grants_remote_grantee_unique')
-    unless index_name_exists?(:better_together_person_access_grants, 'index_bt_person_access_grants_on_link_and_people')
-      add_index :better_together_person_access_grants,
-                %i[person_link_id grantor_person_id grantee_person_id],
-                unique: true,
-                name: 'index_bt_person_access_grants_on_link_and_people'
+    if index_name_exists?(:better_together_person_access_grants,
+                          'index_bt_person_access_grants_local_grantee_unique')
+      remove_index :better_together_person_access_grants,
+                   name: 'index_bt_person_access_grants_local_grantee_unique'
     end
+    if index_name_exists?(:better_together_person_access_grants,
+                          'index_bt_person_access_grants_remote_grantee_unique')
+      remove_index :better_together_person_access_grants,
+                   name: 'index_bt_person_access_grants_remote_grantee_unique'
+    end
+    return if index_name_exists?(:better_together_person_access_grants, 'index_bt_person_access_grants_on_link_and_people')
+
+    add_index :better_together_person_access_grants,
+              %i[person_link_id grantor_person_id grantee_person_id],
+              unique: true,
+              name: 'index_bt_person_access_grants_on_link_and_people'
   end
 end

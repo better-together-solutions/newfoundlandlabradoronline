@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This migration comes from better_together (originally 20260717120000)
 # Metrics::Download/PageView already have platform_id NOT NULL, populated at creation
 # time from the *viewer's* current platform context (TrackDownloadJob/TrackPageViewJob),
 # not from the content actually downloaded/viewed. For federated/cross-platform content
@@ -27,7 +26,7 @@ class CorrectPlatformIdMismatchForDownloadsAndPageViews < ActiveRecord::Migratio
 
   private
 
-  def correct_mismatches(table, type_col, id_col) # rubocop:disable Metrics/MethodLength
+  def correct_mismatches(table, type_col, id_col)
     return unless column_exists?(table, :platform_id)
 
     CONTENT_TYPES.each do |type, owner_table|

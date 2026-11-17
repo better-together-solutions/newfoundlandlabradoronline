@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This migration comes from better_together (originally 20260312235000)
 class CreateBetterTogetherPersonLinkedSeeds < ActiveRecord::Migration[7.2]
   def change
     unless table_exists?(:better_together_person_linked_seeds)
@@ -34,9 +33,9 @@ class CreateBetterTogetherPersonLinkedSeeds < ActiveRecord::Migration[7.2]
       add_index :better_together_person_linked_seeds, :recipient_person_id,
                 name: 'index_bt_person_linked_seeds_on_recipient_person_id'
     end
-    unless index_name_exists?(:better_together_person_linked_seeds, 'index_bt_person_linked_seeds_on_source_platform_id')
-      add_index :better_together_person_linked_seeds, :source_platform_id,
-                name: 'index_bt_person_linked_seeds_on_source_platform_id'
-    end
+    return if index_name_exists?(:better_together_person_linked_seeds, 'index_bt_person_linked_seeds_on_source_platform_id')
+
+    add_index :better_together_person_linked_seeds, :source_platform_id,
+              name: 'index_bt_person_linked_seeds_on_source_platform_id'
   end
 end

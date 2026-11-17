@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This migration comes from better_together (originally 20260312233000)
 class CreateBetterTogetherPersonLinks < ActiveRecord::Migration[7.2]
   def change
     unless table_exists?(:better_together_person_links)
@@ -26,6 +25,7 @@ class CreateBetterTogetherPersonLinks < ActiveRecord::Migration[7.2]
                 unique: true,
                 name: 'index_bt_person_links_on_connection_and_people'
     end
-    add_index :better_together_person_links, :status unless index_name_exists?(:better_together_person_links, 'index_better_together_person_links_on_status')
+    add_index :better_together_person_links, :status unless index_name_exists?(:better_together_person_links,
+                                                                               'index_better_together_person_links_on_status')
   end
 end
