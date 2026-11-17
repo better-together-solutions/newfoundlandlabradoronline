@@ -3,7 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe NewfoundlandLabradorOnline::Post do
-  let(:platform) { BetterTogether::Platform.find_by(host: true) || create(:better_together_platform) }
+  # The privacy ceiling caps a block at its platform's visibility, so the platform must be public to render.
+  let(:platform) do
+    (BetterTogether::Platform.find_by(host: true) || create(:better_together_platform)).tap do |record|
+      record.update_columns(privacy: 'public')
+    end
+  end
   let(:person) { create(:better_together_person) }
   let(:post) do
     build(:better_together_post, platform:, privacy: 'private', author: person)
@@ -78,7 +83,6 @@ RSpec.describe NewfoundlandLabradorOnline::Post do
     end
 
     it 'renders a public portrait block in a 9x16 frame', :aggregate_failures do
-      video_block.seed_privacy_ceiling_exempt = true
       video_block.update!(privacy: 'public', aspect_ratio: '9x16')
       post.video_block_id = video_block.id
       post.save!

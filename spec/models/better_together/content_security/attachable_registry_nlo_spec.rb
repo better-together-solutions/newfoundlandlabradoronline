@@ -3,11 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe BetterTogether::ContentSecurity::AttachableRegistry do
-  let(:platform) { BetterTogether::Platform.find_by(host: true) || create(:better_together_platform) }
+  # The privacy ceiling caps a block at its platform's visibility, so the platform must be public to render.
+  let(:platform) do
+    (BetterTogether::Platform.find_by(host: true) || create(:better_together_platform)).tap do |record|
+      record.update_columns(privacy: 'public')
+    end
+  end
   let(:person) { create(:better_together_person) }
   let(:embed) do
     BetterTogether::Content::VideoBlock.create!(platform:, privacy: 'public', identifier: 'att-vb', creator: person,
-                                                seed_privacy_ceiling_exempt: true,
                                                 video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
   end
   let(:image) do
@@ -15,7 +19,7 @@ RSpec.describe BetterTogether::ContentSecurity::AttachableRegistry do
       'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
     )
     BetterTogether::Content::Image.create!(platform:, privacy: 'public', identifier: 'att-img', creator: person,
-                                           seed_privacy_ceiling_exempt: true, caption: 'Noon, 12:00',
+                                           caption: 'Noon, 12:00',
                                            media_data: Base64.strict_encode64(png), media_filename: 'noon.png')
   end
   let(:other_attachable) do

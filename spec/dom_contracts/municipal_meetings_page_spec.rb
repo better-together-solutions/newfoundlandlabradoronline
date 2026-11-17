@@ -28,8 +28,9 @@ RSpec.describe 'Municipal meetings page', type: :request do
                                      'id="council-meetings"',
                                      'id="meeting-filters"', 'id="meetings-timeline"', 'id="meetings-source"',
                                      "id=\"#{ActionView::RecordIdentifier.dom_id(meeting)}\"")
-    expect(response.body.scan('aria-pressed="true"').size).to eq(2)
-    expect(response.body).not_to include('aria-pressed="false"')
+    filters = Nokogiri::HTML(response.body).at_css('#meeting-filters').to_html # layout controls also use aria-pressed
+    expect(filters.scan('aria-pressed="true"').size).to eq(2)
+    expect(filters).not_to include('aria-pressed="false"')
     expect(response.body).to include('id="meeting-filter-meeting-regular"',
                                      'id="meeting-filter-meeting-committee_of_the_whole"')
   end

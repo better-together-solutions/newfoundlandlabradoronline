@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This migration comes from better_together (originally 20260309120000)
 # Extends report intake records with restorative-safety triage fields.
 class EnhanceReportsForRestorativeSafety < ActiveRecord::Migration[7.1]
   def up

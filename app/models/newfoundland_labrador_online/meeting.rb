@@ -33,6 +33,7 @@ module NewfoundlandLabradorOnline
 
     # Meetings are public records, so the attachable registry may always render them.
     def privacy_public? = true
+    def effective_privacy_public? = true
     def visible? = true
 
     def to_attachable_partial_path = 'newfoundland_labrador_online/meetings/attachment'

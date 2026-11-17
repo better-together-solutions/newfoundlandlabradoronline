@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This migration comes from better_together (originally 20260318000001)
 # Adds platform_id to noticed_notifications so notification queries can be
 # scoped to the current platform in multi-platform-per-instance deployments.
 #
@@ -68,8 +67,10 @@ class AddPlatformIdToNoticedNotifications < ActiveRecord::Migration[7.2]
   end
 
   def down
+    return unless column_exists?(:noticed_notifications, :platform_id)
+
     remove_reference :noticed_notifications, :platform,
                      foreign_key: { to_table: :better_together_platforms },
-                     index: true if column_exists?(:noticed_notifications, :platform_id)
+                     index: true
   end
 end
