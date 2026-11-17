@@ -10,11 +10,14 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
- *= require_tree .
+ *= require council_meetings
+ *= require district_covers
  *= require_self
  */
 
- @import 'theme';
+// require_tree also pulled in theme.scss, which is imported here, so it was compiled into application.css
+// twice. List new stylesheets above, or @import them below when they need the theme variables.
+@import 'theme';
 
 
 
